@@ -254,6 +254,7 @@ export const preEtchingRuneFunc = async (
   imageString: string,
   runeName: string,
   runeSymbol: string,
+  initialBuyAmount: string,
 ) => {
   try {
     const requestData = {
@@ -261,6 +262,7 @@ export const preEtchingRuneFunc = async (
       imageString,
       runeName,
       runeSymbol,
+      initialBuyAmount,
     };
     const urlEndpoint = `${process.env.NEXT_PUBLIC_API_URL}/api/etching/pre-etch-token`;
     const res = await axios.post(urlEndpoint, requestData);
@@ -278,7 +280,7 @@ export const etchingRuneFunc = async (
   imageString: string,
   runeName: string,
   runeSymbol: string,
-  divisibility: string,
+  initialBuyAmount: string,
   creatorAddress: string,
   signedPsbt: string,
   waitEtchingId: string,
@@ -290,7 +292,7 @@ export const etchingRuneFunc = async (
       imageString,
       runeName,
       runeSymbol,
-      divisibility,
+      initialBuyAmount,
       creatorAddress,
       signedPsbt,
       waitEtchingId,

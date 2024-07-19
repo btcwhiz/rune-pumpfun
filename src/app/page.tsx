@@ -29,8 +29,6 @@ export default function Home() {
 
   const [buyFlag, setBuyFlag] = useState<boolean>(false);
   const [sellFlag, setSellFlag] = useState<boolean>(false);
-  const [withdrawFlag, setWithdrawFlag] = useState<boolean>(false);
-  const [etchingFlag, setEtchingFlag] = useState<boolean>(false);
   const [runeId, setRuneId] = useState<string>("");
 
   const [loading, setLoading] = useState<boolean>(false);
@@ -40,18 +38,7 @@ export default function Home() {
   const [imageContent, setImageContent] = useState<string>("");
   const [etchingSymbol, setEtchingSymbol] = useState<string>("");
   const [etchingName, setEtchingName] = useState<string>("");
-  const [divisibility, setDivisibility] = useState<string>("");
-
-  // const [etchingPsbtData, setEtchingPsbtData] = useState<{
-  //   waitEtchingId: string;
-  //   psbt: string;
-  //   requestId: string;
-  // }>({ psbt: "", waitEtchingId: "", requestId: "" });
-
-  // const [withdrawPsbtData, setWithdrawPsbtData] = useState<{
-  //   psbt: string;
-  //   requestId: string;
-  // }>({ psbt: "", requestId: "" });
+  const [initialBuyAmount, setInitialBuyAmount] = useState<string>("");
 
   const [buyPsbtData, setBuyPsbtData] = useState<{
     psbt: string;
@@ -106,25 +93,31 @@ export default function Home() {
     getUserInfo();
   };
 
-  const handlePreEtchingRune = async () => {
+  const handleEtchingRune = async () => {
     try {
       console.log(
-        "imageContent etchingAmount etchingSymbol etchingName divisibility initialPrice :>> ",
+        "imageContent etchingAmount etchingSymbol etchingName initialBuyAmount initialPrice :>> ",
         imageContent,
         etchingSymbol,
         etchingName,
-        divisibility
+        initialBuyAmount
       );
-      if (!imageContent || !etchingSymbol || !etchingName || !divisibility) {
+      if (
+        !imageContent ||
+        !etchingSymbol ||
+        !etchingName ||
+        !initialBuyAmount
+      ) {
         return console.log("Invalid parameters");
       }
-      setEtchingFlag(true);
+      setLoading(true);
 
       const { etchingPsbt, waitEtchingData }: any = await preEtchingRuneFunc(
         userInfo.userId,
         imageContent,
         etchingName,
-        etchingSymbol
+        etchingSymbol,
+        initialBuyAmount,
       );
       console.log("etchingPsbt :>> ", etchingPsbt);
       console.log("waitEtchingData :>> ", waitEtchingData);
@@ -135,7 +128,7 @@ export default function Home() {
         imageContent,
         etchingName,
         etchingSymbol,
-        divisibility,
+        initialBuyAmount,
         ordinalAddress,
         signedPsbt,
         waitEtchingData.waitEtchingId,
@@ -149,53 +142,13 @@ export default function Home() {
       // setEtchingAmount("");
       setEtchingSymbol("");
       setEtchingName("");
-      setDivisibility("");
+      setInitialBuyAmount("");
       // setInitialPrice("");
-      setEtchingFlag(false);
+      setLoading(false);
     } catch (error) {
-      setEtchingFlag(false);
+      setLoading(false);
     }
   };
-
-  // const handleEtchingRune = async () => {
-  //   try {
-  //     console.log(
-  //       "imageContent etchingAmount etchingSymbol etchingName divisibility initialPrice :>> ",
-  //       imageContent,
-  //       etchingSymbol,
-  //       etchingName,
-  //       divisibility
-  //     );
-  //     if (!imageContent || !etchingSymbol || !etchingName || !divisibility) {
-  //       return console.log("Invalid parameters");
-  //     }
-  //     const signedPsbt = await unisatSignPsbt(etchingPsbtData.psbt);
-  //     const res = await etchingRuneFunc(
-  //       userInfo.userId,
-  //       imageContent,
-  //       etchingName,
-  //       etchingSymbol,
-  //       divisibility,
-  //       ordinalAddress,
-  //       signedPsbt,
-  //       etchingPsbtData.waitEtchingId,
-  //       etchingPsbtData.requestId
-  //     );
-
-  //     console.log(res);
-  //     toast.success(res.msg);
-  //     setImageData("");
-  //     setImageContent("");
-  //     // setEtchingAmount("");
-  //     setEtchingSymbol("");
-  //     setEtchingName("");
-  //     setDivisibility("");
-  //     // setInitialPrice("");
-  //     setEtchingFlag(false);
-  //   } catch (error) {
-  //     setEtchingFlag(false);
-  //   }
-  // };
 
   const handleDeposit = async () => {
     console.log("depositAmount :>> ", depositAmount);
@@ -257,30 +210,6 @@ export default function Home() {
     return signedPsbt;
   };
 
-  // const testFunc = async () => {
-  //   const currentWindow: any = window;
-  //   const paymentPublicKey = await currentWindow.unisat.getPublicKey();
-  //   const ppsbt =
-  //     "70736274ff0100b20200000002888793ba910e3bb98bc55267c3adeaea8bc2797e9b53c8ad9edb62da307c65540000000000ffffffff9a446d4028d2b3a987d235c7f3ad12fd925372269fc65dca61284c323426bb540000000000ffffffff02a086010000000000225120168e8713b5257109671b3556cef9255620c4f73981c53b550f97c31ae546dfca7837000000000000220020a140ba949814dee6c71c18e52781a988206d9c7867e1bba3f0bbd9ec5ed87ae5000000000001012ba086010000000000220020a140ba949814dee6c71c18e52781a988206d9c7867e1bba3f0bbd9ec5ed87ae522020370039194597286fed46ac6f69bc7d5fbb27dafcd745f08f4f0ff63f709a8401047304402200eb8d9240f73bcca7d078611877821e2ff3fadd7f08b6fb1b75c488fa9c3c66b02207a757ececa532bd28caf20f44ebb949858049cd11da3d3349534871c752ab6de0101054752210370039194597286fed46ac6f69bc7d5fbb27dafcd745f08f4f0ff63f709a840102103574915670c09bfcdaf0adf63644cf202a01ec125d3b6e3236410424a6b0d548452ae0001012ba086010000000000220020a140ba949814dee6c71c18e52781a988206d9c7867e1bba3f0bbd9ec5ed87ae522020370039194597286fed46ac6f69bc7d5fbb27dafcd745f08f4f0ff63f709a8401047304402205f497344d8cd118580927008a9ec9d1cad3ec58ea5eeff6bf71e5178eea2f7d902205d7db46781848193acdd83ee7ec0e17cd179401ccf3457dce716d26823cdd5a80101054752210370039194597286fed46ac6f69bc7d5fbb27dafcd745f08f4f0ff63f709a840102103574915670c09bfcdaf0adf63644cf202a01ec125d3b6e3236410424a6b0d548452ae000000";
-  //   const tempPsbt = Psbt.fromHex(ppsbt);
-  //   const inputCount = tempPsbt.inputCount;
-  //   const inputArray = Array.from({ length: inputCount }, (_, i) => i);
-  //   console.log("inputArray ==> ", inputArray);
-  //   const toSignInputs: { index: number; publicKey: string }[] = [];
-  //   inputArray.map((value: number) =>
-  //     toSignInputs.push({
-  //       index: value,
-  //       publicKey: paymentPublicKey,
-  //     })
-  //   );
-  //   console.log("toSignInputs ==> ", toSignInputs);
-  //   const signedPsbt = await (window as any).unisat.signPsbt(ppsbt, {
-  //     autoFinalized: false,
-  //     toSignInputs,
-  //   });
-  //   console.log("signedPsbt :>> ", signedPsbt);
-  // };
-
   const handlePreWithdraw = async () => {
     console.log("withdrawAmount :>> ", withdrawAmount);
     if (userInfo.userId && runeId && withdrawAmount) {
@@ -319,17 +248,6 @@ export default function Home() {
       console.log("Invalid Parameters");
     }
   };
-
-  // const handleWithdraw = async () => {
-  //   console.log("withdrawAmount :>> ", withdrawAmount);
-  //   if (userInfo.userId && runeId && withdrawAmount) {
-
-  //     setWithdrawFlag(false);
-  //   } else {
-  //     // setWithdrawFlag(false);
-  //     console.log("Invalid Parameters");
-  //   }
-  // };
 
   const handlePreBuy = async () => {
     console.log("buyRuneAmount :>> ", buyRuneAmount);
@@ -470,13 +388,6 @@ export default function Home() {
       // setImagePreview(e.target?.result as string);
       console.log(e.target?.result as string);
     };
-    // if (event.target.files.length) {
-    //   setAvatar({
-    //     preview: URL.createObjectURL(event.target.files[0]),
-    //     raw: event.target.files[0],
-    //   });
-    //   console.log(avatar.preview);
-    // }
     if (file) {
       const reader = new FileReader();
 
@@ -569,12 +480,6 @@ export default function Home() {
                   // onChange={handleImageUpload}
                 ></Input>
               </div>
-              {/* <Input
-                type="text"
-                label="Etching Amount"
-                value={etchingAmount}
-                onChange={(e) => setEtchingAmount(e.target.value)}
-              /> */}
               <Input
                 type="text"
                 label="Rune Symbol"
@@ -587,24 +492,18 @@ export default function Home() {
                 value={etchingName}
                 onChange={(e) => setEtchingName(e.target.value)}
               />
-              {/* <Input
-                type="text"
-                label="Initial Price"
-                value={initialPrice}
-                onChange={(e) => setInitialPrice(e.target.value)}
-              /> */}
               <Input
                 type="text"
-                label="Rune divisibility"
-                value={divisibility}
-                onChange={(e) => setDivisibility(e.target.value)}
+                label="Rune initial buy amount"
+                value={initialBuyAmount}
+                onChange={(e) => setInitialBuyAmount(e.target.value)}
               />
               <Button
                 color="success"
-                onClick={() => handlePreEtchingRune()}
-                disabled={etchingFlag}
+                onClick={() => handleEtchingRune()}
+                disabled={loading}
               >
-                {etchingFlag ? "Loading" : "Etching"}
+                {loading ? "Loading" : "Etching"}
               </Button>
             </div>
           </div>
