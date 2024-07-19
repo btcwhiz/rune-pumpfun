@@ -1,7 +1,7 @@
 "use client";
 
 import { useContext, useEffect, useRef, useState } from "react";
-import { Button, Image, Input } from "@nextui-org/react";
+import { Button, Image, Input, Progress } from "@nextui-org/react";
 import { Psbt } from "bitcoinjs-lib";
 import Header from "./components/header";
 import {
@@ -61,7 +61,7 @@ export default function Home() {
 
   const getRunes = async () => {
     if (userInfo.userId) {
-      const runeRes = await getRuneFunc(userInfo.userId);
+      let runeRes: any = await getRuneFunc(userInfo.userId);
       setRunes(runeRes.runes);
     }
   };
@@ -110,6 +110,15 @@ export default function Home() {
       ) {
         return console.log("Invalid parameters");
       }
+
+      if (
+        !Number(initialBuyAmount) ||
+        !Math.round(Number(initialBuyAmount)) ||
+        Math.round(Number(initialBuyAmount)) > 1000000
+      ) {
+        return console.log("Invalid initial rune amount");
+      }
+
       setLoading(true);
 
       const { etchingPsbt, waitEtchingData }: any = await preEtchingRuneFunc(
@@ -117,7 +126,7 @@ export default function Home() {
         imageContent,
         etchingName,
         etchingSymbol,
-        initialBuyAmount,
+        initialBuyAmount
       );
       console.log("etchingPsbt :>> ", etchingPsbt);
       console.log("waitEtchingData :>> ", waitEtchingData);
@@ -259,9 +268,11 @@ export default function Home() {
       setLoading(false);
       const ePrice = res?.estimatePrice;
       console.log("estimatePrice :>> ", ePrice);
-      setBuyFlag(true);
-      setSellFlag(false);
-      setEstimatePrice(ePrice);
+      if (ePrice) {
+        setBuyFlag(true);
+        setSellFlag(false);
+        setEstimatePrice(ePrice);
+      }
     } else {
       console.log("Invalid parameters");
     }
@@ -318,13 +329,16 @@ export default function Home() {
         runeId,
         sellRuneAmount
       );
-      setLoading(false);
       const ePrice = res?.estimatePrice;
       console.log("estimatePrice :>> ", ePrice);
-      setSellFlag(true);
-      setBuyFlag(false);
-      setEstimatePrice(ePrice);
+      if (ePrice) {
+        setEstimatePrice(ePrice);
+        setSellFlag(true);
+        setBuyFlag(false);
+      }
+      setLoading(false);
     } else {
+      setLoading(false);
       console.log("plz connect your wallet");
     }
   };
@@ -435,26 +449,41 @@ export default function Home() {
               Reload
             </Button>
           </div>
-          <div className="gap-3 grid grid-cols-7">
+          <div className="gap-3 grid grid-cols-8">
             <div>No</div>
             <div>ID</div>
             <div>Symbol</div>
             <div>Name</div>
             <div>Amount</div>
             <div>Price</div>
+            <div>Rune Progress Bar</div>
             <div>Rune Balance</div>
           </div>
-          {runes.map((item, index) => (
-            <div key={index} className="gap-3 grid grid-cols-7">
-              <div>{index + 1}</div>
-              <div>{item.runeId}</div>
-              <div>{item.runeSymbol}</div>
-              <div>{item.runeName}</div>
-              <div>{item.remainAmount}</div>
-              <div>{calcTokenPrice(item)}</div>
-              <div>{item.balance ? item.balance : 0}</div>
-            </div>
-          ))}
+          {runes.map((item, index) => {
+            const progress = Math.round(
+              ((item.runeAmount - item.remainAmount) / item.runeAmount) * 100
+            );
+            return (
+              <div key={index} className="gap-3 grid grid-cols-8">
+                <div>{index + 1}</div>
+                <div>{item.runeId}</div>
+                <div>{item.runeSymbol}</div>
+                <div>{item.runeName}</div>
+                <div>{item.remainAmount}</div>
+                <div>{item.pool / item.remainAmount}</div>
+                <div className="flex items-center gap-2">
+                  <span>{`${progress}%`}</span>
+                  <Progress
+                    size="md"
+                    aria-label="Loading..."
+                    value={progress}
+                    className="max-w-md"
+                  />
+                </div>
+                <div>{item.balance ? item.balance : 0}</div>
+              </div>
+            );
+          })}
         </div>
         <div className="gap-5 grid grid-cols-3 p-24">
           <div className="flex flex-col gap-3">
@@ -494,7 +523,7 @@ export default function Home() {
               />
               <Input
                 type="text"
-                label="Rune initial buy amount"
+                label="First rune buy rune amount"
                 value={initialBuyAmount}
                 onChange={(e) => setInitialBuyAmount(e.target.value)}
               />
@@ -584,9 +613,7 @@ export default function Home() {
                 />
                 {buyFlag ? (
                   <div className="flex flex-col items-center gap-3">
-                    <div>{`You should pay ${
-                      estimatePrice * Number(buyRuneAmount)
-                    } btc`}</div>
+                    <div>{`You should pay ${estimatePrice} btc`}</div>
                     <Button
                       color="success"
                       onClick={() => {
@@ -633,9 +660,7 @@ export default function Home() {
                 />
                 {sellFlag ? (
                   <div className="flex flex-col items-center gap-3">
-                    <div>{`You would get ${
-                      estimatePrice * Number(sellRuneAmount)
-                    } btc`}</div>
+                    <div>{`You would get ${estimatePrice} btc`}</div>
                     <Button
                       color="danger"
                       onClick={() => {
