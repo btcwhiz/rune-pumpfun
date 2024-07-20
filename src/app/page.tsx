@@ -463,9 +463,9 @@ export default function Home() {
             <div>Rune Balance</div>
           </div>
           {runes.map((item, index) => {
-            const progress = Math.round(
-              ((item.runeAmount - item.remainAmount) / item.runeAmount) * 100
-            );
+            const progress =
+              ((item.runeAmount - item.remainAmount) / item.runeAmount) * 100;
+            console.log("progress :>> ", progress);
             return (
               <div key={index} className="gap-3 grid grid-cols-8">
                 <div>{index + 1}</div>
