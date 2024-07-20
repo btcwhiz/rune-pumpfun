@@ -395,6 +395,7 @@ export default function Home() {
   };
 
   const handleImageUpload = (event: any) => {
+    console.log("here");
     // if (event.target.files && event.target.files[0]) {
     const file = event.target.files[0];
     setImageData(file);
@@ -422,16 +423,15 @@ export default function Home() {
   };
 
   useEffect(() => {
-    if (fileInputRef.current) {
-      fileInputRef.current.addEventListener("change", handleImageUpload);
+    const currentRef = fileInputRef.current;
+    if (currentRef) {
+      currentRef.addEventListener("change", handleImageUpload);
     }
     return () => {
-      if (fileInputRef.current) {
-        // eslint-disable-next-line
-        fileInputRef.current.removeEventListener("change", handleImageUpload);
+      if (currentRef) {
+        currentRef.removeEventListener("change", handleImageUpload);
       }
     };
-    // eslint-disable-next-line
   }, []);
 
   useEffect(() => {
@@ -553,17 +553,15 @@ export default function Home() {
                           height={50}
                         ></Image>
                       )}
-                      <Button
-                        color="success"
-                        onClick={() => handleUploadImage()}
-                      >
+                      <Button color="success" onClick={handleUploadImage}>
                         Upload Image
                       </Button>
                       <Input
                         type="file"
                         className="hidden"
                         ref={fileInputRef}
-                      ></Input>
+                        onChange={handleImageUpload}
+                      />
                     </div>
                     <Input
                       type="text"
