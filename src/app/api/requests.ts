@@ -19,7 +19,6 @@ export const authUser = async (
     return res.data;
   } catch (error: any) {
     const msg: any = error.response.data.msg || "Something went wrong";
-    toast.error(msg);
     console.log("error :>> ", error);
     return null;
   }
@@ -43,7 +42,6 @@ export const preDepositFunc = async (
     return res.data;
   } catch (error: any) {
     const msg: any = error.response.data.msg || "Something went wrong";
-    toast.error(msg);
     console.log("error :>> ", error);
     return null;
   }
@@ -67,7 +65,6 @@ export const depositFunc = async (
     return res.data;
   } catch (error: any) {
     const msg: any = error.response.data.msg || "Something went wrong";
-    toast.error(msg);
     console.log("error :>> ", error);
     return null;
   }
@@ -91,7 +88,6 @@ export const pumpPreBuyFunc = async (
     return res.data;
   } catch (error: any) {
     const msg: any = error.response.data.msg || "Something went wrong";
-    toast.error(msg);
     console.log("error :>> ", error);
     return null;
   }
@@ -103,6 +99,7 @@ export const pumpBuyFunc = async (
   runeAmount: string,
   btcAmount: number,
   requestId: string,
+  slippage: string,
   signedPsbt: string
 ) => {
   try {
@@ -113,13 +110,13 @@ export const pumpBuyFunc = async (
       runeAmount,
       btcAmount,
       requestId,
+      slippage,
       signedPsbt,
     };
     const res = await axios.post(urlEndpoint, requestData);
     return res.data;
   } catch (error: any) {
     const msg: any = error.response.data.msg || "Something went wrong";
-    toast.error(msg);
     console.log("error :>> ", error);
     return null;
   }
@@ -143,7 +140,6 @@ export const pumpPreSellFunc = async (
     return res.data;
   } catch (error: any) {
     const msg: any = error.response.data.msg || "Something went wrong";
-    toast.error(msg);
     console.log("error :>> ", error);
     return null;
   }
@@ -154,6 +150,7 @@ export const pumpSellFunc = async (
   runeId: string,
   runeAmount: string,
   btcAmount: number,
+  slippage: string,
   messageData: any
 ) => {
   try {
@@ -163,13 +160,28 @@ export const pumpSellFunc = async (
       runeId,
       runeAmount,
       btcAmount,
+      slippage,
       messageData,
     };
     const res = await axios.post(urlEndpoint, requestData);
     return res.data;
   } catch (error: any) {
     const msg: any = error.response.data.msg || "Something went wrong";
-    toast.error(msg);
+    console.log("error :>> ", error);
+    return null;
+  }
+};
+
+export const getAllTransactions = async (userId: string) => {
+  try {
+    const urlEndpoint = `${process.env.NEXT_PUBLIC_API_URL}/api/payment/get-transactions`;
+    const requestData = {
+      userId,
+    };
+    const res = await axios.post(urlEndpoint, requestData);
+    return res.data;
+  } catch (error: any) {
+    const msg: any = error.response.data.msg || "Something went wrong";
     console.log("error :>> ", error);
     return null;
   }
@@ -191,7 +203,6 @@ export const preWithdrawFunc = async (
     return res.data;
   } catch (error: any) {
     const msg: any = error.response.data.msg || "Something went wrong";
-    toast.error(msg);
     console.log("error :>> ", error);
     return null;
   }
@@ -217,7 +228,6 @@ export const withdrawFunc = async (
     return res.data;
   } catch (error: any) {
     const msg: any = error.response.data.msg || "Something went wrong";
-    toast.error(msg);
     console.log("error :>> ", error);
     return null;
   }
@@ -230,7 +240,6 @@ export const getPumpActionFunc = async (userId: string) => {
     return res.data;
   } catch (error: any) {
     const msg: any = error.response.data.msg || "Something went wrong";
-    toast.error(msg);
     console.log("error :>> ", error);
     return null;
   }
@@ -243,7 +252,6 @@ export const getRuneFunc = async (userId: string) => {
     return res.data;
   } catch (error: any) {
     const msg: any = error.response.data.msg || "Something went wrong";
-    toast.error(msg);
     console.log("error :>> ", error);
     return null;
   }
@@ -254,7 +262,7 @@ export const preEtchingRuneFunc = async (
   imageString: string,
   runeName: string,
   runeSymbol: string,
-  initialBuyAmount: string,
+  initialBuyAmount: string
 ) => {
   try {
     const requestData = {
@@ -269,7 +277,6 @@ export const preEtchingRuneFunc = async (
     return res.data;
   } catch (error: any) {
     const msg: any = error.response.data.msg || "Something went wrong";
-    toast.error(msg);
     console.log("error :>> ", error);
     return null;
   }
@@ -303,7 +310,6 @@ export const etchingRuneFunc = async (
     return res.data;
   } catch (error: any) {
     const msg: any = error.response.data.msg || "Something went wrong";
-    toast.error(msg);
     console.log("error :>> ", error);
     return null;
   }

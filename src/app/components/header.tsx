@@ -3,6 +3,7 @@ import Image from "next/image";
 import { Button } from "@nextui-org/react";
 import { MainContext } from "../contexts/MainContext";
 import { authUser } from "../api/requests";
+import toast from "react-hot-toast";
 
 export default function Header() {
   const {
@@ -18,20 +19,17 @@ export default function Header() {
     const currentWindow: any = window;
     if (currentWindow?.unisat) {
       const unisat: any = currentWindow.unisat;
-      console.log("currentWindow?.unisat :>> ", currentWindow?.unisat);
       const accounts = await unisat.requestAccounts();
-      console.log("accounts[0] :>> ", accounts[0]);
       const address = accounts[0];
       const pubKey = await unisat.getPublicKey();
       const uInfo: any = await authUser(address, pubKey, address, pubKey);
       setUserInfo(uInfo);
-      console.log("uInfo :>> ", uInfo);
       setPaymentAddress(address);
       setPaymentPubkey(pubKey);
       setOrdinalAddress(address);
       setOrdinalPubkey(pubKey);
     } else {
-      console.log("Plz install unisat");
+      toast.error("Plz install unisat wallet");
     }
   };
 
@@ -44,11 +42,11 @@ export default function Header() {
   };
 
   return (
-    <div className="z-10 lg:flex justify-center items-center w-full font-mono text-sm">
+    <div className="z-10 lg:flex justify-center items-center p-10 w-full font-mono text-sm">
       <div className="bottom-0 left-0 lg:static fixed flex justify-center items-end bg-gradient-to-t from-white dark:from-black via-white dark:via-black lg:bg-none w-full h-48 lg:size-auto">
         {userInfo?.userId ? (
           <div className="flex items-center gap-3">
-            <div>{`${userInfo?.btcBalance} BTC`}</div>
+            <div>{`${userInfo?.btcBalance / 10 ** 8} BTC`}</div>
             <div>{`${userInfo?.paymentAddress}`}</div>
             <Button color="primary" onClick={() => handleDisConnectWallet()}>
               Disconnect
