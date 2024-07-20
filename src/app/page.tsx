@@ -221,40 +221,45 @@ export default function Home() {
 
   const handlePreWithdraw = async () => {
     console.log("withdrawAmount :>> ", withdrawAmount);
-    if (userInfo.userId && runeId && withdrawAmount) {
-      setLoading(true);
-      const preWithdrawRes = await preWithdrawFunc(
-        userInfo.userId,
-        runeId,
-        withdrawAmount
-      );
-      console.log("preWithdrawRes :>> ", preWithdrawRes);
-      if (runeId === "btc") {
-        const signedPsbt = await unisatSignPsbt(preWithdrawRes?.psbt);
-        const withdrawRes = await withdrawFunc(
+    try {
+      if (userInfo.userId && runeId && withdrawAmount) {
+        setLoading(true);
+        const preWithdrawRes = await preWithdrawFunc(
           userInfo.userId,
           runeId,
-          withdrawAmount,
-          preWithdrawRes.requestId,
-          signedPsbt
+          withdrawAmount
         );
-        console.log("withdrawRes :>> ", withdrawRes);
-        toast.success(withdrawRes.msg);
+        console.log("preWithdrawRes :>> ", preWithdrawRes);
+        if (runeId === "btc") {
+          const signedPsbt = await unisatSignPsbt(preWithdrawRes?.psbt);
+          const withdrawRes = await withdrawFunc(
+            userInfo.userId,
+            runeId,
+            withdrawAmount,
+            preWithdrawRes.requestId,
+            signedPsbt
+          );
+          console.log("withdrawRes :>> ", withdrawRes);
+          toast.success(withdrawRes.msg);
+        } else {
+          const withdrawRes = await withdrawFunc(
+            userInfo.userId,
+            runeId,
+            withdrawAmount,
+            preWithdrawRes.requestId,
+            ""
+          );
+          console.log("withdrawRes :>> ", withdrawRes);
+          toast.success(withdrawRes.msg);
+        }
+        setLoading(false);
       } else {
-        const withdrawRes = await withdrawFunc(
-          userInfo.userId,
-          runeId,
-          withdrawAmount,
-          preWithdrawRes.requestId,
-          ""
-        );
-        console.log("withdrawRes :>> ", withdrawRes);
-        toast.success(withdrawRes.msg);
+        setLoading(false);
+        console.log("Invalid Parameters");
       }
+    } catch (error) {
+      console.log("error :>> ", error);
       setLoading(false);
-    } else {
-      setLoading(false);
-      console.log("Invalid Parameters");
     }
   };
 
@@ -303,7 +308,7 @@ export default function Home() {
         userInfo.userId,
         runeId,
         buyRuneAmount,
-        estimatePrice * Number(buyRuneAmount),
+        estimatePrice,
         buyPsbtData.requestId,
         signedPsbt
       );
@@ -351,9 +356,7 @@ export default function Home() {
     );
     if (userInfo.userId && runeId && sellRuneAmount && estimatePrice) {
       setLoading(true);
-      const message = `You will sell ${sellRuneAmount} rune (ID: ${runeId}) and will get ${
-        estimatePrice * Number(sellRuneAmount)
-      } BTC`;
+      const message = `You will sell ${sellRuneAmount} rune (ID: ${runeId}) and will get ${estimatePrice} BTC`;
       const currentWindow: any = window;
       const signature = await currentWindow?.unisat?.signMessage(message);
       console.log("signature :>> ", signature);
@@ -361,7 +364,7 @@ export default function Home() {
         userInfo.userId,
         runeId,
         sellRuneAmount,
-        estimatePrice * Number(sellRuneAmount),
+        estimatePrice,
         {
           signature,
           message,
@@ -470,7 +473,7 @@ export default function Home() {
                 <div>{item.runeSymbol}</div>
                 <div>{item.runeName}</div>
                 <div>{item.remainAmount}</div>
-                <div>{item.pool / item.remainAmount}</div>
+                <div>{`${(item.pool / item.remainAmount) * 10 ** 8} sats`}</div>
                 <div className="flex items-center gap-2">
                   <span>{`${progress}%`}</span>
                   <Progress
@@ -629,6 +632,7 @@ export default function Home() {
                     onClick={() => {
                       if (!loading) handlePreBuy();
                     }}
+                    disabled={loading}
                   >
                     Buy
                   </Button>
@@ -666,6 +670,7 @@ export default function Home() {
                       onClick={() => {
                         if (!loading) handleSell();
                       }}
+                      disabled={loading}
                     >
                       Confirm
                     </Button>
