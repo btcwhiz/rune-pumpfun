@@ -1,7 +1,7 @@
 "use client";
 
 import { useContext, useEffect, useState } from "react";
-import { Button, Input, Progress } from "@nextui-org/react";
+import { Button, Input, Progress, Spinner } from "@nextui-org/react";
 import toast from "react-hot-toast";
 import { Tabs, Tab, Card, CardBody } from "@nextui-org/react";
 import {
@@ -55,8 +55,25 @@ export default function Home() {
                 ((item.runeAmount - item.remainAmount) / item.runeAmount) * 100;
               return (
                 <Card key={index}>
-                  <CardBody className="flex flex-col">
-                    <Link href={`/rune/${encodeURIComponent(item.runeId)}`}>
+                  <CardBody
+                    className={`${
+                      item.runeId ? "" : "bg-gray-500"
+                    } flex flex-col`}
+                  >
+                    <Link
+                      href={`${
+                        item.runeId
+                          ? `/rune/${encodeURIComponent(item.runeId)}`
+                          : `#`
+                      }`}
+                    >
+                      {!item.runeId && (
+                        <div className="flex flex-col justify-center text-2xl">
+                          <div className="flex justify-center font-bold">Pending</div>
+                          <Spinner></Spinner>
+                        </div>
+                      )}
+
                       <div className="flex justify-between items-center gap-2">
                         <span>Rune ID</span>
                         <span>{item.runeId}</span>
