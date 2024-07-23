@@ -232,13 +232,14 @@ export default function CreateRune() {
       setRuneInfo(rune);
       setCoin({
         ...coin,
-        name: rune.runeName
-      })
+        name: rune.runeName,
+      });
       const runes = runeIf?.runeInfo;
       let uList: any[] = [];
       for (let i = 0; i < runes.length; i++) {
         try {
-          let userInfo = runes[i].runebalance.userInfo[0];
+          let userInfo =
+            runes[i].runebalance.userInfo[0] || runes[i].runebalance.userInfo;
           uList.push({
             balance: runes[i].runebalance.balance,
             ...userInfo,
