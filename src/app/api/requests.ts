@@ -267,6 +267,21 @@ export const getRuneFunc = async () => {
   }
 };
 
+export const getRuneBalance = async (userId: string, runeId: string) => {
+  try {
+    const urlEndpoint = `${process.env.NEXT_PUBLIC_API_URL}/api/etching/get-rune-balance/`;
+    const res = await axios.post(urlEndpoint, {
+      userId,
+      runeId,
+    });
+    return res.data;
+  } catch (error: any) {
+    const msg: any = error.response.data.msg || "Something went wrong";
+    console.log("error :>> ", error);
+    return null;
+  }
+};
+
 export const getRuneInfoFunc = async (runeId: string) => {
   try {
     const urlEndpoint = `${process.env.NEXT_PUBLIC_API_URL}/api/etching/get-rune/${runeId}`;

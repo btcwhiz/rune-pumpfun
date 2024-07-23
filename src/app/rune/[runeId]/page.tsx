@@ -15,6 +15,7 @@ import toast from "react-hot-toast";
 import {
   etchingRuneFunc,
   getPumpActionFunc,
+  getRuneBalance,
   getRuneInfoFunc,
   preEtchingRuneFunc,
   pumpBuyFunc,
@@ -60,6 +61,7 @@ export default function CreateRune() {
   const socket = useSocket();
 
   const [runeInfo, setRuneInfo] = useState<any>({});
+  const [runeBalance, setRuneBalance] = useState<number>(0);
 
   // Buy
   const [buyFlag, setBuyFlag] = useState<boolean>(false);
@@ -138,6 +140,7 @@ export default function CreateRune() {
         }
         setBuyFlag(false);
         setLoading(false);
+        getRuneBalanceFunc();
       } else {
         toast.error("Invalid parameters");
       }
@@ -205,6 +208,7 @@ export default function CreateRune() {
         initialize();
         setSellFlag(false);
         setLoading(false);
+        getRuneBalanceFunc();
       } else {
         toast.error("Invalid parameters");
       }
@@ -256,10 +260,15 @@ export default function CreateRune() {
     initialize();
   }, [runeId]);
 
+  const getRuneBalanceFunc = async () => {
+    const rBalance = await getRuneBalance(userInfo.userId, runeId);
+    setRuneBalance(rBalance.balance);
+  };
+
   useEffect(() => {
-    initialize();
+    userInfo.userId && runeId && getRuneBalanceFunc();
     // eslint-disable-next-line
-  }, [userInfo]);
+  }, [userInfo, runeId]);
 
   // Get Estimate Price if you are in buying
 
@@ -374,6 +383,10 @@ export default function CreateRune() {
                 <Card>
                   <CardBody className="flex flex-col gap-3">
                     {/* Buy */}
+                    <div className="flex justify-around">
+                      <div>Your balance</div>
+                      <div>{runeBalance}</div>
+                    </div>
                     <div className="flex flex-col gap-3">
                       <div className="text-center">Buy</div>
                       <div className="flex flex-col gap-3">
@@ -437,6 +450,10 @@ export default function CreateRune() {
               <Tab key="sell" title="Sell">
                 <Card>
                   <CardBody className="flex gap-3">
+                    <div className="flex justify-around">
+                      <div>Your balance</div>
+                      <div>{runeBalance}</div>
+                    </div>
                     {/* Sell */}
                     <div className="flex flex-col gap-3">
                       <div className="text-center">Sell</div>
@@ -499,10 +516,6 @@ export default function CreateRune() {
                 </Card>
               </Tab>
             </Tabs>
-            <div className="flex justify-between">
-              <div>Your balance</div>
-              <div>{123}</div>
-            </div>
             <div className="flex justify-start gap-5">
               <Link href={runeInfo?.twitter || "#"} target="_blank">
                 {`[twitter]`}
