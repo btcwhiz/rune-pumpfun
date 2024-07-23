@@ -73,7 +73,8 @@ export const depositFunc = async (
 export const pumpPreBuyFunc = async (
   userId: string,
   runeId: string,
-  runeAmount: string
+  runeAmount: string,
+  slippage: string
 ) => {
   try {
     const urlEndpoint = `${process.env.NEXT_PUBLIC_API_URL}/api/pump/pre-buy-rune`;
@@ -81,6 +82,7 @@ export const pumpPreBuyFunc = async (
       userId,
       runeId,
       runeAmount,
+      slippage,
     };
     console.log("requestData :>> ", requestData);
     const res = await axios.post(urlEndpoint, requestData);
@@ -114,18 +116,25 @@ export const pumpBuyFunc = async (
       signedPsbt,
     };
     const res = await axios.post(urlEndpoint, requestData);
-    return res.data;
+    return {
+      status: true,
+      ...res.data,
+    };
   } catch (error: any) {
-    const msg: any = error.response.data.msg || "Something went wrong";
     console.log("error :>> ", error);
-    return null;
+    const msg: any = error.response.data.msg || "Something went wrong";
+    toast.error(msg);
+    return {
+      status: false,
+    };
   }
 };
 
 export const pumpPreSellFunc = async (
   userId: string,
   runeId: string,
-  runeAmount: string
+  runeAmount: string,
+  slippage: string
 ) => {
   try {
     const urlEndpoint = `${process.env.NEXT_PUBLIC_API_URL}/api/pump/pre-sell-rune`;
@@ -133,6 +142,7 @@ export const pumpPreSellFunc = async (
       userId,
       runeId,
       runeAmount,
+      slippage,
     };
     console.log("requestData :>> ", requestData);
     const res = await axios.post(urlEndpoint, requestData);
@@ -233,10 +243,10 @@ export const withdrawFunc = async (
   }
 };
 
-export const getPumpActionFunc = async (userId: string) => {
+export const getPumpActionFunc = async (runeId: string) => {
   try {
     const urlEndpoint = `${process.env.NEXT_PUBLIC_API_URL}/api/pump/get-pump`;
-    const res = await axios.post(urlEndpoint, { userId });
+    const res = await axios.post(urlEndpoint, { runeId });
     return res.data;
   } catch (error: any) {
     const msg: any = error.response.data.msg || "Something went wrong";
@@ -245,10 +255,22 @@ export const getPumpActionFunc = async (userId: string) => {
   }
 };
 
-export const getRuneFunc = async (userId: string) => {
+export const getRuneFunc = async () => {
   try {
     const urlEndpoint = `${process.env.NEXT_PUBLIC_API_URL}/api/etching/get-runes`;
-    const res = await axios.post(urlEndpoint, { userId });
+    const res = await axios.post(urlEndpoint);
+    return res.data;
+  } catch (error: any) {
+    const msg: any = error.response.data.msg || "Something went wrong";
+    console.log("error :>> ", error);
+    return null;
+  }
+};
+
+export const getRuneInfoFunc = async (runeId: string) => {
+  try {
+    const urlEndpoint = `${process.env.NEXT_PUBLIC_API_URL}/api/etching/get-rune/${runeId}`;
+    const res = await axios.get(urlEndpoint);
     return res.data;
   } catch (error: any) {
     const msg: any = error.response.data.msg || "Something went wrong";
@@ -260,35 +282,32 @@ export const getRuneFunc = async (userId: string) => {
 export const preEtchingRuneFunc = async (
   userId: string,
   imageString: string,
-  runeName: string,
-  runeSymbol: string,
-  initialBuyAmount: string
+  saveData: object
 ) => {
   try {
     const requestData = {
       userId,
       imageString,
-      runeName,
-      runeSymbol,
-      initialBuyAmount,
+      saveData,
     };
     const urlEndpoint = `${process.env.NEXT_PUBLIC_API_URL}/api/etching/pre-etch-token`;
     const res = await axios.post(urlEndpoint, requestData);
-    return res.data;
+    return {
+      status: true,
+      ...res.data,
+    };
   } catch (error: any) {
+    console.log("error :111>> ", error);
     const msg: any = error.response.data.msg || "Something went wrong";
-    console.log("error :>> ", error);
-    return null;
+    toast.error(msg);
+    return {
+      status: false,
+    };
   }
 };
 
 export const etchingRuneFunc = async (
   userId: string,
-  imageString: string,
-  runeName: string,
-  runeSymbol: string,
-  initialBuyAmount: string,
-  creatorAddress: string,
   signedPsbt: string,
   waitEtchingId: string,
   requestId: string
@@ -296,21 +315,22 @@ export const etchingRuneFunc = async (
   try {
     const requestData = {
       userId,
-      imageString,
-      runeName,
-      runeSymbol,
-      initialBuyAmount,
-      creatorAddress,
       signedPsbt,
       waitEtchingId,
       requestId,
     };
     const urlEndpoint = `${process.env.NEXT_PUBLIC_API_URL}/api/etching/etch-token`;
     const res = await axios.post(urlEndpoint, requestData);
-    return res.data;
+    return {
+      status: true,
+      ...res.data,
+    };
   } catch (error: any) {
     const msg: any = error.response.data.msg || "Something went wrong";
+    toast.error(msg);
     console.log("error :>> ", error);
-    return null;
+    return {
+      status: false,
+    };
   }
 };

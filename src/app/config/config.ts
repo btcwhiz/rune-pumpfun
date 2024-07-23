@@ -1,0 +1,1 @@
+export const SATS_MULTIPLE = 10 ** 8;

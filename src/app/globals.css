@@ -26,6 +26,10 @@ body {
     rgb(var(--background-start-rgb));
 }
 
+input {
+  background-color: transparent;
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;

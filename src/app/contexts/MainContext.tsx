@@ -7,6 +7,8 @@ const defaultValue = {
   paymentPubkey: "",
   ordinalAddress: "",
   ordinalPubkey: "",
+  multisigWallet: "",
+  multiBalance: "",
   userInfo: {
     userId: "",
     btcBalance: 0,
@@ -14,12 +16,16 @@ const defaultValue = {
     paymentPublicKey: "",
     ordinalAddress: "",
     ordinalPublicKey: "",
+    multisigWallet: "",
+    multiBalance: "",
   },
   setPaymentAddress: (param: any) => {},
   setPaymentPubkey: (param: any) => {},
   setOrdinalAddress: (param: any) => {},
   setOrdinalPubkey: (param: any) => {},
   setUserInfo: (param: any) => {},
+  setMultisigWallet: (param: any) => {},
+  setMultiBalance: (param: any) => {},
 };
 
 export const MainContext = createContext(defaultValue);
@@ -29,6 +35,8 @@ export function MainProvider({ children }: { children: any }) {
   const [paymentPubkey, setPaymentPubkey] = useState<string>("");
   const [ordinalAddress, setOrdinalAddress] = useState<string>("");
   const [ordinalPubkey, setOrdinalPubkey] = useState<string>("");
+  const [multisigWallet, setMultisigWallet] = useState<string>("");
+  const [multiBalance, setMultiBalance] = useState<string>("");
   const [userInfo, setUserInfo] = useState<any>({
     userId: "",
     btcBalance: 0,
@@ -41,11 +49,15 @@ export function MainProvider({ children }: { children: any }) {
         paymentPubkey,
         ordinalAddress,
         ordinalPubkey,
+        multisigWallet,
+        multiBalance,
         userInfo,
         setPaymentAddress,
         setPaymentPubkey,
         setOrdinalAddress,
         setOrdinalPubkey,
+        setMultisigWallet,
+        setMultiBalance,
         setUserInfo,
       }}
     >
