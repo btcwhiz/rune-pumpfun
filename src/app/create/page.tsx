@@ -16,7 +16,7 @@ export default function CreateRune() {
   const [loading, setLoading] = useState<boolean>(false);
 
   // Etching
-  const [imageData, setImageData] = useState<string>("");
+  const [imageData, setImageData] = useState(null);
   const [imageContent, setImageContent] = useState<string>("");
   const [ticker, setTicker] = useState<string>("");
   const [name, setName] = useState<string>("");
@@ -118,7 +118,7 @@ export default function CreateRune() {
           return;
         }
       }
-      setImageData("");
+      setImageData(null);
       setImageContent("");
       setTicker("");
       setName("");

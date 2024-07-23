@@ -68,7 +68,8 @@ export default function Header() {
               </div>
               <div className="flex justify-between items-center gap-3">
                 <div className="font-bold">Multi Sig Wallet: </div>
-                <div>{`${Number(userInfo?.multiBalance) / 10 ** 8} BTC`}</div>
+                {/* <div>{`${Number(userInfo?.multiBalance) / 10 ** 8} BTC`}</div> */}
+                <div>{`${userInfo?.btcBalance / 10 ** 8} BTC`}</div>
                 <div>{`${displayAddress(userInfo?.multisigWallet)}`}</div>
                 <Button
                   color="primary"
