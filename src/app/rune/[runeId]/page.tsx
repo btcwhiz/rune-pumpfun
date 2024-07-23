@@ -566,7 +566,12 @@ export default function CreateRune() {
                       target="_blink"
                       href={`https://mempool.space/testnet/address/${item.ordinalAddress}`}
                     >
-                      {displayAddress(item.ordinalAddress)}
+                      {`${displayAddress(item.ordinalAddress)} ${
+                        item.ordinalAddress == runeInfo.creatorAddress &&
+                        "Owner "
+                      } ${
+                        item.ordinalAddress == userInfo.ordinalAddress && "You"
+                      }`}
                     </Link>
                     <div>
                       {`${displayPercentage(
