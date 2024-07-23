@@ -31,10 +31,14 @@ export const unisatSignPsbt = async (unsignedPsbt: string) => {
 };
 
 export const displayAddress = (address: string) => {
-  return `${address.slice(0, 5)}...${address.slice(
-    address.length - 6,
-    address.length - 1
-  )}`;
+  try {
+    return `${address.slice(0, 5)}...${address.slice(
+      address.length - 6,
+      address.length - 1
+    )}`;
+  } catch (error) {
+    return "";
+  }
 };
 
 export const displayPercentage = (part: any, total: any) => {
