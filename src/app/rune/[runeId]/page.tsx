@@ -567,10 +567,13 @@ export default function CreateRune() {
                       href={`https://mempool.space/testnet/address/${item.ordinalAddress}`}
                     >
                       {`${displayAddress(item.ordinalAddress)} ${
-                        item.ordinalAddress == runeInfo.creatorAddress &&
-                        "Owner "
+                        item.ordinalAddress == runeInfo.creatorAddress
+                          ? "Owner "
+                          : ""
                       } ${
-                        item.ordinalAddress == userInfo.ordinalAddress && "You"
+                        item.ordinalAddress == userInfo.ordinalAddress
+                          ? "You"
+                          : ""
                       }`}
                     </Link>
                     <div>
