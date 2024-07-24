@@ -58,7 +58,7 @@ export default function Home() {
                   <CardBody
                     className={`${
                       item.runeId ? "" : "bg-gray-500"
-                    } flex flex-col`}
+                    } flex flex-col justify-end`}
                   >
                     <Link
                       href={`${
@@ -66,7 +66,6 @@ export default function Home() {
                           ? `/rune/${encodeURIComponent(item.runeId)}`
                           : `#`
                       }`}
-                      className="flex flex-col justify-end"
                     >
                       {!item.runeId && (
                         <div className="flex flex-col justify-center text-2xl">
