@@ -77,8 +77,8 @@ export default function CreateRune() {
   const handleEtchingRune = async () => {
     try {
       let rTicker: any = ticker;
-      if (!ticker) rTicker = "$";
-      if (!imageContent || !ticker || !name) {
+      if (!rTicker) rTicker = "$";
+      if (!imageContent || !name) {
         return toast.error("Invalid parameters");
       }
       if (initialBuyAmount) {
