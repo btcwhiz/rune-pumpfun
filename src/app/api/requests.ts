@@ -361,3 +361,18 @@ export const getUserInfoByProfileId = async (profileId: string) => {
     return null;
   }
 };
+
+export const updateUserProfile = async (
+  profileId: string,
+  newProfileId: string
+) => {
+  try {
+    const urlEndpoint = `${process.env.NEXT_PUBLIC_API_URL}/api/user/update-user-profile`;
+    const res = await axios.post(urlEndpoint, { profileId, newProfileId });
+    return res.data;
+  } catch (error: any) {
+    const msg: any = error.response.data.msg || "Something went wrong";
+    console.log("error :>> ", error);
+    return null;
+  }
+};

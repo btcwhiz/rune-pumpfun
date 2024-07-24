@@ -1,19 +1,31 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import copy from "copy-to-clipboard";
-import { FaCopy } from "react-icons/fa";
+import { FaCopy, FaEdit, FaSave } from "react-icons/fa";
 
-import { getUserInfoByProfileId } from "../../api/requests";
-import { Button, Card, CardBody, Tab, Tabs } from "@nextui-org/react";
+import { getUserInfoByProfileId, updateUserProfile } from "../../api/requests";
+import { Button, Card, CardBody, Input, Tab, Tabs } from "@nextui-org/react";
 import { displayAddress } from "../../utils/pump";
 
 export default function Profile() {
+  const router = useRouter();
   const { profileId } = useParams();
   const [profileInfo, setProfileInfo] = useState<any>({});
   const [runes, setRunes] = useState<any[]>([]);
+  const [isEditable, setIsEditable] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [pId, setPId] = useState<string>(profileId as string);
+
+  const handleChangeProfile = async () => {
+    const rep: any = await updateUserProfile(profileId as string, pId);
+    console.log("rep :>> ", rep);
+    if (rep.status) {
+      router.push(`./${pId}`);
+    }
+  };
 
   const getAllRuneBalances = async () => {
     try {
@@ -41,7 +53,33 @@ export default function Profile() {
         </Link>
       </div>
       <div className="flex justify-center">
-        <div className="flex flex-col justify-center w-[700px] max-w-[700px]">
+        <div className="flex flex-col justify-center gap-3 w-[700px] max-w-[700px]">
+          <div className="flex items-center">
+            <div className="flex items-center gap-3 w-full">
+              <Input
+                className="w-full text-ellipsis"
+                value={pId}
+                disabled={!isEditable}
+                onChange={(e) => {
+                  if (isEditable) setPId(e.target.value);
+                }}
+              ></Input>
+              {pId !== profileId ? (
+                <Button color="primary" onClick={() => handleChangeProfile()}>
+                  <FaSave />
+                </Button>
+              ) : (
+                <Button
+                  color="primary"
+                  onClick={() => {
+                    setIsEditable(!isEditable);
+                  }}
+                >
+                  <FaEdit />
+                </Button>
+              )}
+            </div>
+          </div>
           <div className="flex flex-col justify-center gap-3">
             <div className="flex justify-between gap-3">
               <div>BTC Balance: </div>
