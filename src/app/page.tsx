@@ -66,10 +66,13 @@ export default function Home() {
                           ? `/rune/${encodeURIComponent(item.runeId)}`
                           : `#`
                       }`}
+                      className="flex flex-col justify-end"
                     >
                       {!item.runeId && (
                         <div className="flex flex-col justify-center text-2xl">
-                          <div className="flex justify-center font-bold">Pending</div>
+                          <div className="flex justify-center font-bold">
+                            Pending
+                          </div>
                           <Spinner></Spinner>
                         </div>
                       )}
