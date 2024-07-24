@@ -69,14 +69,14 @@ export function getDataFeed({
 
       let bars: Bar[] = [];
 
-      chartTable.table.forEach((bar: Bar) => {
-        bars = [...bars, { ...bar, time: bar.time }];
-      });
       // chartTable.table.forEach((bar: Bar) => {
-      //   if (bar.time >= from && bar.time < to) {
-      //     bars = [...bars, { ...bar, time: bar.time * 1000 }];
-      //   }
+      //   bars = [...bars, { ...bar, time: bar.time }];
       // });
+      chartTable.table.forEach((bar: Bar) => {
+        if (bar.time >= from && bar.time < to) {
+          bars = [...bars, { ...bar, time: bar.time }];
+        }
+      });
 
       if (firstDataRequest) {
         lastBarsCache.set(symbolInfo.name, { ...bars[bars.length - 1] });

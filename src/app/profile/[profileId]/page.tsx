@@ -49,25 +49,29 @@ export default function Profile() {
             </div>
             <div className="flex justify-between items-center gap-3">
               <div className="font-bold">Main Wallet: </div>
-              <div>{`${displayAddress(profileInfo?.paymentAddress)}`}</div>
-              <Button
-                color="primary"
-                onClick={() => copy(profileInfo?.paymentAddress)}
-                className="flex justify-center items-center"
-              >
-                <FaCopy />
-              </Button>
+              <div className="flex items-center gap-2">
+                <div>{`${displayAddress(profileInfo?.paymentAddress)}`}</div>
+                <Button
+                  color="primary"
+                  onClick={() => copy(profileInfo?.paymentAddress)}
+                  className="flex justify-center items-center"
+                >
+                  <FaCopy />
+                </Button>
+              </div>
             </div>
             <div className="flex justify-between items-center gap-3">
               <div className="font-bold">Multi Sig Wallet: </div>
-              <div>{`${displayAddress(profileInfo?.multisigWallet)}`}</div>
-              <Button
-                color="primary"
-                onClick={() => copy(profileInfo?.multisigWallet)}
-                className="flex justify-center items-center"
-              >
-                <FaCopy />
-              </Button>
+              <div className="flex items-center gap-2">
+                <div>{`${displayAddress(profileInfo?.multisigWallet)}`}</div>
+                <Button
+                  color="primary"
+                  onClick={() => copy(profileInfo?.multisigWallet)}
+                  className="flex justify-center items-center"
+                >
+                  <FaCopy />
+                </Button>
+              </div>
             </div>
           </div>
           <div>

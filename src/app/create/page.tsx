@@ -42,32 +42,35 @@ export default function CreateRune() {
     return result;
   };
 
-  const handleImageUpload = async (event: any) => {
-    if (event.target.files && event.target.files[0]) {
-      const file = await event.target.files[0];
-      console.log("file :>> ", file);
-      setImageData(file);
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    console.log("am clicked");
+    const file = event.target?.files;
+    if (file && file?.length) {
+      console.log("file :>> ", file[0]);
+      // if (event.target.files && event.target.files[0]) {
+      //   setImageData(file);
 
-      const reader = new FileReader();
+      //   const reader = new FileReader();
 
-      reader.onload = (e) => {
-        // setImagePreview(e.target?.result as string);
-        console.log(e.target?.result as string);
-      };
-      if (file) {
-        const reader = new FileReader();
+      //   reader.onload = (e) => {
+      //     // setImagePreview(e.target?.result as string);
+      //     console.log(e.target?.result as string);
+      //   };
+      //   if (file) {
+      //     const reader = new FileReader();
 
-        reader.onload = function () {
-          // The result attribute contains the data URL, which is a Base64 string
-          const base64String = reader.result as string;
-          // Display the Base64 string in a textarea
-          const hexString = base64ToHex(base64String.split(",")[1]);
-          setImageContent(hexString);
-        };
+      //     reader.onload = function () {
+      //       // The result attribute contains the data URL, which is a Base64 string
+      //       const base64String = reader.result as string;
+      //       // Display the Base64 string in a textarea
+      //       const hexString = base64ToHex(base64String.split(",")[1]);
+      //       setImageContent(hexString);
+      //     };
 
-        // Read the file as a Data URL (Base64 string)
-        reader.readAsDataURL(file);
-      }
+      //     // Read the file as a Data URL (Base64 string)
+      //     reader.readAsDataURL(file);
+      //   }
+      // }
     }
   };
 
@@ -151,13 +154,20 @@ export default function CreateRune() {
                     height={50}
                   ></Image>
                 )}
-                <Button color="success" onClick={handleUploadImage}>
-                  Upload Image
-                </Button>
-                <Input
+                <div>
+                  <Button
+                    color="success"
+                    onClick={handleUploadImage}
+                    isLoading={loading}
+                  >
+                    Upload Image
+                  </Button>
+                </div>
+                <input
                   type="file"
-                  className="hidden"
+                  className="opacity-0 min-w-full min-h-full"
                   ref={fileInputRef}
+                  accept="image/*"
                   onChange={handleImageUpload}
                 />
               </div>

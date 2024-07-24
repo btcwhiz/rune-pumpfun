@@ -29,10 +29,10 @@ export const TradingChart: React.FC<TradingChartProps> = ({ param }) => {
   // console.log("tradingview chart", param)
   useEffect(() => {
     if (param.date !== undefined) {
-      console.log("param :>> ", param);
+      console.log("===== param :>> ", param);
       const newPeriod: PeriodParams = {
-        from: Math.floor(new Date(param.date).getTime() / 1000),
-        to: Math.floor(new Date().getTime() / 1000),
+        from: Math.floor(new Date(param.date).getTime()),
+        to: Math.floor(new Date().getTime()),
         // to: new Date().getTime(),
         firstDataRequest: true,
         countBack: 300,
