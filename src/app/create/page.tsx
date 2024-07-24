@@ -76,6 +76,8 @@ export default function CreateRune() {
 
   const handleEtchingRune = async () => {
     try {
+      let rTicker: any = ticker;
+      if (!ticker) rTicker = "$";
       if (!imageContent || !ticker || !name) {
         return toast.error("Invalid parameters");
       }
@@ -93,7 +95,7 @@ export default function CreateRune() {
 
       const saveData = {
         name,
-        ticker,
+        ticker: rTicker,
         description,
         initialBuyAmount,
         twitter,
@@ -177,7 +179,7 @@ export default function CreateRune() {
               </div>
               <Input
                 type="text"
-                label="Rune Symbol"
+                label="Rune Symbol (optional)"
                 value={ticker}
                 className="bg-transparent"
                 color="primary"

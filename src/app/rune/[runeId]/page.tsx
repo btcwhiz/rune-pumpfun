@@ -55,7 +55,7 @@ export default function CreateRune() {
     replies: 27,
     description: "This is Description",
     twitter: "twitter",
-    date: new Date("2024-04-01"),
+    date: new Date("2024-07-01"),
   } as coinInfo);
   const { userInfo } = useContext(MainContext);
   const socket = useSocket();

@@ -54,6 +54,7 @@ export default function Header() {
       <div className="bottom-0 left-0 lg:static fixed flex justify-center items-end bg-gradient-to-t from-white dark:from-black via-white dark:via-black lg:bg-none w-full h-48 lg:size-auto">
         {userInfo?.userId ? (
           <div className="flex items-center gap-3">
+            <div>{`${userInfo.btcBalance / 10 ** 8} BTC`}</div>
             <Button color="primary">
               <Link
                 href={`/profile/${encodeURIComponent(userInfo?.profileId)}`}
