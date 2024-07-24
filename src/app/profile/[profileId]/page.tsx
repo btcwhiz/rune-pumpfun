@@ -6,7 +6,11 @@ import Link from "next/link";
 import copy from "copy-to-clipboard";
 import { FaCopy, FaEdit, FaSave } from "react-icons/fa";
 
-import { getUserInfoByProfileId, updateUserProfile } from "../../api/requests";
+import {
+  authUser,
+  getUserInfoByProfileId,
+  updateUserProfile,
+} from "../../api/requests";
 import { Button, Card, CardBody, Input, Tab, Tabs } from "@nextui-org/react";
 import { displayAddress } from "../../utils/pump";
 import { MainContext } from "../../contexts/MainContext";
@@ -14,18 +18,24 @@ import { MainContext } from "../../contexts/MainContext";
 export default function Profile() {
   const router = useRouter();
   const { profileId } = useParams();
-  const { userInfo } = useContext(MainContext);
+  const { userInfo, setUserInfo } = useContext(MainContext);
 
   const [profileInfo, setProfileInfo] = useState<any>({});
   const [runes, setRunes] = useState<any[]>([]);
   const [isEditable, setIsEditable] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(false);
+  // const [loading, setLoading] = useState<boolean>(false);
   const [pId, setPId] = useState<string>(profileId as string);
 
   const handleChangeProfile = async () => {
     const rep: any = await updateUserProfile(profileId as string, pId);
-    console.log("rep :>> ", rep);
     if (rep.status) {
+      const user = await authUser(
+        rep.userInfo.paymentAddress,
+        rep.userInfo.paymentPublicKey,
+        rep.userInfo.ordinalAddress,
+        rep.userInfo.ordinalPublicKey
+      );
+      setUserInfo(user);
       router.push(`./${pId}`);
     }
   };
