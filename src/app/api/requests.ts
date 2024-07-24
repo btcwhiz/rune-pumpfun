@@ -349,3 +349,15 @@ export const etchingRuneFunc = async (
     };
   }
 };
+
+export const getUserInfoByProfileId = async (profileId: string) => {
+  try {
+    const urlEndpoint = `${process.env.NEXT_PUBLIC_API_URL}/api/user/get-user-profile`;
+    const res = await axios.post(urlEndpoint, { profileId });
+    return res.data;
+  } catch (error: any) {
+    const msg: any = error.response.data.msg || "Something went wrong";
+    console.log("error :>> ", error);
+    return null;
+  }
+};

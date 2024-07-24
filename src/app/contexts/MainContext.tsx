@@ -10,6 +10,7 @@ const defaultValue = {
   multisigWallet: "",
   multiBalance: "",
   userInfo: {
+    profileId: "",
     userId: "",
     btcBalance: 0,
     paymentAddress: "",
