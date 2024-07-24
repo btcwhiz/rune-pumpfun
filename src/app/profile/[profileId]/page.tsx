@@ -34,7 +34,6 @@ export default function Profile() {
         ...pfp.userInfo,
         multisigWallet: pfp.multisigWallet,
       });
-      console.log("pfp.runes :>> ", pfp.runes);
       setRunes(pfp.runes);
     } catch (error) {}
   };
