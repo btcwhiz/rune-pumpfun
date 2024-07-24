@@ -25,6 +25,7 @@ export default function CreateRune() {
   const [twitter, setTwitter] = useState<string>("");
   const [telegram, setTelegram] = useState<string>("");
   const [website, setWebsite] = useState<string>("");
+  const [etchingFeeRate, setEtchingFeeRate] = useState<string>("");
 
   const handleUploadImage = () => {
     if (fileInputRef.current) {
@@ -101,9 +102,10 @@ export default function CreateRune() {
         website,
       };
 
-      const { status, etchingPsbt, waitEtchingData }: any =
+      const { status, etchingPsbt, etchingFee, waitEtchingData }: any =
         await preEtchingRuneFunc(userInfo.userId, imageContent, saveData);
       if (status) {
+        setEtchingFeeRate(etchingFee);
         console.log("etchingPsbt :>> ", etchingPsbt);
         console.log("waitEtchingData :>> ", waitEtchingData);
 
@@ -117,16 +119,19 @@ export default function CreateRune() {
 
         if (status) {
           toast.success(msg);
-        } else {
-          return;
         }
       }
       setImageData(null);
       setImageContent("");
       setTicker("");
       setName("");
+      setDescription("");
       setInitialBuyAmount("");
+      setTwitter("");
+      setTelegram("");
+      setWebsite("");
       setLoading(false);
+      setEtchingFeeRate("");
     } catch (error) {
       setLoading(false);
     }
@@ -232,6 +237,9 @@ export default function CreateRune() {
                   />
                 </AccordionItem>
               </Accordion>
+              {etchingFeeRate && (
+                <div>{`You should pay ${etchingFeeRate} for etching`}</div>
+              )}
               <Button
                 color="success"
                 onClick={() => handleEtchingRune()}
