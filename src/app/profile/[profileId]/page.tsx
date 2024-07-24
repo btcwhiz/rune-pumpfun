@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import copy from "copy-to-clipboard";
@@ -9,10 +9,13 @@ import { FaCopy, FaEdit, FaSave } from "react-icons/fa";
 import { getUserInfoByProfileId, updateUserProfile } from "../../api/requests";
 import { Button, Card, CardBody, Input, Tab, Tabs } from "@nextui-org/react";
 import { displayAddress } from "../../utils/pump";
+import { MainContext } from "../../contexts/MainContext";
 
 export default function Profile() {
   const router = useRouter();
   const { profileId } = useParams();
+  const { userInfo } = useContext(MainContext);
+
   const [profileInfo, setProfileInfo] = useState<any>({});
   const [runes, setRunes] = useState<any[]>([]);
   const [isEditable, setIsEditable] = useState<boolean>(false);
@@ -63,19 +66,23 @@ export default function Profile() {
                   if (isEditable) setPId(e.target.value);
                 }}
               ></Input>
-              {pId !== profileId ? (
-                <Button color="primary" onClick={() => handleChangeProfile()}>
-                  <FaSave />
-                </Button>
+              {profileId === userInfo.profileId ? (
+                pId !== profileId ? (
+                  <Button color="primary" onClick={() => handleChangeProfile()}>
+                    <FaSave />
+                  </Button>
+                ) : (
+                  <Button
+                    color="primary"
+                    onClick={() => {
+                      setIsEditable(!isEditable);
+                    }}
+                  >
+                    <FaEdit />
+                  </Button>
+                )
               ) : (
-                <Button
-                  color="primary"
-                  onClick={() => {
-                    setIsEditable(!isEditable);
-                  }}
-                >
-                  <FaEdit />
-                </Button>
+                <></>
               )}
             </div>
           </div>
