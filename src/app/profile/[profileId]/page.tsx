@@ -22,6 +22,7 @@ export default function Profile() {
 
   const [profileInfo, setProfileInfo] = useState<any>({});
   const [runes, setRunes] = useState<any[]>([]);
+  const [myRunes, setMyRunes] = useState<any[]>([]);
   const [isEditable, setIsEditable] = useState<boolean>(false);
   // const [loading, setLoading] = useState<boolean>(false);
   const [pId, setPId] = useState<string>(profileId as string);
@@ -47,7 +48,13 @@ export default function Profile() {
         ...pfp.userInfo,
         multisigWallet: pfp.multisigWallet,
       });
+      console.log("pfp.runes :>> ", pfp.runes);
       setRunes(pfp.runes);
+      setMyRunes(
+        pfp.runes.filter(
+          (item: any) => item.creatorAddress === userInfo.paymentAddress
+        )
+      );
     } catch (error) {}
   };
 
@@ -130,13 +137,45 @@ export default function Profile() {
           </div>
           <div>
             <Tabs aria-label="Options" color="primary">
-              <Tab key="runes" title="Runes">
+              <Tab key="runes-held" title="runes held">
                 <Card>
                   <CardBody>
-                    <div>Runes</div>
+                    <div>Runes Held</div>
                     <hr />
                     <div className="flex flex-col gap-2">
                       {runes.map((rune: any, index: number) => (
+                        <Link
+                          key={index}
+                          href={`${
+                            rune.runeId
+                              ? `/rune/${encodeURIComponent(rune.runeId)}`
+                              : `#`
+                          }`}
+                        >
+                          <div className="flex flex-col gap-1 hover:bg-foreground-300 p-2">
+                            <div className="flex justify-between items-center gap-2">
+                              <span>Rune Name</span>
+                              <span>{rune?.runeName}</span>
+                            </div>
+                            <div className="flex justify-between items-center gap-2">
+                              <div>Balance: </div>
+                              <div>{rune.balance ? rune.balance : 0}</div>
+                            </div>
+                            <hr />
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
+                  </CardBody>
+                </Card>
+              </Tab>
+              <Tab key="runes-created" title="runes created">
+                <Card>
+                  <CardBody>
+                    <div>Runes Created</div>
+                    <hr />
+                    <div className="flex flex-col gap-2">
+                      {myRunes.map((rune: any, index: number) => (
                         <Link
                           key={index}
                           href={`${
