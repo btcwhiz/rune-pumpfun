@@ -257,7 +257,6 @@ export default function CreateRune() {
       const rune = { ...runeIf?.runeInfo[0] };
       const progress =
         ((rune.runeAmount - rune.remainAmount) / rune.runeAmount) * 100;
-      console.log("rune :>> ", rune);
       setProcess(progress);
       setRuneInfo(rune);
       setCoin({
