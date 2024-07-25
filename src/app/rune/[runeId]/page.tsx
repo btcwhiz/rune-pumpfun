@@ -35,6 +35,7 @@ import { TradingChart } from "../../components/TVChart/TradingChart";
 import { coinInfo } from "../../utils/types";
 import { useParams } from "next/navigation";
 import { getTimeDifference } from "../../utils/util";
+import ImageDisplay from "../../components/ImageDIsplay";
 
 export default function CreateRune() {
   let { runeId }: any = useParams();
@@ -58,7 +59,7 @@ export default function CreateRune() {
     date: new Date("2024-07-01"),
   } as coinInfo);
   const { userInfo } = useContext(MainContext);
-  const socket = useSocket();
+  // const socket = useSocket();
 
   const [runeInfo, setRuneInfo] = useState<any>({});
   const [runeBalance, setRuneBalance] = useState<number>(0);
@@ -256,7 +257,7 @@ export default function CreateRune() {
       const rune = { ...runeIf?.runeInfo[0] };
       const progress =
         ((rune.runeAmount - rune.remainAmount) / rune.runeAmount) * 100;
-
+      console.log("rune :>> ", rune);
       setProcess(progress);
       setRuneInfo(rune);
       setCoin({
@@ -562,6 +563,13 @@ export default function CreateRune() {
                 </Card>
               </Tab>
             </Tabs>
+            <div>
+              {runeInfo?.image && (
+                <ImageDisplay
+                  src={`${runeInfo?.image[0].imageString}`}
+                ></ImageDisplay>
+              )}
+            </div>
             <div className="flex justify-start gap-5">
               <Link href={runeInfo?.twitter || "#"} target="_blank">
                 {`[twitter]`}

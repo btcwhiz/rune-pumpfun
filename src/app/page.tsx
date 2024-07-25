@@ -2,6 +2,8 @@
 
 import { useContext, useEffect, useState } from "react";
 import { Button, Input, Progress, Spinner } from "@nextui-org/react";
+import Link from "next/link";
+import Image from "next/image";
 import toast from "react-hot-toast";
 import { Tabs, Tab, Card, CardBody } from "@nextui-org/react";
 import {
@@ -13,7 +15,7 @@ import {
   pumpSellFunc,
 } from "./api/requests";
 import { MainContext } from "./contexts/MainContext";
-import Link from "next/link";
+import ImageDisplay from "./components/ImageDIsplay";
 
 export default function Home() {
   const { userInfo } = useContext(MainContext);
@@ -24,7 +26,6 @@ export default function Home() {
     let runeRes: any = await getRuneFunc();
     setRunes(runeRes.runes);
   };
-
   useEffect(() => {
     getRunes();
     // eslint-disable-next-line
@@ -75,6 +76,9 @@ export default function Home() {
                           <Spinner></Spinner>
                         </div>
                       )}
+                      <div>
+                        <ImageDisplay src={item.image[0]}></ImageDisplay>
+                      </div>
 
                       <div className="flex justify-between items-center gap-2">
                         <span>Rune ID</span>
