@@ -63,9 +63,12 @@ export default function CreateRune() {
   const [runeInfo, setRuneInfo] = useState<any>({});
   const [runeBalance, setRuneBalance] = useState<number>(0);
 
+  const [target, setTarget] = useState<boolean>(false);
+
   // Buy
   const [buyFlag, setBuyFlag] = useState<boolean>(false);
   const [buyRuneAmount, setBuyRuneAmount] = useState<string>("");
+  const [btcAmount, setBtcAmount] = useState<string>("");
   const [buyPsbtData, setBuyPsbtData] = useState<{
     psbt: string;
     requestId: string;
@@ -87,21 +90,32 @@ export default function CreateRune() {
 
   const handlePreBuy = async () => {
     try {
-      if (userInfo.userId && runeId && buyRuneAmount) {
+      if (userInfo.userId && runeId) {
+        if (target === false && !btcAmount) {
+          return toast.error("Please input BTC amount");
+        } else if (target === true && !buyRuneAmount) {
+          return toast.error("Please input Rune amount");
+        }
         setLoading(true);
         const res = await pumpPreBuyFunc(
           userInfo.userId,
           runeId,
+          btcAmount,
           buyRuneAmount,
+          target,
           slippage
         );
+        console.log("res :>> ", res);
         setBuyPsbtData(res?.requestData);
         setLoading(false);
-        const ePrice = res?.estimatePrice;
-        if (ePrice) {
+        if (res?.requestData) {
           setBuyFlag(true);
           setSellFlag(false);
-          setEstimatePrice(ePrice);
+          if (target === false) {
+            setEstimatePrice(res?.runeAmount);
+          } else {
+            setEstimatePrice(res?.estimatePrice);
+          }
         }
       } else {
         toast.error("Invalid parameters");
@@ -118,18 +132,29 @@ export default function CreateRune() {
       if (
         userInfo.userId &&
         runeId &&
-        buyRuneAmount &&
         estimatePrice &&
         slippage &&
         buyPsbtData
       ) {
+        if (target === false && !btcAmount) {
+          return toast.error("Invalid Parameters");
+        } else if (target === true && !buyRuneAmount) {
+          return toast.error("Invalid Parameters");
+        }
+        let runeAmount: any = buyRuneAmount;
+        let btcPrice: any = estimatePrice;
+        if (target === false) {
+          runeAmount = estimatePrice;
+          btcPrice = btcAmount;
+        }
+
         setLoading(true);
         const signedPsbt = await unisatSignPsbt(buyPsbtData?.psbt);
         const res = await pumpBuyFunc(
           userInfo.userId,
           runeId,
-          buyRuneAmount,
-          estimatePrice,
+          runeAmount,
+          btcPrice,
           buyPsbtData.requestId,
           slippage,
           signedPsbt
@@ -142,7 +167,7 @@ export default function CreateRune() {
         setLoading(false);
         getRuneBalanceFunc();
       } else {
-        toast.error("Invalid parameters");
+        return toast.error("Invalid parameters");
       }
     } catch (error) {
       setBuyFlag(false);
@@ -261,8 +286,11 @@ export default function CreateRune() {
   }, [runeId]);
 
   const getRuneBalanceFunc = async () => {
-    const rBalance = await getRuneBalance(userInfo.userId, runeId);
-    setRuneBalance(rBalance.balance);
+    try {
+      const rBalance = await getRuneBalance(userInfo.userId, runeId);
+      console.log("rBalance :>> ", rBalance);
+      setRuneBalance(rBalance.balance);
+    } catch (error) {}
   };
 
   useEffect(() => {
@@ -272,52 +300,52 @@ export default function CreateRune() {
 
   // Get Estimate Price if you are in buying
 
-  // Get Buy Price Every 3 seconds
-  useEffect(() => {
-    if (socket) {
-      const id = setInterval(() => {
-        if (buyFlag) {
-          socket.current.emit("lemme-know-buy-price", {
-            runeId,
-            buyRuneAmount,
-          });
-        }
-      }, 3000);
-      return () => clearInterval(id);
-    }
-    // eslint-disable-next-line
-  }, [socket, buyFlag, runeId, buyRuneAmount]);
+  // // Get Buy Price Every 3 seconds
+  // useEffect(() => {
+  //   if (socket) {
+  //     const id = setInterval(() => {
+  //       if (buyFlag) {
+  //         socket.current.emit("lemme-know-buy-price", {
+  //           runeId,
+  //           buyRuneAmount,
+  //         });
+  //       }
+  //     }, 3000);
+  //     return () => clearInterval(id);
+  //   }
+  //   // eslint-disable-next-line
+  // }, [socket, buyFlag, runeId, buyRuneAmount]);
 
-  // Get Sell Price Every 3 seconds
-  useEffect(() => {
-    if (socket) {
-      const id = setInterval(() => {
-        if (sellFlag) {
-          socket.current.emit("lemme-know-sell-price", {
-            runeId,
-            sellRuneAmount,
-          });
-        }
-      }, 3000);
-      return () => clearInterval(id);
-    }
-    // eslint-disable-next-line
-  }, [socket, sellFlag, runeId, sellRuneAmount]);
+  // // Get Sell Price Every 3 seconds
+  // useEffect(() => {
+  //   if (socket) {
+  //     const id = setInterval(() => {
+  //       if (sellFlag) {
+  //         socket.current.emit("lemme-know-sell-price", {
+  //           runeId,
+  //           sellRuneAmount,
+  //         });
+  //       }
+  //     }, 3000);
+  //     return () => clearInterval(id);
+  //   }
+  //   // eslint-disable-next-line
+  // }, [socket, sellFlag, runeId, sellRuneAmount]);
 
-  useEffect(() => {
-    if (socket) {
-      socket.current.on("buy-price", (data: any) => {
-        setEstimatePrice(data.estimatePrice || 0);
-      });
-      socket.current.on("sell-price", (data: any) => {
-        setEstimatePrice(data.estimatePrice || 0);
-      });
-      return () => {
-        socket.current.off("buy-price");
-        socket.current.off("sell-price");
-      };
-    }
-  }, [socket]);
+  // useEffect(() => {
+  //   if (socket) {
+  //     socket.current.on("buy-price", (data: any) => {
+  //       setEstimatePrice(data.estimatePrice || 0);
+  //     });
+  //     socket.current.on("sell-price", (data: any) => {
+  //       setEstimatePrice(data.estimatePrice || 0);
+  //     });
+  //     return () => {
+  //       socket.current.off("buy-price");
+  //       socket.current.off("sell-price");
+  //     };
+  //   }
+  // }, [socket]);
 
   return (
     <main className="p-3 min-h-screen">
@@ -387,27 +415,42 @@ export default function CreateRune() {
                       <div>{runeBalance}</div>
                     </div>
                     <div className="flex flex-col gap-3">
-                      <div className="text-center">Buy</div>
                       <div className="flex flex-col gap-3">
-                        {/* <Input
-                          type="text"
-                          label="Rune ID"
-                          value={runeId}
-                          onChange={(e) => {
+                        <Button
+                          color="primary"
+                          onClick={() => {
                             setBuyFlag(false);
-                            setRuneId(e.target.value);
+                            setTarget(!target);
                           }}
-                        /> */}
-                        <Input
-                          type="text"
-                          label="Buy Rune Amount"
-                          value={buyRuneAmount}
-                          disabled={loading}
-                          onChange={(e) => {
-                            setBuyFlag(false);
-                            setBuyRuneAmount(e.target.value);
-                          }}
-                        />
+                        >
+                          {`switch to ${
+                            target === true ? "BTC" : runeInfo?.runeName
+                          }`}
+                        </Button>
+                        {target === true ? (
+                          <Input
+                            type="text"
+                            label="Rune Amount"
+                            value={buyRuneAmount}
+                            disabled={loading}
+                            onChange={(e) => {
+                              setBuyFlag(false);
+                              setBuyRuneAmount(e.target.value);
+                            }}
+                          />
+                        ) : (
+                          <Input
+                            type="text"
+                            label="BTC Amount"
+                            value={btcAmount}
+                            disabled={loading}
+                            onChange={(e) => {
+                              setBuyFlag(false);
+                              setBtcAmount(e.target.value);
+                            }}
+                          />
+                        )}
+
                         <Input
                           type="number"
                           label="Slippage (%)"
@@ -421,9 +464,13 @@ export default function CreateRune() {
                         />
                         {buyFlag ? (
                           <div className="flex flex-col items-center gap-3">
-                            <div>{`You should pay ${
-                              estimatePrice / SATS_MULTIPLE
-                            } btc`}</div>
+                            <div>
+                              {target === false
+                                ? `You would get ${estimatePrice} ${runeInfo.runeName}`
+                                : `You should pay ${
+                                    estimatePrice / 10 ** 8
+                                  } btc`}
+                            </div>
                             <Button
                               color="success"
                               onClick={() => handleBuy()}

@@ -73,7 +73,9 @@ export const depositFunc = async (
 export const pumpPreBuyFunc = async (
   userId: string,
   runeId: string,
+  btcAmount: string,
   runeAmount: string,
+  target: boolean,
   slippage: string
 ) => {
   try {
@@ -81,7 +83,9 @@ export const pumpPreBuyFunc = async (
     const requestData = {
       userId,
       runeId,
+      btcAmount,
       runeAmount,
+      target,
       slippage,
     };
     console.log("requestData :>> ", requestData);
@@ -91,6 +95,7 @@ export const pumpPreBuyFunc = async (
   } catch (error: any) {
     const msg: any = error.response.data.msg || "Something went wrong";
     console.log("error :>> ", error);
+    toast.error(msg);
     return null;
   }
 };
