@@ -48,7 +48,7 @@ export async function getChartTable({
     // };
     const resData: any = await axios.post(
       `${process.env.NEXT_PUBLIC_API_URL}/api/pump/get-bar-status`,
-      { runeId }
+      { runeId, range, countBack: 300 }
     );
     const res = {
       table: resData?.data?.chartData || [],

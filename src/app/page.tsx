@@ -79,7 +79,7 @@ export default function Home() {
                       <div>
                         <ImageDisplay src={item.image[0]}></ImageDisplay>
                       </div>
-
+                      {item.poolstate === 1 && <div>Closed</div>}
                       <div className="flex justify-between items-center gap-2">
                         <span>Rune ID</span>
                         <span>{item.runeId}</span>

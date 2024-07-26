@@ -56,7 +56,7 @@ export default function CreateRune() {
     replies: 27,
     description: "This is Description",
     twitter: "twitter",
-    date: new Date("2024-07-01"),
+    date: new Date("2022-07-01"),
   } as coinInfo);
   const { userInfo } = useContext(MainContext);
   // const socket = useSocket();
@@ -359,7 +359,7 @@ export default function CreateRune() {
         </div>
         <div className="gap-3 grid grid-cols-3 p-5">
           <div className="flex flex-col gap-5 col-span-2">
-            {/* <TradingChart param={coin}></TradingChart> */}
+            <TradingChart param={coin}></TradingChart>
             <div>
               {/* Transaction History */}
               <Tabs aria-label="Options" color="primary">
