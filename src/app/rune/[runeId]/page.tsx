@@ -189,10 +189,11 @@ export default function CreateRune() {
           slippage
         );
         const ePrice = res?.estimatePrice;
-        console.log("estimatePrice :>> ", ePrice);
-        setEstimatePrice(ePrice);
-        setSellFlag(true);
-        setBuyFlag(false);
+        if (ePrice) {
+          setEstimatePrice(ePrice);
+          setSellFlag(true);
+          setBuyFlag(false);
+        }
         setLoading(false);
       } else {
         setLoading(false);
@@ -283,6 +284,7 @@ export default function CreateRune() {
 
   useEffect(() => {
     initialize();
+    // eslint-disable-next-line
   }, [runeId]);
 
   const getRuneBalanceFunc = async () => {
@@ -570,15 +572,27 @@ export default function CreateRune() {
               )}
             </div>
             <div className="flex justify-start gap-5">
-              <Link href={runeInfo?.twitter || "#"} target="_blank">
-                {`[twitter]`}
-              </Link>
-              <Link href={runeInfo?.telegram || "#"} target="_blank">
-                {`[telegram]`}
-              </Link>
-              <Link href={runeInfo?.website || "#"} target="_blank">
-                {`[website]`}
-              </Link>
+              {runeInfo?.twitter ? (
+                <Link href={runeInfo?.twitter} target="_blank">
+                  {`[twitter]`}
+                </Link>
+              ) : (
+                <></>
+              )}
+              {runeInfo?.telegram ? (
+                <Link href={runeInfo?.telegram} target="_blank">
+                  {`[telegram]`}
+                </Link>
+              ) : (
+                <></>
+              )}
+              {runeInfo?.website ? (
+                <Link href={runeInfo?.website} target="_blank">
+                  {`[website]`}
+                </Link>
+              ) : (
+                <></>
+              )}
             </div>
             <div className="flex flex-col gap-2">
               <div className="flex justify-between items-center gap-2">
