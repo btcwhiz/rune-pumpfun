@@ -55,7 +55,7 @@ export default function Home() {
             {runes.map((item, index) => {
               let progress =
                 ((item.runeAmount - item.remainAmount) / item.runeAmount) * 100;
-              if (item.poolState === 1) progress = 100;
+              if (item.poolstate === 1) progress = 100;
               return (
                 <Card
                   key={index}
