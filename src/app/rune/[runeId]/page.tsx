@@ -258,8 +258,11 @@ export default function CreateRune() {
       const rune = { ...runeIf?.runeInfo[0] };
       let progress =
         ((rune.runeAmount - rune.remainAmount) / rune.runeAmount) * 100;
+      console.log("rune.poolState :>> ", rune.poolState);
+      console.log("rune.poolState :>> ", rune.poolState === 1);
+      console.log("rune.poolState :>> ", rune.poolState == 1);
       if (rune.poolState === 1) progress = 100;
-      console.log('progress :>> ', progress);
+      console.log("progress :>> ", progress);
       setProcess(progress);
       setRuneInfo(rune);
       setCoin({
