@@ -255,8 +255,9 @@ export default function CreateRune() {
       setPumpActions(pActions.pumpAction);
 
       const runeIf: any = await getRuneInfoFunc(runeId);
-      const rune = runeIf?.runeInfo[0];
+      const rune: any = runeIf?.runeInfo[0];
       console.log('rune :>> ', rune);
+      console.log('rune.pool :>> ', rune.pool);
       let progress =
         ((rune.runeAmount - rune.remainAmount) / rune.runeAmount) * 100;
       console.log("rune.poolState :>> ", rune.poolState);
