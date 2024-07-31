@@ -68,9 +68,10 @@ export default function Home() {
                           ? `/rune/${encodeURIComponent(item.runeId)}`
                           : `#`
                       }`}
+                      className="flex flex-col gap-3"
                     >
                       {!item.runeId && (
-                        <div className="flex flex-col justify-center text-2xl">
+                        <div className="flex flex-col justify-center gap-3 text-2xl">
                           <div className="flex justify-center font-bold">
                             Pending
                           </div>

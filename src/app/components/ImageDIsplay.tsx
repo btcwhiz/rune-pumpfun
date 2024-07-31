@@ -28,7 +28,7 @@ const ImageDisplay = ({
   }, [src]);
 
   return (
-    <div className="flex justify-center items-center">
+    <div className="flex justify-center items-center rounded-lg">
       {/* eslint-disable-next-line */}
       {imgUrl && <img src={imgUrl} alt="great" className={className} />}
     </div>
