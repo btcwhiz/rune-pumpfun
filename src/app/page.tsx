@@ -25,7 +25,6 @@ export default function Home() {
 
   const getRunes = async () => {
     let runeRes: any = await getRuneFunc();
-    console.log("runeRes :>> ", runeRes);
     setRunes(runeRes.runes);
   };
   useEffect(() => {
