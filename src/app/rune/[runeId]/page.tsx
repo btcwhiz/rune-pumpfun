@@ -256,8 +256,9 @@ export default function CreateRune() {
 
       const runeIf: any = await getRuneInfoFunc(runeId);
       const rune = { ...runeIf?.runeInfo[0] };
-      const progress =
+      let progress =
         ((rune.runeAmount - rune.remainAmount) / rune.runeAmount) * 100;
+      if (rune.poolState === 1) progress = 100;
       setProcess(progress);
       setRuneInfo(rune);
       setCoin({
@@ -486,6 +487,7 @@ export default function CreateRune() {
                             color="success"
                             onClick={() => handlePreBuy()}
                             isLoading={loading}
+                            disabled={runeInfo.poolState === 1}
                           >
                             Buy
                           </Button>
@@ -554,6 +556,7 @@ export default function CreateRune() {
                             color="danger"
                             onClick={() => handlePreSell()}
                             isLoading={loading}
+                            disabled={runeInfo.poolState === 1}
                           >
                             Sell
                           </Button>
@@ -649,7 +652,8 @@ export default function CreateRune() {
                   <div>
                     {`${displayPercentage(
                       runeInfo.remainAmount,
-                      runeInfo.runeAmount
+                      runeInfo.runeAmount,
+                      runeInfo.poolState
                     )}%`}
                   </div>
                 </div>
@@ -673,7 +677,8 @@ export default function CreateRune() {
                     <div>
                       {`${displayPercentage(
                         item.balance,
-                        runeInfo.runeAmount
+                        runeInfo.runeAmount,
+                        runeInfo.poolState
                       )}%`}
                     </div>
                   </div>

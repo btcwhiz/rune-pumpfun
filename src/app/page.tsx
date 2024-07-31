@@ -53,10 +53,14 @@ export default function Home() {
           </div>
           <div className="gap-3 grid grid-cols-3">
             {runes.map((item, index) => {
-              const progress =
+              let progress =
                 ((item.runeAmount - item.remainAmount) / item.runeAmount) * 100;
+              if (item.poolState === 1) progress = 100;
               return (
-                <Card key={index}>
+                <Card
+                  key={index}
+                  className="border-primary-50 bg-dark border text-primary-50"
+                >
                   <CardBody
                     className={`${
                       item.runeId ? "" : "bg-gray-500"

@@ -41,12 +41,16 @@ export const displayAddress = (address: string) => {
   }
 };
 
-export const displayPercentage = (part: any, total: any) => {
+export const displayPercentage = (part: any, total: any, poolState: any) => {
   try {
-    let p = Number(part);
-    let t = Number(total);
+    if (poolState === 1) {
+      return 100;
+    } else {
+      let p = Number(part);
+      let t = Number(total);
 
-    return Number(((p / t) * 100).toFixed(2));
+      return Number(((p / t) * 100).toFixed(2));
+    }
   } catch (error) {
     return 0;
   }

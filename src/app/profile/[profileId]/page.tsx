@@ -136,7 +136,7 @@ export default function Profile() {
             </div>
           </div>
           <div>
-            <Tabs aria-label="Options" color="primary">
+            <Tabs aria-label="Options" color="primary"  className="border-primary-50 bg-dark border text-primary-50">
               <Tab key="runes-held" title="runes held">
                 <Card>
                   <CardBody>

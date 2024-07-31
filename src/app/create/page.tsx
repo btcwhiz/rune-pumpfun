@@ -211,6 +211,7 @@ export default function CreateRune() {
                   key="1"
                   aria-label="Show more options"
                   title="Show more options"
+                  className="flex flex-col gap-3"
                 >
                   <Input
                     type="text"
