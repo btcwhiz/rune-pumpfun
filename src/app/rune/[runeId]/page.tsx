@@ -619,6 +619,14 @@ export default function CreateRune() {
                 <span>Price</span>
                 <span>{`${runeInfo?.pool / runeInfo?.remainAmount} sats`}</span>
               </div>
+              <div className="flex justify-between items-center gap-2">
+                <span>Marketcap</span>
+                <span>{`${
+                  (runeInfo.runeAmount *
+                    (runeInfo.pool / runeInfo.remainAmount)) /
+                  SATS_MULTIPLE
+                } BTC`}</span>
+              </div>
               <div className="flex flex-col items-start gap-2">
                 <span>{`bonding curve progress: ${process}%`}</span>
                 <Progress size="md" aria-label="Loading..." value={process} />
