@@ -29,7 +29,7 @@ import {
   displayPercentage,
   unisatSignPsbt,
 } from "../../utils/pump";
-import { SATS_MULTIPLE } from "../../config/config";
+import { DEFAULT_POOL, SATS_MULTIPLE } from "../../config/config";
 import useSocket from "../../hooks/useSocket";
 import { TradingChart } from "../../components/TVChart/TradingChart";
 import { coinInfo } from "../../utils/types";
@@ -625,6 +625,12 @@ export default function CreateRune() {
                   (runeInfo.runeAmount *
                     (runeInfo.pool / runeInfo.remainAmount)) /
                   SATS_MULTIPLE
+                } BTC`}</span>
+              </div>
+              <div className="flex justify-between items-center gap-2">
+                <span>BTC collected</span>
+                <span>{`${
+                  (runeInfo.pool - DEFAULT_POOL) / SATS_MULTIPLE
                 } BTC`}</span>
               </div>
               <div className="flex flex-col items-start gap-2">

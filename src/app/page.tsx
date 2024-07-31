@@ -16,7 +16,7 @@ import {
 } from "./api/requests";
 import { MainContext } from "./contexts/MainContext";
 import ImageDisplay from "./components/ImageDIsplay";
-import { SATS_MULTIPLE } from "./config/config";
+import { DEFAULT_POOL, SATS_MULTIPLE } from "./config/config";
 
 export default function Home() {
   const { userInfo } = useContext(MainContext);
@@ -110,6 +110,12 @@ export default function Home() {
                         <span>{`${
                           (item.runeAmount * (item.pool / item.remainAmount)) /
                           SATS_MULTIPLE
+                        } BTC`}</span>
+                      </div>
+                      <div className="flex justify-between items-center gap-2">
+                        <span>BTC collected</span>
+                        <span>{`${
+                          (item.pool - DEFAULT_POOL) / SATS_MULTIPLE
                         } BTC`}</span>
                       </div>
                       <div className="flex justify-between items-center gap-2">
