@@ -570,7 +570,7 @@ export default function CreateRune() {
             <div>
               {runeInfo?.image && (
                 <ImageDisplay
-                  src={`${runeInfo?.image[0].imageString}`}
+                  src={`${runeInfo?.image[0]?.imageString || ""}`}
                 ></ImageDisplay>
               )}
             </div>

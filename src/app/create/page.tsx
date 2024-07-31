@@ -211,32 +211,33 @@ export default function CreateRune() {
                   key="1"
                   aria-label="Show more options"
                   title="Show more options"
-                  className="flex flex-col gap-3"
                 >
-                  <Input
-                    type="text"
-                    label="twitter link"
-                    placeholder="(optional)"
-                    value={twitter}
-                    color="primary"
-                    onChange={(e) => setTwitter(e.target.value)}
-                  />
-                  <Input
-                    type="text"
-                    label="telegram link"
-                    placeholder="(optional)"
-                    value={telegram}
-                    color="primary"
-                    onChange={(e) => setTelegram(e.target.value)}
-                  />
-                  <Input
-                    type="text"
-                    label="website"
-                    placeholder="(optional)"
-                    value={website}
-                    color="primary"
-                    onChange={(e) => setWebsite(e.target.value)}
-                  />
+                  <div className="flex flex-col gap-3 !text-primary-50">
+                    <Input
+                      type="text"
+                      label="twitter link"
+                      placeholder="(optional)"
+                      value={twitter}
+                      color="primary"
+                      onChange={(e) => setTwitter(e.target.value)}
+                    />
+                    <Input
+                      type="text"
+                      label="telegram link"
+                      placeholder="(optional)"
+                      value={telegram}
+                      color="primary"
+                      onChange={(e) => setTelegram(e.target.value)}
+                    />
+                    <Input
+                      type="text"
+                      label="website"
+                      placeholder="(optional)"
+                      value={website}
+                      color="primary"
+                      onChange={(e) => setWebsite(e.target.value)}
+                    />
+                  </div>
                 </AccordionItem>
               </Accordion>
               {etchingFeeRate && (
