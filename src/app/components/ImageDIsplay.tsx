@@ -28,9 +28,11 @@ const ImageDisplay = ({
   }, [src]);
 
   return (
-    <div className="flex justify-center items-center rounded-lg overflow-hidden">
-      {/* eslint-disable-next-line */}
-      {imgUrl && <img src={imgUrl} alt="great" className={className} />}
+    <div className="flex justify-center items-center">
+      <div className="rounded-lg overflow-hidden">
+        {/* eslint-disable-next-line */}
+        {imgUrl && <img src={imgUrl} alt="great" className={className} />}
+      </div>
     </div>
   );
 };
