@@ -487,7 +487,7 @@ export default function CreateRune() {
                             color="success"
                             onClick={() => handlePreBuy()}
                             isLoading={loading}
-                            disabled={runeInfo.poolstate === 1}
+                            // disabled={runeInfo.poolstate === 1}
                           >
                             Buy
                           </Button>
@@ -556,7 +556,7 @@ export default function CreateRune() {
                             color="danger"
                             onClick={() => handlePreSell()}
                             isLoading={loading}
-                            disabled={runeInfo.poolstate === 1}
+                            // disabled={runeInfo.poolstate === 1}
                           >
                             Sell
                           </Button>
