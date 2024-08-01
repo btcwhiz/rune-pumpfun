@@ -68,7 +68,7 @@ export default function Home() {
                   >
                     <Link
                       href={`${
-                        item.runeId && item.poolstate !== 1
+                        item.runeId
                           ? `/rune/${encodeURIComponent(item.runeId)}`
                           : `#`
                       }`}
