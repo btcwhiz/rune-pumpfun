@@ -1,5 +1,6 @@
 "use client";
 
+import { custom } from "viem";
 import type {
   Bar,
   LibrarySymbolInfo,
@@ -8,9 +9,8 @@ import type {
   ResolutionString,
   PeriodParams,
 } from "../../../../public/libraries/charting_library/charting_library";
-// import { subscribeOnStream, unsubscribeFromStream } from "@/components/TVChart/streaming";
+import { subscribeOnStream, unsubscribeFromStream } from "./streaming";
 import { getChartTable } from "../../utils/getChartTable";
-import { custom } from "viem";
 
 const lastBarsCache = new Map<string, Bar>();
 const minPrice: Number = 0;
@@ -164,15 +164,15 @@ export function getDataFeed({
         subscriberUID
       );
 
-      // subscribeOnStream(
-      //   symbolInfo,
-      //   resolution,
-      //   onRealtimeCallback,
-      //   subscriberUID,
-      //   onResetCacheNeededCallback,
-      //   lastBarsCache.get(symbolInfo.name)!,
-      //   pairIndex,
-      // );
+      subscribeOnStream(
+        symbolInfo,
+        resolution,
+        onRealtimeCallback,
+        subscriberUID,
+        onResetCacheNeededCallback,
+        lastBarsCache.get(symbolInfo.name)!,
+        pairIndex
+      );
     },
 
     unsubscribeBars: (subscriberUID) => {
@@ -180,7 +180,7 @@ export function getDataFeed({
         "[unsubscribeBars]: Method call with subscriberUID:",
         subscriberUID
       );
-      // unsubscribeFromStream(subscriberUID);
+      unsubscribeFromStream(subscriberUID);
     },
   };
 }

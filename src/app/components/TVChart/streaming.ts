@@ -52,6 +52,10 @@ if (socket) {
     }
   });
 
+  socket.on("test", (data) => {
+    console.log("data :>> ", data);
+  });
+
   socket.on("currentPrices", (priceUpdates) => {
     const tradeTime = new Date().getTime();
 
