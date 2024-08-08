@@ -52,33 +52,37 @@ if (socket) {
     }
   });
 
-  socket.on("test", (data) => {
-    console.log("data :>> ", data);
-  });
-
   socket.on("currentPrices", (priceUpdates) => {
     const tradeTime = new Date().getTime();
 
-    const state = queryClient.getQueryState<Chart>(["charts"]);
-
+    let state: any = queryClient.getQueryState<Chart>(["charts"]);
+    // Initialize chart data if it doesn't exist
+    if (!state || !state.data) {
+      queryClient.setQueryData<any>(["charts"], {
+        time: tradeTime,
+        closes: [],
+      });
+      state = queryClient.getQueryState<Chart>(["charts"]);
+    }
     if (!state || !state.data || !priceUpdates) {
       return;
     }
+    // console.log('priceUpdates :>> ', priceUpdates);
+    // for (let i = 0; i < priceUpdates.length; i++) {
+    //   const price = priceUpdates[i];
+    //   // const index = priceUpdates[i];
+    //   // const price = priceUpdates[i + 1];
 
-    for (let i = 0; i < priceUpdates.length; i += 2) {
-      const index = priceUpdates[i];
-      const price = priceUpdates[i + 1];
+    //   // if (state.data.closes.length < index) {
+    //   //   while (state.data.closes.length < index) state.data.closes.push(0);
+    //   // }
 
-      if (state.data.closes.length < index) {
-        while (state.data.closes.length < index) state.data.closes.push(0);
-      }
-
-      state.data.closes[index] = price;
-    }
-
+    //   state.data.closes[i] = price;
+    // }
+    state.data.closes = priceUpdates.reverse();
+    let itemIndex = 0;
     for (const pairIndex of channelToSubscription.keys()) {
       const subscriptionItem = channelToSubscription.get(pairIndex);
-
       if (!subscriptionItem) {
         continue;
       }
@@ -92,22 +96,23 @@ if (socket) {
       if (tradeTime >= nextBarTime) {
         bar = {
           time: nextBarTime,
-          open: state.data.closes[pairIndex],
-          high: state.data.closes[pairIndex],
-          low: state.data.closes[pairIndex],
-          close: state.data.closes[pairIndex],
+          open: state.data.closes[itemIndex].open,
+          high: state.data.closes[itemIndex].high,
+          low: state.data.closes[itemIndex].low,
+          close: state.data.closes[itemIndex].close,
         };
         console.log("[socket] Generate new bar", bar);
       } else {
         bar = {
           ...lastBar,
-          high: Math.max(lastBar.high, state.data.closes[pairIndex]),
-          low: Math.min(lastBar.low, state.data.closes[pairIndex]),
-          close: state.data.closes[pairIndex],
+          high: Math.max(lastBar.high, state.data.closes[itemIndex].high),
+          low: Math.min(lastBar.low, state.data.closes[itemIndex].low),
+          close: state.data.closes[itemIndex].close,
         };
       }
+      itemIndex++;
       subscriptionItem.lastBar = bar;
-
+      console.log("bar :>> ", bar);
       // Send data to every subscriber of that symbol
       subscriptionItem.handlers.forEach((handler: any) =>
         handler.callback(bar)
