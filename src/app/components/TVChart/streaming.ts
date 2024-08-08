@@ -16,7 +16,7 @@ let initialTimeStamp: number = new Date().getTime();
 let lastUpdated = 0;
 
 if (typeof window !== "undefined") {
-  socket = io("http://localhost:5000/");
+  socket = io(process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000");
 }
 
 type SubscriptionItem = {
