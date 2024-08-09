@@ -30,7 +30,7 @@ import {
   unisatSignPsbt,
 } from "../../utils/pump";
 import { DEFAULT_POOL, SATS_MULTIPLE } from "../../config/config";
-import useSocket from "../../hooks/useSocket";
+// import useSocket from "../../hooks/useSocket";
 import { TradingChart } from "../../components/TVChart/TradingChart";
 import { coinInfo } from "../../utils/types";
 import { useParams } from "next/navigation";
@@ -59,7 +59,7 @@ export default function CreateRune() {
     date: new Date("2022-07-01"),
   } as coinInfo);
   const { userInfo } = useContext(MainContext);
-  const socket = useSocket();
+  // const socket = useSocket();
 
   const [runeInfo, setRuneInfo] = useState<any>({});
   const [runeBalance, setRuneBalance] = useState<number>(0);
@@ -304,15 +304,15 @@ export default function CreateRune() {
   // Get Estimate Price if you are in buying
 
   // Socket Connection
-  useEffect(() => {
-    if (socket && userInfo) {
-      socket.current.emit("login", userInfo.userId);
-      return () => {
-        socket.current.off("login");
-      };
-    }
-    // eslint-disable-next-line
-  }, [socket, userInfo]);
+  // useEffect(() => {
+  //   if (socket && userInfo) {
+  //     socket.current.emit("login", userInfo.userId);
+  //     return () => {
+  //       socket.current.off("login");
+  //     };
+  //   }
+  //   // eslint-disable-next-line
+  // }, [socket, userInfo]);
 
   // // Get Buy Price Every 3 seconds
   // useEffect(() => {
