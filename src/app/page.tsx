@@ -53,8 +53,9 @@ export default function Home() {
           </div>
           <div className="gap-3 grid grid-cols-3">
             {runes.map((item, index) => {
+              let runeAmount = Math.round(item.runeAmount * 0.8);
               let progress =
-                ((item.runeAmount - item.remainAmount) / item.runeAmount) * 100;
+                ((runeAmount - item.remainAmount) / runeAmount) * 100;
               if (item.poolstate === 1) progress = 100;
               return (
                 <Card
