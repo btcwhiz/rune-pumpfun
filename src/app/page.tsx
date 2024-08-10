@@ -7,6 +7,7 @@ import Image from "next/image";
 import toast from "react-hot-toast";
 import { Tabs, Tab, Card, CardBody } from "@nextui-org/react";
 import {
+  checkUser,
   getPumpActionFunc,
   getRuneFunc,
   pumpBuyFunc,
@@ -27,10 +28,23 @@ export default function Home() {
     let runeRes: any = await getRuneFunc();
     setRunes(runeRes.runes);
   };
+
   useEffect(() => {
     getRunes();
     // eslint-disable-next-line
   }, []);
+
+  const handleCheckUser = async (userId: string) => {
+    const res = await checkUser(userId);
+    console.log("res :>> ", res);
+  };
+
+  useEffect(() => {
+    if (userInfo.userId) {
+      console.log("userInfo :>> ", userInfo);
+      handleCheckUser(userInfo.userId);
+    }
+  }, [userInfo]);
 
   return (
     <main className="p-3 min-h-screen">
@@ -38,6 +52,11 @@ export default function Home() {
         {/* --- Rune List --- */}
         <div className="flex flex-col gap-3 p-10">
           <div className="flex justify-center gap-5">
+            {userInfo.role === 1 && (
+              <Link className="p-3 border rounded-xl" href={"/pump-admin"}>
+                Admin
+              </Link>
+            )}
             <Link className="p-3 border rounded-xl" href={"/create"}>
               start a new coin
             </Link>

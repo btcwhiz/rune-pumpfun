@@ -381,3 +381,23 @@ export const updateUserProfile = async (
     return null;
   }
 };
+
+export const checkUser = async (userId: string) => {
+  try {
+    const urlEndpoint = `${process.env.NEXT_PUBLIC_API_URL}/api/user/check-user/${userId}`;
+    const res = await axios.get(urlEndpoint);
+    return res.data;
+  } catch (error: any) {
+    return false;
+  }
+};
+
+export const getAllFeeHistories = async (userId: string) => {
+  try {
+    const urlEndpoint = `${process.env.NEXT_PUBLIC_API_URL}/api/pump-admin/get-fee-history`;
+    const res = await axios.post(urlEndpoint, { userId });
+    return res.data;
+  } catch (error: any) {
+    return false;
+  }
+};

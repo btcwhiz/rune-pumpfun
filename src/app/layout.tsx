@@ -5,6 +5,7 @@ import { Inter } from "next/font/google";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { NextUIProvider } from "@nextui-org/system";
 import { Toaster } from "react-hot-toast";
+import NextTopLoader from "nextjs-toploader";
 import { MainProvider } from "./contexts/MainContext";
 import "./globals.css";
 import Header from "./components/header";
@@ -26,6 +27,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
+        <NextTopLoader color="#FD9800" />
         <Toaster />
         <QueryClientProvider client={queryClient}>
           <NextUIProvider>

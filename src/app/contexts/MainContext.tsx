@@ -19,6 +19,7 @@ const defaultValue = {
     ordinalPublicKey: "",
     multisigWallet: "",
     multiBalance: "",
+    role: 0,
   },
   setPaymentAddress: (param: any) => {},
   setPaymentPubkey: (param: any) => {},
