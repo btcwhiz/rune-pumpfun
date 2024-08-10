@@ -48,7 +48,7 @@ export default function Profile() {
         ...pfp.userInfo,
         multisigWallet: pfp.multisigWallet,
       });
-      console.log("pfp.runes :>> ", pfp.runes);
+      // console.log("pfp.runes :>> ", pfp.runes);
       setRunes(pfp.runes);
       setMyRunes(
         pfp.runes.filter(
@@ -136,7 +136,11 @@ export default function Profile() {
             </div>
           </div>
           <div>
-            <Tabs aria-label="Options" color="primary"  className="border-primary-50 bg-dark border text-primary-50">
+            <Tabs
+              aria-label="Options"
+              color="primary"
+              className="bg-dark text-primary-50"
+            >
               <Tab key="runes-held" title="runes held">
                 <Card>
                   <CardBody>

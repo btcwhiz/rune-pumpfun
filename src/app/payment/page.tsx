@@ -1,16 +1,13 @@
 "use client";
-import { Accordion, AccordionItem, Button, Input } from "@nextui-org/react";
-import Image from "next/image";
+import { Button, Input } from "@nextui-org/react";
 import Link from "next/link";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 import {
   depositFunc,
-  etchingRuneFunc,
   getAllTransactions,
   preDepositFunc,
-  preEtchingRuneFunc,
   preWithdrawFunc,
   withdrawFunc,
 } from "../api/requests";
@@ -30,7 +27,7 @@ export default function CreateRune() {
 
   const getTxs = async () => {
     const alltxs = await getAllTransactions(userInfo.userId);
-    console.log("alltxs :>> ", alltxs.txs);
+    // console.log("alltxs :>> ", alltxs.txs);
     setAllTransactions(alltxs.txs || []);
   };
 
