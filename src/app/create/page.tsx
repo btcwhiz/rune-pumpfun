@@ -9,6 +9,15 @@ import { MainContext } from "../contexts/MainContext";
 import { unisatSignPsbt } from "../utils/pump";
 
 export default function CreateRune() {
+  const itemClasses = {
+    base: "py-0 w-full",
+    title: "text-white",
+    // trigger:
+    //   "px-2 py-0 data-[hover=true]:bg-default-100 rounded-lg h-14 flex items-center",
+    // indicator: "text-medium",
+    // content: "text-small px-2",
+  };
+
   const { ordinalAddress, userInfo } = useContext(MainContext);
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -64,6 +73,7 @@ export default function CreateRune() {
             const base64String = reader.result as string;
             // Display the Base64 string in a textarea
             const hexString = base64ToHex(base64String.split(",")[1]);
+            console.log(hexString);
             setImageContent(hexString);
           };
 
@@ -206,7 +216,7 @@ export default function CreateRune() {
                 color="primary"
                 onChange={(e) => setInitialBuyAmount(e.target.value)}
               />
-              <Accordion>
+              <Accordion itemClasses={itemClasses}>
                 <AccordionItem
                   key="1"
                   aria-label="Show more options"

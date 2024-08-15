@@ -21,7 +21,7 @@ const useSocket = () => {
     };
   }, [serverPath]);
 
-  return socket;
+  return socket.current;
 };
 
 export default useSocket;

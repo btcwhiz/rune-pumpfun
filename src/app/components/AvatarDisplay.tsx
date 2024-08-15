@@ -1,9 +1,12 @@
+import { Avatar } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 
-const ImageDisplay = ({
+const AvatarDisplay = ({
+  runeName = "avatar",
   src,
   className = "w-52 h-52",
 }: {
+  runeName?: string;
   src: string;
   className?: string;
 }) => {
@@ -31,10 +34,17 @@ const ImageDisplay = ({
     <div className="flex justify-center items-center">
       <div className="rounded-lg overflow-hidden">
         {/* eslint-disable-next-line */}
-        {imgUrl && <img src={imgUrl} alt="great" draggable={false} className={className} />}
+        {imgUrl && (
+          <Avatar
+            alt={runeName}
+            className="flex-shrink-0"
+            size="sm"
+            src={imgUrl}
+          />
+        )}
       </div>
     </div>
   );
 };
 
-export default ImageDisplay;
+export default AvatarDisplay;

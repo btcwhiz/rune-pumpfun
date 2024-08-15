@@ -13,6 +13,21 @@ import { authUser } from "../api/requests";
 import { displayAddress } from "../utils/pump";
 import Link from "next/link";
 
+const links = [
+  {
+    label: "Home",
+    link: "/",
+  },
+  {
+    label: "Swap",
+    link: "/swap",
+  },
+  {
+    label: "Pools",
+    link: "/pools",
+  },
+];
+
 export default function Header() {
   const {
     setPaymentAddress,
@@ -51,7 +66,18 @@ export default function Header() {
 
   return (
     <div className="z-10 lg:flex justify-center items-center p-10 w-full font-mono text-sm">
-      <div className="bottom-0 left-0 lg:static fixed flex justify-center items-end bg-gradient-to-t from-white dark:from-black via-white dark:via-black lg:bg-none w-full h-48 lg:size-auto">
+      <div className="bottom-0 left-0 lg:static fixed flex justify-center items-center bg-gradient-to-t from-white dark:from-black via-white dark:via-black lg:bg-none w-full h-48 lg:size-auto gap-3">
+        <div className="flex items-center gap-3">
+          {links.map((item, index) => (
+            <Link
+              key={index}
+              href={item.link}
+              className="bg-primary-500 p-2 rounded-xl w-32 text-center"
+            >
+              {item.label}
+            </Link>
+          ))}
+        </div>
         {userInfo?.userId ? (
           <div className="flex items-center gap-3">
             <div>{`${userInfo.btcBalance / 10 ** 8} BTC`}</div>

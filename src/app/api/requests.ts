@@ -362,8 +362,8 @@ export const getUserInfoByProfileId = async (profileId: string) => {
     return res.data;
   } catch (error: any) {
     const msg: any = error.response.data.msg || "Something went wrong";
-    console.log("error :>> ", error);
-    return null;
+    toast.error(msg);
+    return { success: false };
   }
 };
 
@@ -377,8 +377,8 @@ export const updateUserProfile = async (
     return res.data;
   } catch (error: any) {
     const msg: any = error.response.data.msg || "Something went wrong";
-    console.log("error :>> ", error);
-    return null;
+    toast.error(msg);
+    return { success: false };
   }
 };
 
@@ -388,7 +388,7 @@ export const checkUser = async (userId: string) => {
     const res = await axios.get(urlEndpoint);
     return res.data;
   } catch (error: any) {
-    return false;
+    return { success: false };
   }
 };
 
@@ -398,6 +398,52 @@ export const getAllFeeHistories = async (userId: string) => {
     const res = await axios.post(urlEndpoint, { userId });
     return res.data;
   } catch (error: any) {
-    return false;
+    return { success: false };
+  }
+};
+
+export const preSwapToken = async (
+  userId: string,
+  poolId: string,
+  baseToken: string,
+  baseAmount: string,
+  targetToken: string,
+  targetAmount: string
+) => {
+  try {
+    const urlEndpoint = `${process.env.NEXT_PUBLIC_API_URL}/api/swap/pre-swap`;
+    const res = await axios.post(urlEndpoint, {
+      poolId,
+      userId,
+      baseToken,
+      baseAmount,
+      targetToken,
+      targetAmount,
+    });
+    return res.data;
+  } catch (error: any) {
+    const msg: any = error.response.data.msg || "Something went wrong";
+    toast.error(msg);
+    return { success: false };
+  }
+};
+
+export const swapToken = async (
+  pendingSwapId: string,
+  feeId: string,
+  signedPsbt: string
+) => {
+  try {
+    const urlEndpoint = `${process.env.NEXT_PUBLIC_API_URL}/api/swap/swap`;
+    const res = await axios.post(urlEndpoint, {
+      pendingSwapId,
+      feeId,
+      signedPsbt,
+    });
+    return res.data;
+  } catch (error: any) {
+    const msg: any = error.response.data.msg || "Something went wrong";
+    toast.error(msg);
+    return { success: false };
   }
 };
