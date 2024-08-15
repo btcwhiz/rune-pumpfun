@@ -447,3 +447,49 @@ export const swapToken = async (
     return { success: false };
   }
 };
+
+export const preAddLiquidity = async (
+  userId: string,
+  poolId: string,
+  baseToken: string,
+  baseAmount: string,
+  targetToken: string,
+  targetAmount: string
+) => {
+  try {
+    const urlEndpoint = `${process.env.NEXT_PUBLIC_API_URL}/api/swap/pre-addliquidity`;
+    const res = await axios.post(urlEndpoint, {
+      poolId,
+      userId,
+      baseToken,
+      baseAmount,
+      targetToken,
+      targetAmount,
+    });
+    return res.data;
+  } catch (error: any) {
+    const msg: any = error.response.data.msg || "Something went wrong";
+    toast.error(msg);
+    return { success: false };
+  }
+};
+
+export const addLiquidity = async (
+  pendingLiquidityId: string,
+  feeId: string,
+  signedPsbt: string
+) => {
+  try {
+    const urlEndpoint = `${process.env.NEXT_PUBLIC_API_URL}/api/swap/addliquidity`;
+    const res = await axios.post(urlEndpoint, {
+      pendingLiquidityId,
+      feeId,
+      signedPsbt,
+    });
+    return res.data;
+  } catch (error: any) {
+    const msg: any = error.response.data.msg || "Something went wrong";
+    toast.error(msg);
+    return { success: false };
+  }
+};

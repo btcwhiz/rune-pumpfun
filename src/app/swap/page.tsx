@@ -171,7 +171,7 @@ export default function Page() {
 
   return (
     <div className="flex justify-center gap-3">
-      <div className="flex flex-col gap-3 border-1 bg-bgColor-light p-3 rounded-xl w-1/2">
+      <div className="flex flex-col gap-3 border-1 bg-bgColor-light py-10 p-3 rounded-xl w-1/2">
         <div className="font-bold text-3xl text-center">Swap</div>
         <div className="flex flex-col gap-3">
           <div className="flex flex-col gap-2 border-1 bg-bgColor-dark p-2 rounded-xl">

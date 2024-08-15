@@ -1,17 +1,238 @@
 "use client";
 
-import React from "react";
-import { Button } from "@nextui-org/react";
+import React, { useContext, useEffect, useState } from "react";
+import {
+  Input,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Button,
+  useDisclosure,
+  RadioGroup,
+  Radio,
+  Image,
+  Accordion,
+  AccordionItem,
+  Listbox,
+  Avatar,
+  ListboxItem,
+} from "@nextui-org/react";
+import toast from "react-hot-toast";
+import { FaChevronDown } from "react-icons/fa";
+import { FaPlus } from "react-icons/fa6";
+import { IoSwapVerticalSharp } from "react-icons/io5";
+
+import ImageDisplay from "../components/ImageDIsplay";
+import { BTCImg, ImgStr } from "../config/config";
+import { getAllPools } from "../api/swap";
+import AvatarDisplay from "../components/AvatarDisplay";
+import { preAddLiquidity, addLiquidity } from "../api/requests";
+import { MainContext } from "../contexts/MainContext";
+import useSocket from "../hooks/useSocket";
 
 export default function Page() {
+  const socket = useSocket();
+  const { userInfo } = useContext(MainContext);
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
+  const itemClasses = {
+    base: "py-0 w-full",
+    title: "text-white",
+    // trigger:
+    //   "px-2 py-0 data-[hover=true]:bg-default-100 rounded-lg h-14 flex items-center",
+    // indicator: "text-medium",
+    // content: "text-small px-2",
+  };
+
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [baseAmount, setBaseAmount] = useState<string>("");
+  const [poolId, setPoolId] = useState<string>("");
+  const [targetAmount, setTargetAmount] = useState<string>("");
+  const [slippage, setSlippage] = useState<number>(3);
+  const [pools, setPools] = useState<any[]>([]);
+  const [direction, setDirection] = useState<Boolean>(true);
+
+  const [baseToken, setBaseToken] = useState<any>({
+    runeId: "btc",
+    runeName: "BTC",
+    image: BTCImg,
+  });
+
+  const [targetToken, setTargetToken] = useState<any>({
+    runeId: "2869809:2877",
+    runeName: "THE.THOG.IS.BEST",
+    image: ImgStr,
+  });
+
+  const handleAddLiquidity = async () => {
+    try {
+      if (!userInfo.userId) {
+        return toast.error("Please connect your wallet");
+      }
+      if (!poolId) {
+        return toast.error("Pool ID is invalid");
+      }
+      setIsLoading(true);
+      const { success, pendingLiquidityId, feeId, psbtHex } =
+        await preAddLiquidity(
+          userInfo.userId,
+          poolId,
+          baseToken.runeId,
+          baseAmount,
+          targetToken.runeId,
+          targetAmount
+        );
+      console.log(
+        "success, pendingSwapId, feeId, psbtHex :>> ",
+        success,
+        pendingLiquidityId,
+        feeId,
+        psbtHex
+      );
+      if (success === true) {
+        console.log("psbtHex, pendingSwapId :>> ", psbtHex, pendingLiquidityId);
+        const signedPsbt = await (window as any).unisat.signPsbt(psbtHex);
+        console.log("signedPsbt :>> ", signedPsbt);
+        const { success } = await addLiquidity(
+          pendingLiquidityId,
+          feeId,
+          signedPsbt
+        );
+        if (success) toast.success("Success, please wait while tx confirming");
+      }
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+    }
+  };
+
+  const handleChangeToken = () => {
+    setDirection(!direction);
+    setBaseToken(targetToken);
+    setBaseAmount(targetAmount);
+    setTargetToken(baseToken);
+    setTargetAmount(baseAmount);
+  };
+
+  const handleInputBaseAmount = async (amount: any) => {
+    if (direction === true) {
+      socket.emit("predict-pool-rune", { poolId, amount });
+    } else {
+      socket.emit("predict-pool-btc", { poolId, amount });
+    }
+    setBaseAmount(amount);
+  };
+
+  const getData = async () => {
+    const res = await getAllPools();
+    setPools(res);
+    if (res.length > 0) {
+      if (direction === true) {
+        setTargetToken(res[0]);
+      } else {
+        setBaseToken(res[0]);
+      }
+      setPoolId(res[0].poolId);
+    }
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
+
+  useEffect(() => {
+    if (socket) {
+      socket.on("estimate-pool", (target: any) => {
+        setTargetAmount(target.predictAmount);
+      });
+      return () => {
+        socket.off("estimate-pool");
+      };
+    }
+  }, [poolId, socket]);
+
   return (
     <div className="flex justify-center gap-3">
-      <div className="flex flex-col gap-3 border-1 bg-bgColor-light p-3 rounded-xl w-1/2">
+      <div className="flex flex-col gap-3 border-1 bg-bgColor-light py-10 p-3 rounded-xl w-1/2">
         <div className="font-bold text-3xl text-center">Add Liquidity</div>
         <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-2 border-1 bg-bgColor-dark p-2 rounded-xl">
+            <div className="pl-3">From</div>
+            <div className="flex items-center gap-3 p-2">
+              <Input
+                value={baseAmount}
+                onChange={(e) => handleInputBaseAmount(e.target.value)}
+                type="number"
+              />
+              <Button
+                className="flex justify-between gap-1 border-1 p-2 rounded-xl w-44"
+                onPress={() => {
+                  direction !== true && onOpen();
+                }}
+              >
+                <div className="flex items-center gap-1">
+                  <ImageDisplay
+                    src={baseToken.image}
+                    className="w-6 h-6"
+                  ></ImageDisplay>
+                  <span>
+                    {baseToken.runeName.length > 7
+                      ? `${baseToken.runeName.slice(0, 7)}.`
+                      : baseToken.runeName}
+                  </span>
+                </div>
+                <div>
+                  <FaChevronDown />
+                </div>
+              </Button>
+            </div>
+          </div>
           <div className="flex justify-center">
-            <Button color="primary" className="w-44">
-              Add
+            <Button
+              isIconOnly
+              color="primary"
+              onPress={() => handleChangeToken()}
+            >
+              <IoSwapVerticalSharp />
+            </Button>
+          </div>
+          <div className="flex flex-col gap-2 border-1 bg-bgColor-dark p-2 rounded-xl">
+            <div className="pl-3">To</div>
+            <div className="flex items-center gap-3 p-2 rounded-xl">
+              <Input
+                value={targetAmount}
+                // onChange={(e) => setTargetAmount(e.target.value)}
+                type="number"
+                disabled
+              />
+              <Button className="flex items-center gap-1 border-1 p-2 rounded-xl w-44">
+                <div className="flex items-center gap-1">
+                  <ImageDisplay
+                    src={targetToken.image}
+                    className="w-6 h-6"
+                  ></ImageDisplay>
+                  <span>
+                    {targetToken.runeName.length > 7
+                      ? `${targetToken.runeName.slice(0, 7)}.`
+                      : targetToken.runeName}
+                  </span>
+                </div>
+                <div>
+                  <FaChevronDown />
+                </div>
+              </Button>
+            </div>
+          </div>
+          <div className="flex justify-center">
+            <Button
+              color="primary"
+              className="w-44"
+              onClick={() => handleAddLiquidity()}
+              isLoading={isLoading}
+            >
+              Confirm
             </Button>
           </div>
         </div>
