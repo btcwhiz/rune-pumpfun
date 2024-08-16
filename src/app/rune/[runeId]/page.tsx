@@ -256,7 +256,8 @@ export default function CreateRune() {
 
       const runeIf: any = await getRuneInfoFunc(runeId);
       const rune: any = runeIf?.runeInfo[0];
-      let runeAmount = Math.round(rune.runeAmount * 0.8);
+      // let runeAmount = Math.round(rune.runeAmount * 0.8);
+      let runeAmount = rune.runeAmount;
       let progress = ((runeAmount - rune.remainAmount) / runeAmount) * 100;
       if (rune.poolstate === 1) progress = 100;
       setProcess(progress);

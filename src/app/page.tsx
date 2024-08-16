@@ -34,17 +34,17 @@ export default function Home() {
     // eslint-disable-next-line
   }, []);
 
-  const handleCheckUser = async (userId: string) => {
-    const res = await checkUser(userId);
-    console.log("res :>> ", res);
-  };
+  // const handleCheckUser = async (userId: string) => {
+  //   const res = await checkUser(userId);
+  //   console.log("res :>> ", res);
+  // };
 
-  useEffect(() => {
-    if (userInfo.userId) {
-      console.log("userInfo :>> ", userInfo);
-      handleCheckUser(userInfo.userId);
-    }
-  }, [userInfo]);
+  // useEffect(() => {
+  //   if (userInfo.userId) {
+  //     console.log("userInfo :>> ", userInfo);
+  //     handleCheckUser(userInfo.userId);
+  //   }
+  // }, [userInfo]);
 
   return (
     <main className="p-3 min-h-screen">
@@ -72,7 +72,8 @@ export default function Home() {
           </div>
           <div className="gap-3 grid grid-cols-3">
             {runes.map((item, index) => {
-              let runeAmount = Math.round(item.runeAmount * 0.8);
+              // let runeAmount = Math.round(item.runeAmount * 0.8);
+              let runeAmount = Math.round(item.runeAmount);
               let progress =
                 ((runeAmount - item.remainAmount) / runeAmount) * 100;
               if (item.poolstate === 1) progress = 100;
