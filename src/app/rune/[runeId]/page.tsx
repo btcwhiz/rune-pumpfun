@@ -273,12 +273,16 @@ export default function CreateRune() {
         try {
           let userInfo =
             runes[i].runebalance.userInfo[0] || runes[i].runebalance.userInfo;
+          let multisig =
+            runes[i].runebalance.multisig[0] || runes[i].runebalance.multisig;
           uList.push({
+            multisig: multisig.address,
             balance: runes[i].runebalance.balance,
             ...userInfo,
           });
         } catch (error) {}
       }
+      console.log("uList :>> ", uList);
       setUserList(uList);
     } catch (error) {
       console.log("error :>> ", error);
@@ -675,9 +679,9 @@ export default function CreateRune() {
                     <Link
                       className="font-bold underline"
                       target="_blink"
-                      href={`https://mempool.space/testnet/address/${item.ordinalAddress}`}
+                      href={`https://mempool.space/testnet/address/${item.multisig}`}
                     >
-                      {`${displayAddress(item.ordinalAddress)} ${
+                      {`${displayAddress(item.multisig)} ${
                         item.ordinalAddress == runeInfo.creatorAddress
                           ? "Owner "
                           : ""
