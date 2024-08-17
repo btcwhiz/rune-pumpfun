@@ -49,7 +49,7 @@ export const TVChartContainer = ({
       tvWidgetRef.current.remove();
     }
     const elem = chartContainerRef.current;
-    console.log("localhost host", location.host);
+    // console.log("localhost host", location.host);
     if (name) {
       const widgetOptions: ChartingLibraryWidgetOptions = {
         symbol: name,
@@ -101,7 +101,7 @@ export const TVChartContainer = ({
           />
         </div>
       ) : null}
-      <div ref={chartContainerRef} className={twMerge("h-full w-full")} />
+      <div ref={chartContainerRef} className={twMerge("w-full h-full")} />
     </div>
   );
 };

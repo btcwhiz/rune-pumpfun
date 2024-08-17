@@ -34,7 +34,7 @@ import { DEFAULT_POOL, SATS_MULTIPLE } from "../../config/config";
 import { TradingChart } from "../../components/TVChart/TradingChart";
 import { coinInfo } from "../../utils/types";
 import { useParams } from "next/navigation";
-import { getTimeDifference } from "../../utils/util";
+import { calcProgress, getTimeDifference } from "../../utils/util";
 import ImageDisplay from "../../components/ImageDIsplay";
 
 export default function CreateRune() {
@@ -64,7 +64,7 @@ export default function CreateRune() {
   const [runeInfo, setRuneInfo] = useState<any>({});
   const [runeBalance, setRuneBalance] = useState<number>(0);
 
-  const [target, setTarget] = useState<boolean>(false);
+  const [target, setTarget] = useState<boolean>(true);
 
   // Buy
   const [buyFlag, setBuyFlag] = useState<boolean>(false);
@@ -251,15 +251,16 @@ export default function CreateRune() {
     try {
       setLoading(false);
 
-      const pActions = await getPumpActionFunc(runeId);
+      const pActions: any = await getPumpActionFunc(runeId);
       setPumpActions(pActions.pumpAction);
 
       const runeIf: any = await getRuneInfoFunc(runeId);
       const rune: any = runeIf?.runeInfo[0];
-      // let runeAmount = Math.round(rune.runeAmount * 0.8);
-      let runeAmount = rune.runeAmount;
-      let progress = ((runeAmount - rune.remainAmount) / runeAmount) * 100;
-      if (rune.poolstate === 1) progress = 100;
+      const progress = calcProgress(
+        rune.remainAmount,
+        rune.runeAmount,
+        rune.poolstate
+      );
       setProcess(progress);
       setRuneInfo(rune);
       setCoin({
@@ -376,13 +377,6 @@ export default function CreateRune() {
             <div>
               {/* Transaction History */}
               <Tabs aria-label="Options" color="primary">
-                <Tab key="thread" title="Thread">
-                  <Card>
-                    <CardBody>
-                      <div>Thread</div>
-                    </CardBody>
-                  </Card>
-                </Tab>
                 <Tab key="trades" title="Trades">
                   <Card>
                     <CardBody>
@@ -413,6 +407,13 @@ export default function CreateRune() {
                           </div>
                         ))}
                       </div>
+                    </CardBody>
+                  </Card>
+                </Tab>
+                <Tab key="thread" title="Thread">
+                  <Card>
+                    <CardBody>
+                      <div>Thread</div>
                     </CardBody>
                   </Card>
                 </Tab>

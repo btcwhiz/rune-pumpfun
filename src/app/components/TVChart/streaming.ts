@@ -179,7 +179,7 @@ export function subscribeOnStream(
     pairIndex,
   } as SubscriptionItem;
   channelToSubscription.set(pairIndex, subscriptionItem);
-  console.log("[subscribeBars]: Subscribe to streaming. Channel:", pairIndex);
+  // console.log("[subscribeBars]: Subscribe to streaming. Channel:", pairIndex);
 }
 
 export function unsubscribeFromStream(subscriberUID: string) {
@@ -201,10 +201,10 @@ export function unsubscribeFromStream(subscriberUID: string) {
 
       if (subscriptionItem.handlers.length === 0) {
         // Unsubscribe from the channel if it was the last handler
-        console.log(
-          "[unsubscribeBars]: Unsubscribe from streaming. Channel:",
-          pairIndex
-        );
+        // console.log(
+        //   "[unsubscribeBars]: Unsubscribe from streaming. Channel:",
+        //   pairIndex
+        // );
         // socket.emit("SubRemove", { subs: [channelString] });
         channelToSubscription.delete(pairIndex);
         break;

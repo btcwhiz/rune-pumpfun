@@ -18,6 +18,7 @@ import {
 import { MainContext } from "./contexts/MainContext";
 import ImageDisplay from "./components/ImageDIsplay";
 import { DEFAULT_POOL, SATS_MULTIPLE } from "./config/config";
+import { calcProgress } from "./utils/util";
 
 export default function Home() {
   const { userInfo } = useContext(MainContext);
@@ -73,10 +74,11 @@ export default function Home() {
           <div className="gap-3 grid grid-cols-3">
             {runes.map((item, index) => {
               // let runeAmount = Math.round(item.runeAmount * 0.8);
-              let runeAmount = Math.round(item.runeAmount);
-              let progress =
-                ((runeAmount - item.remainAmount) / runeAmount) * 100;
-              if (item.poolstate === 1) progress = 100;
+              const progress = calcProgress(
+                item.remainAmount,
+                item.runeAmount,
+                item.poolstate
+              );
               return (
                 <Card
                   key={index}

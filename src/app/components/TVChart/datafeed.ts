@@ -50,7 +50,7 @@ export function getDataFeed({
     onErrorCallback: (error: any) => void
   ) => {
     const { from, to, firstDataRequest } = periodParams;
-    console.log("[getBars]: Method call", symbolInfo, resolution, from, to);
+    // console.log("[getBars]: Method call", symbolInfo, resolution, from, to);
     try {
       const chartTable = await getChartTable({
         runeId,
@@ -81,7 +81,7 @@ export function getDataFeed({
       if (firstDataRequest) {
         lastBarsCache.set(symbolInfo.name, { ...bars[bars.length - 1] });
       }
-      console.log(`[getBars]: returned ${bars.length} bar(s)`);
+      // console.log(`[getBars]: returned ${bars.length} bar(s)`);
       onHistoryCallback(bars, { noData: false });
     } catch (error: any) {
       console.log("[getBars]: Get error", error);
@@ -90,12 +90,12 @@ export function getDataFeed({
   };
   return {
     onReady: (callback) => {
-      console.log("[onReady]: Method call");
+      // console.log("[onReady]: Method call");
       setTimeout(() => callback(configurationData));
     },
 
     searchSymbols: () => {
-      console.log("[searchSymbols]: Method call");
+      // console.log("[searchSymbols]: Method call");
     },
 
     resolveSymbol: async (
@@ -104,7 +104,7 @@ export function getDataFeed({
       _onResolveErrorCallback,
       _extension
     ) => {
-      console.log("[resolveSymbol]: Method call", symbolName);
+      // console.log("[resolveSymbol]: Method call", symbolName);
 
       // Symbol information object
       const symbolInfo: LibrarySymbolInfo = {
@@ -127,7 +127,7 @@ export function getDataFeed({
         listed_exchange: "",
       };
 
-      console.log("[resolveSymbol]: Symbol resolved", symbolName);
+      // console.log("[resolveSymbol]: Symbol resolved", symbolName);
       setTimeout(() => onSymbolResolvedCallback(symbolInfo));
     },
 
@@ -143,7 +143,7 @@ export function getDataFeed({
         ...periodParams,
         ...customPeriodParams,
       };
-      console.log(customParams, "================", customPeriodParams);
+      // console.log(customParams, "================", customPeriodParams);
       await getBars(
         symbolInfo,
         resolution,
@@ -159,10 +159,10 @@ export function getDataFeed({
       subscriberUID,
       onResetCacheNeededCallback
     ) => {
-      console.log(
-        "[subscribeBars]: Method call with subscriberUID:",
-        subscriberUID
-      );
+      // console.log(
+      //   "[subscribeBars]: Method call with subscriberUID:",
+      //   subscriberUID
+      // );
 
       subscribeOnStream(
         symbolInfo,
@@ -176,10 +176,10 @@ export function getDataFeed({
     },
 
     unsubscribeBars: (subscriberUID) => {
-      console.log(
-        "[unsubscribeBars]: Method call with subscriberUID:",
-        subscriberUID
-      );
+      // console.log(
+      //   "[unsubscribeBars]: Method call with subscriberUID:",
+      //   subscriberUID
+      // );
       unsubscribeFromStream(subscriberUID);
     },
   };
