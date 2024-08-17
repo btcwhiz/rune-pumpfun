@@ -14,8 +14,10 @@ import {
 import { MainContext } from "../contexts/MainContext";
 import { unisatSignPsbt } from "../utils/pump";
 import { SATS_MULTIPLE } from "../config/config";
+import useSocket from "../hooks/useSocket";
 
 export default function CreateRune() {
+  const socket = useSocket();
   const { userInfo } = useContext(MainContext);
 
   const [loading, setLoading] = useState<boolean>(false);
@@ -55,6 +57,9 @@ export default function CreateRune() {
             );
             getTxs();
             toast.success(depositRes.msg);
+            if (socket) {
+              socket.emit("update-user", { userId: userInfo.userId });
+            }
           }
           setLoading(false);
         } else {
@@ -116,7 +121,7 @@ export default function CreateRune() {
 
   useEffect(() => {
     userInfo.userId && getTxs();
-  }, [userInfo]);
+  }, [userInfo.userId]);
 
   return (
     <main className="p-3 min-h-screen">

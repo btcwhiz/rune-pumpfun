@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { Button } from "@nextui-org/react";
 import toast from "react-hot-toast";
 import copy from "copy-to-clipboard";
@@ -12,6 +12,7 @@ import { MainContext } from "../contexts/MainContext";
 import { authUser } from "../api/requests";
 import { displayAddress } from "../utils/pump";
 import Link from "next/link";
+import useSocket from "../hooks/useSocket";
 
 const links = [
   {
@@ -89,14 +90,6 @@ export default function Header() {
                 <div>Profile</div>
                 <FaUser />
               </Link>
-            </Button>
-            <Button
-              color="primary"
-              onClick={() => handleConnectWallet()}
-              className="flex items-center gap-5"
-            >
-              <div>Reload</div>
-              <TfiReload />
             </Button>
             <Button
               color="primary"

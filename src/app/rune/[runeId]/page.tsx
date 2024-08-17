@@ -36,6 +36,7 @@ import { coinInfo } from "../../utils/types";
 import { useParams } from "next/navigation";
 import { calcProgress, getTimeDifference } from "../../utils/util";
 import ImageDisplay from "../../components/ImageDIsplay";
+import useSocket from "../../hooks/useSocket";
 
 export default function CreateRune() {
   let { runeId }: any = useParams();
@@ -59,7 +60,7 @@ export default function CreateRune() {
     date: new Date("2022-07-01"),
   } as coinInfo);
   const { userInfo } = useContext(MainContext);
-  // const socket = useSocket();
+  const socket = useSocket();
 
   const [runeInfo, setRuneInfo] = useState<any>({});
   const [runeBalance, setRuneBalance] = useState<number>(0);
@@ -167,6 +168,9 @@ export default function CreateRune() {
         setBuyFlag(false);
         setLoading(false);
         getRuneBalanceFunc();
+        if (socket) {
+          socket.emit("update-user", { userId: userInfo.userId });
+        }
       } else {
         return toast.error("Invalid parameters");
       }
@@ -236,6 +240,9 @@ export default function CreateRune() {
         setSellFlag(false);
         setLoading(false);
         getRuneBalanceFunc();
+        if (socket) {
+          socket.emit("update-user", { userId: userInfo.userId });
+        }
       } else {
         toast.error("Invalid parameters");
       }

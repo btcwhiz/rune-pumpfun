@@ -1,6 +1,21 @@
 import axios from "axios";
 import toast from "react-hot-toast";
 
+export const getUserInfo = async (userId: string) => {
+  try {
+    const urlEndpoint = `${process.env.NEXT_PUBLIC_API_URL}/api/user/get-user-info`;
+    const requestData = {
+      userId,
+    };
+    const res = await axios.post(urlEndpoint, requestData);
+    return res.data;
+  } catch (error: any) {
+    const msg: any = error.response.data.msg || "Something went wrong";
+    console.log("msg :>> ", msg);
+    return {};
+  }
+};
+
 export const authUser = async (
   paymentAddress: string,
   paymentPublicKey: string,
