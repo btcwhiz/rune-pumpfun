@@ -93,6 +93,13 @@ export default function Header() {
             </Button>
             <Button
               color="primary"
+              onClick={() => handleConnectWallet()}
+              className="rounded-full"
+            >
+              <TfiReload />
+            </Button>
+            <Button
+              color="primary"
               onClick={() => handleDisConnectWallet()}
               className="flex items-center gap-5"
             >
