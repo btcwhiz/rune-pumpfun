@@ -80,7 +80,7 @@ if (socket) {
     //   state.data.closes[i] = price;
     // }
     state.data.closes = priceUpdates.reverse();
-    let itemIndex = 1;
+    let itemIndex = 0;
     for (const pairIndex of channelToSubscription.keys()) {
       const subscriptionItem = channelToSubscription.get(pairIndex);
       if (!subscriptionItem) {
