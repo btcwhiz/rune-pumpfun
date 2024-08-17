@@ -80,7 +80,7 @@ if (socket) {
     //   state.data.closes[i] = price;
     // }
     state.data.closes = priceUpdates.reverse();
-    let itemIndex = 0;
+    let itemIndex = 1;
     for (const pairIndex of channelToSubscription.keys()) {
       const subscriptionItem = channelToSubscription.get(pairIndex);
       if (!subscriptionItem) {
@@ -118,6 +118,7 @@ if (socket) {
         handler.callback(bar)
       );
     }
+
 
     queryClient.setQueryData<Chart | undefined>(["charts"], (oldData) => {
       if (!oldData) {
