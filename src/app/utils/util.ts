@@ -1,9 +1,12 @@
-import moment from "moment";
+import moment from "moment-timezone";
 import { NEXT_POOL_AMOUNT } from "../config/config";
 
 export const getTimeDifference = (date: any) => {
-  const now = moment();
-  const diff = now.diff(moment(date));
+  // Set the timezone to PT (Pacific Time)
+  const now = moment().tz("America/Los_Angeles");
+  const targetDate = moment(date).tz("America/Los_Angeles");
+
+  const diff = now.diff(targetDate);
   const duration = moment.duration(diff);
 
   if (duration.asMinutes() < 60) {

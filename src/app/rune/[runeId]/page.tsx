@@ -289,7 +289,6 @@ export default function CreateRune() {
           });
         } catch (error) {}
       }
-      console.log("uList :>> ", uList);
       setUserList(uList);
     } catch (error) {
       console.log("error :>> ", error);
