@@ -30,6 +30,7 @@ export default function CreateRune() {
   const [ticker, setTicker] = useState<string>("");
   const [name, setName] = useState<string>("");
   const [description, setDescription] = useState<string>("");
+  const [dexPercentage, setDexPercentage] = useState<number>(20);
   const [initialBuyAmount, setInitialBuyAmount] = useState<string>("");
   const [twitter, setTwitter] = useState<string>("");
   const [telegram, setTelegram] = useState<string>("");
@@ -100,6 +101,9 @@ export default function CreateRune() {
           return toast.error("Invalid initial rune amount");
         }
       }
+      if (dexPercentage < 20 || dexPercentage > 50) {
+        return toast.error("Dex Percentage range should be from 20 to 50!");
+      }
 
       setLoading(true);
 
@@ -107,6 +111,7 @@ export default function CreateRune() {
         name,
         ticker: rTicker,
         description,
+        dexPercentage,
         initialBuyAmount,
         twitter,
         telegram,
@@ -208,6 +213,13 @@ export default function CreateRune() {
                 value={description}
                 color="primary"
                 onChange={(e) => setDescription(e.target.value)}
+              />
+              <Input
+                type="number"
+                label="Dex Percentage(min: 20, max: 50)"
+                value={`${dexPercentage}`}
+                color="primary"
+                onChange={(e) => setDexPercentage(Number(e.target.value))}
               />
               <Input
                 type="text"

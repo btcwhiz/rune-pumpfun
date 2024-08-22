@@ -26,7 +26,6 @@ export async function getChartTable({
     const res = {
       table: resData?.data?.chartData || [],
     };
-    console.log("res :>> ", res);
     if (!res) {
       throw new Error();
     }

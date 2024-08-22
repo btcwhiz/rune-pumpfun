@@ -31,3 +31,26 @@ export const calcProgress = (
   if (poolstate === 1) progress = 100;
   return progress;
 };
+
+export const calcAvailableRune = async (
+  stage: number,
+  totalSupply: number,
+  remainAmount: number,
+  stage2Percent: number,
+  dexPercent: number
+) => {
+  try {
+    const stage2Amount = (totalSupply * stage2Percent) / 100,
+      dexAmount = (totalSupply * dexPercent) / 100;
+    if (stage === 1) {
+      return remainAmount - stage2Amount - dexAmount;
+    } else if (stage === 2) {
+      return remainAmount - dexAmount;
+    } else {
+      return remainAmount;
+    }
+  } catch (error) {
+    console.log("available rune calc error :>> ", error);
+    return 0;
+  }
+};

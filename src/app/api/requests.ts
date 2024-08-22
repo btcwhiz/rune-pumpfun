@@ -508,3 +508,45 @@ export const addLiquidity = async (
     return { success: false };
   }
 };
+
+export const preBurn = async (
+  runeId: string,
+  userId: string,
+  burnAmount: string
+) => {
+  try {
+    const urlEndpoint = `${process.env.NEXT_PUBLIC_API_URL}/api/pump/pre-burn`;
+    const requestData = {
+      runeId,
+      userId,
+      burnAmount,
+    };
+    console.log("requestData :>> ", requestData);
+    const res = await axios.post(urlEndpoint, requestData);
+    console.log("res :>> ", res);
+    return res.data;
+  } catch (error: any) {
+    const msg: any = error.response.data.msg || "Something went wrong";
+    console.log("error :>> ", error);
+    toast.error(msg);
+    return { success: false };
+  }
+};
+
+export const burnFunc = async (pendingBurnId: string, signedPsbt: string) => {
+  try {
+    const urlEndpoint = `${process.env.NEXT_PUBLIC_API_URL}/api/pump/burn-token`;
+    const requestData = {
+      pendingBurnId,
+      signedPsbt,
+    };
+    console.log("requestData :>> ", requestData);
+    const res = await axios.post(urlEndpoint, requestData);
+    console.log("res :>> ", res);
+    return res.data;
+  } catch (error: any) {
+    const msg: any = error.response.data.msg || "Something went wrong";
+    console.log("error :>> ", error);
+    return { success: false };
+  }
+};

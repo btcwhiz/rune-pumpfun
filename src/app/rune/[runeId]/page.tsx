@@ -13,10 +13,12 @@ import Link from "next/link";
 import { useContext, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import {
+  burnFunc,
   etchingRuneFunc,
   getPumpActionFunc,
   getRuneBalance,
   getRuneInfoFunc,
+  preBurn,
   preEtchingRuneFunc,
   pumpBuyFunc,
   pumpPreBuyFunc,
@@ -81,6 +83,10 @@ export default function CreateRune() {
   const [sellRuneAmount, setSellRuneAmount] = useState<string>("");
   const [pumpActions, setPumpActions] = useState<any[]>([]);
   const [process, setProcess] = useState<number>(0);
+
+  // Burn
+  const [availableBurn, setAvailableBurn] = useState<string>("");
+  const [burnRuneAmount, setBurnRuneAmount] = useState<string>("");
 
   const [userList, setUserList] = useState<any[]>([]);
 
@@ -254,6 +260,41 @@ export default function CreateRune() {
     }
   };
 
+  const handleBurn = async () => {
+    try {
+      if (userInfo.userId && runeId && burnRuneAmount) {
+        setLoading(true);
+        const burnResponse = await preBurn(
+          runeId,
+          userInfo.userId,
+          burnRuneAmount
+        );
+        console.log("burnResponse :>> ", burnResponse);
+
+        const signedPsbt = await (window as any).unisat.signPsbt(
+          burnResponse?.psbt
+        );
+        const burnTokenRep = await burnFunc(
+          burnResponse.pendingBurnId,
+          signedPsbt
+        );
+        if (burnTokenRep.success === true) {
+          toast.success("Success");
+        }
+        setLoading(false);
+        initialize();
+        getRuneBalanceFunc();
+      } else {
+        toast.error("Invalid parameters");
+      }
+    } catch (error) {
+      setSellFlag(false);
+      setLoading(false);
+      console.log("error :>> ", error);
+      toast.error("Something went wrong");
+    }
+  };
+
   const initialize = async () => {
     try {
       setLoading(false);
@@ -305,6 +346,7 @@ export default function CreateRune() {
       const rBalance = await getRuneBalance(userInfo.userId, runeId);
       console.log("rBalance :>> ", rBalance);
       setRuneBalance(rBalance.balance);
+      setAvailableBurn(rBalance.availableBurn);
     } catch (error) {}
   };
 
@@ -584,6 +626,36 @@ export default function CreateRune() {
                             Sell
                           </Button>
                         )}
+                      </div>
+                    </div>
+                  </CardBody>
+                </Card>
+              </Tab>
+              <Tab key="burn" title="Burn">
+                <Card>
+                  <CardBody className="flex gap-3">
+                    <div className="flex justify-around">
+                      <div>Available Burn Balance</div>
+                      <div>{availableBurn}</div>
+                    </div>
+                    {/* Sell */}
+                    <div className="flex flex-col gap-3">
+                      <div className="text-center">Burn</div>
+                      <div className="flex flex-col gap-3">
+                        <Input
+                          type="text"
+                          label="Burn Rune Amount"
+                          value={burnRuneAmount}
+                          disabled={loading}
+                          onChange={(e) => setBurnRuneAmount(e.target.value)}
+                        />
+                        <Button
+                          color="danger"
+                          onClick={() => handleBurn()}
+                          isLoading={loading}
+                        >
+                          Burn
+                        </Button>
                       </div>
                     </div>
                   </CardBody>
