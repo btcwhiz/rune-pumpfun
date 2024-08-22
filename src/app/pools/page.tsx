@@ -31,6 +31,7 @@ import AvatarDisplay from "../components/AvatarDisplay";
 import { preAddLiquidity, addLiquidity } from "../api/requests";
 import { MainContext } from "../contexts/MainContext";
 import useSocket from "../hooks/useSocket";
+import { unisatSignPsbt } from "../utils/pump";
 
 export default function Page() {
   const socket = useSocket();
@@ -94,6 +95,7 @@ export default function Page() {
       if (success === true) {
         console.log("psbtHex, pendingSwapId :>> ", psbtHex, pendingLiquidityId);
         const signedPsbt = await (window as any).unisat.signPsbt(psbtHex);
+        // const signedPsbt = await unisatSignPsbt(psbtHex);
         console.log("signedPsbt :>> ", signedPsbt);
         const { success } = await addLiquidity(
           pendingLiquidityId,
