@@ -204,7 +204,7 @@ export default function CreateRune() {
                 </div>
                 <div>{item.runeId}</div>
                 <div>
-                  {item.amount / item.withdrawType === 0 ? SATS_MULTIPLE : 1}
+                  {item.amount / (item.withdrawType === 0 ? SATS_MULTIPLE : 1)}
                 </div>
                 <Link
                   className="font-bold underline"
