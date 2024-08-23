@@ -203,7 +203,9 @@ export default function CreateRune() {
                   {item.withdrawType === 1 ? "rune" : "btc"}
                 </div>
                 <div>{item.runeId}</div>
-                <div>{item.amount / SATS_MULTIPLE}</div>
+                <div>
+                  {item.amount / item.withdrawType === 1 ? 1 : SATS_MULTIPLE}
+                </div>
                 <Link
                   className="font-bold underline"
                   target="_blink"
