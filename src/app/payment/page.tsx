@@ -200,11 +200,11 @@ export default function CreateRune() {
                   {item.type === 0 ? "deposit" : "withdraw"}
                 </div>
                 <div className="uppercase">
-                  {item.withdrawType === 1 ? "rune" : "btc"}
+                  {item.withdrawType === 0 ? "btc" : "rune"}
                 </div>
                 <div>{item.runeId}</div>
                 <div>
-                  {item.amount / item.withdrawType === 1 ? 1 : SATS_MULTIPLE}
+                  {item.amount / item.withdrawType === 0 ? SATS_MULTIPLE : 1}
                 </div>
                 <Link
                   className="font-bold underline"
