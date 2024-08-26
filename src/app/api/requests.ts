@@ -170,8 +170,10 @@ export const pumpPreSellFunc = async (
     return res.data;
   } catch (error: any) {
     const msg: any = error.response.data.msg || "Something went wrong";
-    console.log("error :>> ", error);
-    return null;
+    toast.error(msg);
+    return {
+      status: false,
+    };
   }
 };
 
@@ -197,8 +199,10 @@ export const pumpSellFunc = async (
     return res.data;
   } catch (error: any) {
     const msg: any = error.response.data.msg || "Something went wrong";
-    console.log("error :>> ", error);
-    return null;
+    toast.error(msg);
+    return {
+      status: false,
+    };
   }
 };
 
