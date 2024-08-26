@@ -270,16 +270,17 @@ export default function CreateRune() {
           burnRuneAmount
         );
         console.log("burnResponse :>> ", burnResponse);
-
-        const signedPsbt = await (window as any).unisat.signPsbt(
-          burnResponse?.psbt
-        );
-        const burnTokenRep = await burnFunc(
-          burnResponse.pendingBurnId,
-          signedPsbt
-        );
-        if (burnTokenRep.success === true) {
-          toast.success("Success");
+        if (burnResponse.success) {
+          const signedPsbt = await (window as any).unisat.signPsbt(
+            burnResponse?.psbt
+          );
+          const burnTokenRep = await burnFunc(
+            burnResponse.pendingBurnId,
+            signedPsbt
+          );
+          if (burnTokenRep.success === true) {
+            toast.success("Success");
+          }
         }
         setLoading(false);
         initialize();
