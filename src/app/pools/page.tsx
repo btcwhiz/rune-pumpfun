@@ -32,6 +32,7 @@ import { preAddLiquidity, addLiquidity } from "../api/requests";
 import { MainContext } from "../contexts/MainContext";
 import useSocket from "../hooks/useSocket";
 import { unisatSignPsbt } from "../utils/pump";
+import { ListboxWrapper } from "../swap/ListboxWrapper";
 
 export default function Page() {
   const socket = useSocket();
@@ -209,7 +210,12 @@ export default function Page() {
                 type="number"
                 disabled
               />
-              <Button className="flex items-center gap-1 border-1 p-2 rounded-xl w-44">
+              <Button
+                className="flex items-center gap-1 border-1 p-2 rounded-xl w-44"
+                onPress={() => {
+                  direction === true && onOpen();
+                }}
+              >
                 <div className="flex items-center gap-1">
                   <ImageDisplay
                     src={targetToken.image}
@@ -239,6 +245,70 @@ export default function Page() {
           </div>
         </div>
       </div>
+
+      <Modal
+        isOpen={isOpen}
+        placement={"center"}
+        onOpenChange={onOpenChange}
+        className="bg-dark"
+      >
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">Runes</ModalHeader>
+              <ModalBody>
+                <ListboxWrapper>
+                  <Listbox
+                    classNames={{
+                      base: "w-full",
+                      list: "w-full overflow-auto",
+                    }}
+                    defaultSelectedKeys={["1"]}
+                    items={pools}
+                    label="Assigned to"
+                    // selectionMode="multiple"
+                    selectionMode="single"
+                    // onSelectionChange={setValues}
+                    variant="flat"
+                  >
+                    {(item) => (
+                      <ListboxItem
+                        key={item.runeId}
+                        textValue={item.runeName}
+                        className="w-full"
+                        onClick={() => {
+                          if (poolId !== item.poolId) setPoolId(item.poolId);
+                          if (direction === true) {
+                            setTargetToken(item);
+                          } else {
+                            setBaseToken(item);
+                          }
+                          onClose();
+                        }}
+                      >
+                        <div className="flex items-center gap-2 w-full">
+                          <AvatarDisplay src={item.image}></AvatarDisplay>
+                          <div className="flex flex-col">
+                            <span className="text-small">{item.runeName}</span>
+                            <span className="text-default-400 text-tiny">
+                              {item.runeName}
+                            </span>
+                          </div>
+                        </div>
+                      </ListboxItem>
+                    )}
+                  </Listbox>
+                </ListboxWrapper>
+              </ModalBody>
+              <ModalFooter>
+                <Button color="danger" variant="light" onPress={onClose}>
+                  Close
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
     </div>
   );
 }
