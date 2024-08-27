@@ -83,13 +83,6 @@ export default function Page() {
         targetToken.runeId,
         targetAmount
       );
-      console.log(
-        "success, pendingSwapId, feeId, psbtHex :>> ",
-        success,
-        pendingSwapId,
-        feeId,
-        psbtHex
-      );
       if (success === true) {
         console.log("psbtHex, pendingSwapId :>> ", psbtHex, pendingSwapId);
         const signedPsbt = await (window as any).unisat.signPsbt(psbtHex);
@@ -126,8 +119,10 @@ export default function Page() {
 
   const handleInputBaseAmount = async (amount: any) => {
     if (direction === true) {
+      console.log("Here 1");
       socket.emit("predict-rune", { poolId, amount, type: "base" });
     } else {
+      console.log("Here 2");
       socket.emit("predict-btc", { poolId, amount, type: "base" });
     }
     setBaseAmount(amount);
@@ -135,8 +130,10 @@ export default function Page() {
 
   const handleInputTargeAmount = async (amount: any) => {
     if (direction === true) {
+      console.log("Here 3");
       socket.emit("predict-btc", { poolId, amount, type: "target" });
     } else {
+      console.log("Here 4");
       socket.emit("predict-rune", { poolId, amount, type: "target" });
     }
     setTargetAmount(amount);
@@ -149,25 +146,17 @@ export default function Page() {
   useEffect(() => {
     if (socket) {
       socket.on("estimate-base", (base: any) => {
-        if (direction === true) {
-          setTargetAmount(base.predictAmount);
-        } else {
-          setBaseAmount(base.predictAmount);
-        }
+        setBaseAmount(base.predictAmount);
       });
       socket.on("estimate-target", (base: any) => {
-        if (direction === true) {
-          setBaseAmount(base.predictAmount);
-        } else {
-          setTargetAmount(base.predictAmount);
-        }
+        setTargetAmount(base.predictAmount);
       });
       return () => {
         socket.off("estimate-base");
         socket.off("estimate-target");
       };
     }
-  }, [poolId, socket]);
+  }, [poolId, socket, direction]);
 
   return (
     <div className="flex justify-center gap-3">
