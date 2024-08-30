@@ -167,7 +167,7 @@ export default function CreateRune() {
           slippage,
           signedPsbt
         );
-        if (res.status) {
+        if (res.success) {
           toast.success(res.msg);
           initialize();
         }
@@ -270,7 +270,7 @@ export default function CreateRune() {
           burnRuneAmount
         );
         console.log("burnResponse :>> ", burnResponse);
-        if (burnResponse.status) {
+        if (burnResponse.success) {
           const signedPsbt = await (window as any).unisat.signPsbt(
             burnResponse?.psbt
           );
@@ -278,7 +278,7 @@ export default function CreateRune() {
             burnResponse.pendingBurnId,
             signedPsbt
           );
-          if (burnTokenRep.status === true) {
+          if (burnTokenRep.success === true) {
             toast.success("Success");
           }
         }

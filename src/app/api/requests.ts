@@ -137,7 +137,7 @@ export const pumpBuyFunc = async (
     };
     const res = await axios.post(urlEndpoint, requestData);
     return {
-      status: true,
+      success: true,
       ...res.data,
     };
   } catch (error: any) {
@@ -145,7 +145,7 @@ export const pumpBuyFunc = async (
     const msg: any = error.response.data.msg || "Something went wrong";
     toast.error(msg);
     return {
-      status: false,
+      success: false,
     };
   }
 };
