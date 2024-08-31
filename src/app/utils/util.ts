@@ -24,9 +24,9 @@ export const calcProgress = (
   poolstate: number
 ) => {
   let diff = runeAmount - remainAmount;
-  if (diff > NEXT_POOL_AMOUNT) {
-    runeAmount = runeAmount - NEXT_POOL_AMOUNT;
-  }
+  // if (diff > NEXT_POOL_AMOUNT) {
+  //   runeAmount = runeAmount - NEXT_POOL_AMOUNT;
+  // }
   let progress = (diff / runeAmount) * 100;
   if (poolstate === 1) progress = 100;
   return progress;
