@@ -695,6 +695,10 @@ export default function CreateRune() {
             </div>
             <div className="flex flex-col gap-2">
               <div className="flex justify-between items-center gap-2">
+                <span>Stage</span>
+                <span>{runeInfo?.stage + 1}</span>
+              </div>
+              <div className="flex justify-between items-center gap-2">
                 <span>Rune ID</span>
                 <span>{runeInfo?.runeId}</span>
               </div>
