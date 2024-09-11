@@ -31,6 +31,7 @@ import { preSwapToken, swapToken } from "../api/requests";
 import { MainContext } from "../contexts/MainContext";
 import toast from "react-hot-toast";
 import useSocket from "../hooks/useSocket";
+import { displayBtc } from "../utils/util";
 
 export default function Page() {
   const socket = useSocket();
@@ -57,12 +58,16 @@ export default function Page() {
   const [baseToken, setBaseToken] = useState<any>({
     runeId: "btc",
     runeName: "BTC",
+    btcAmount: 100000000,
+    runeAmount: 100000000,
     image: BTCImg,
   });
 
   const [targetToken, setTargetToken] = useState<any>({
     runeId: "2869809:2877",
     runeName: "THE.THOG.IS.BEST",
+    btcAmount: 100000000,
+    runeAmount: 100000000,
     image: ImgStr,
   });
 
@@ -106,6 +111,7 @@ export default function Page() {
 
   const getData = async () => {
     const res = await getAllPools();
+    console.log("res :>> ", res);
     setPools(res);
     if (res.length > 0) {
       if (direction === true) {
@@ -119,10 +125,8 @@ export default function Page() {
 
   const handleInputBaseAmount = async (amount: any) => {
     if (direction === true) {
-      console.log("Here 1");
       socket.emit("predict-rune", { poolId, amount, type: "base" });
     } else {
-      console.log("Here 2");
       socket.emit("predict-btc", { poolId, amount, type: "base" });
     }
     setBaseAmount(amount);
@@ -130,10 +134,8 @@ export default function Page() {
 
   const handleInputTargeAmount = async (amount: any) => {
     if (direction === true) {
-      console.log("Here 3");
       socket.emit("predict-btc", { poolId, amount, type: "target" });
     } else {
-      console.log("Here 4");
       socket.emit("predict-rune", { poolId, amount, type: "target" });
     }
     setTargetAmount(amount);
@@ -164,7 +166,14 @@ export default function Page() {
         <div className="font-bold text-3xl text-center">Swap</div>
         <div className="flex flex-col gap-3">
           <div className="flex flex-col gap-2 border-1 bg-bgColor-dark p-2 rounded-xl">
-            <div className="pl-3">From</div>
+            <div className="flex justify-between items-center px-3">
+              <div>From</div>
+              <div>
+                {baseToken.runeId === "btc"
+                  ? displayBtc(baseToken.btcAmount)
+                  : baseToken.runeAmount}
+              </div>
+            </div>
             <div className="flex items-center gap-3 p-2">
               <Input
                 value={baseAmount}
@@ -204,7 +213,14 @@ export default function Page() {
             </Button>
           </div>
           <div className="flex flex-col gap-2 border-1 bg-bgColor-dark p-2 rounded-xl">
-            <div className="pl-3">To</div>
+            <div className="flex justify-between items-center px-3">
+              <div>To</div>
+              <div>
+                {targetToken.runeId === "btc"
+                  ? displayBtc(targetToken.btcAmount)
+                  : targetToken.runeAmount}
+              </div>
+            </div>
             <div className="flex items-center gap-3 p-2 rounded-xl">
               <Input
                 value={targetAmount}

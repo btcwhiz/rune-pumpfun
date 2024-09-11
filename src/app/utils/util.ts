@@ -1,5 +1,5 @@
 import moment from "moment-timezone";
-import { NEXT_POOL_AMOUNT } from "../config/config";
+import { NEXT_POOL_AMOUNT, SATS_MULTIPLE } from "../config/config";
 
 export const getTimeDifference = (date: any) => {
   // Set the timezone to PT (Pacific Time)
@@ -53,4 +53,8 @@ export const calcAvailableRune = async (
     console.log("available rune calc error :>> ", error);
     return 0;
   }
+};
+
+export const displayBtc = (btcAmount: number) => {
+  return Number((btcAmount / SATS_MULTIPLE).toFixed(8));
 };

@@ -87,6 +87,7 @@ export default function CreateRune() {
   // Burn
   const [availableBurn, setAvailableBurn] = useState<string>("");
   const [burnRuneAmount, setBurnRuneAmount] = useState<string>("");
+  const [estimateRuneAmount, setEstimateRuneAmount] = useState<string>("");
 
   const [userList, setUserList] = useState<any[]>([]);
 
@@ -271,6 +272,7 @@ export default function CreateRune() {
         );
         console.log("burnResponse :>> ", burnResponse);
         if (burnResponse.success) {
+          setEstimateRuneAmount(burnResponse.estimateRuneAmount);
           const signedPsbt = await (window as any).unisat.signPsbt(
             burnResponse?.psbt
           );
@@ -449,7 +451,11 @@ export default function CreateRune() {
                           <div key={index} className="flex items-center">
                             <div className="w-10">{index + 1}</div>
                             <div className="gap-3 grid grid-cols-5 w-full">
-                              <div>{item.type == 0 ? "Buy" : "Sell"}</div>
+                              <div>
+                                {item.type == 0 && "Buy"}
+                                {item.type == 1 && "Sell"}
+                                {item.type == 2 && "Burn"}
+                              </div>
                               <div>{item.runeSymbol}</div>
                               <div>{item.runeAmount}</div>
                               <div>
@@ -650,6 +656,12 @@ export default function CreateRune() {
                           disabled={loading}
                           onChange={(e) => setBurnRuneAmount(e.target.value)}
                         />
+                        {estimateRuneAmount && (
+                          <div className="flex items-center gap-1 pl-2">
+                            <div>You will get</div>
+                            <div>{`${estimateRuneAmount} runes`}</div>
+                          </div>
+                        )}
                         <Button
                           color="danger"
                           onClick={() => handleBurn()}
