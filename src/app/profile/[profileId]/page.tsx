@@ -217,72 +217,83 @@ export default function Profile() {
                     <hr />
                     <div className="flex flex-col gap-2">
                       {runes.map((rune: any, index: number) => (
-                        <div
-                          key={index}
-                          className="flex justify-between items-center gap-2"
-                        >
-                          <Link
-                            href={`${
-                              rune.runeId
-                                ? `/rune/${encodeURIComponent(rune.runeId)}`
-                                : `#`
-                            }`}
-                            className="w-full"
-                          >
-                            <div className="flex flex-col gap-1 hover:bg-foreground-300 p-2">
-                              <div className="flex justify-between items-center gap-2">
-                                <span>Rune Name</span>
-                                <span>{rune?.runeName}</span>
+                        <div key={index}>
+                          <div className="flex justify-between items-center gap-2">
+                            <Link
+                              href={`${
+                                rune.runeId
+                                  ? `/rune/${encodeURIComponent(rune.runeId)}`
+                                  : `#`
+                              }`}
+                              className="w-full"
+                            >
+                              <div className="flex flex-col gap-1 hover:bg-foreground-300 p-2">
+                                <div className="flex justify-between items-center gap-2">
+                                  <span>Rune Name</span>
+                                  <span>{rune?.runeName}</span>
+                                </div>
+                                <div className="flex justify-between items-center gap-2">
+                                  <div>Balance: </div>
+                                  <div>{rune.balance ? rune.balance : 0}</div>
+                                </div>
                               </div>
-                              <div className="flex justify-between items-center gap-2">
-                                <div>Balance: </div>
-                                <div>{rune.balance ? rune.balance : 0}</div>
-                              </div>
-                              <hr />
-                            </div>
-                          </Link>
-                          <Button
-                            onClick={() => {
-                              setRuneId(rune.runeId);
-                              onOpen();
-                            }}
-                            color="primary"
-                          >
-                            Withdraw
-                          </Button>
+                            </Link>
+                            <Button
+                              onClick={() => {
+                                setRuneId(rune.runeId);
+                                onOpen();
+                              }}
+                              color="primary"
+                            >
+                              Withdraw
+                            </Button>
+                          </div>
+                          <hr />
                         </div>
                       ))}
                     </div>
                   </CardBody>
                 </Card>
               </Tab>
-              <Tab key="runes-created" title="runes created">
+              <Tab key="runes-created" title="Runes Created">
                 <Card>
                   <CardBody>
                     <div>Runes Created</div>
                     <hr />
                     <div className="flex flex-col gap-2">
                       {myRunes.map((rune: any, index: number) => (
-                        <Link
-                          key={index}
-                          href={`${
-                            rune.runeId
-                              ? `/rune/${encodeURIComponent(rune.runeId)}`
-                              : `#`
-                          }`}
-                        >
-                          <div className="flex flex-col gap-1 hover:bg-foreground-300 p-2">
-                            <div className="flex justify-between items-center gap-2">
-                              <span>Rune Name</span>
-                              <span>{rune?.runeName}</span>
-                            </div>
-                            <div className="flex justify-between items-center gap-2">
-                              <div>Balance: </div>
-                              <div>{rune.balance ? rune.balance : 0}</div>
-                            </div>
-                            <hr />
+                        <div key={index}>
+                          <div className="flex justify-between items-center gap-2">
+                            <Link
+                              href={`${
+                                rune.runeId
+                                  ? `/rune/${encodeURIComponent(rune.runeId)}`
+                                  : `#`
+                              }`}
+                            >
+                              <div className="flex flex-col gap-1 hover:bg-foreground-300 p-2">
+                                <div className="flex justify-between items-center gap-2">
+                                  <span>Rune Name</span>
+                                  <span>{rune?.runeName}</span>
+                                </div>
+                                <div className="flex justify-between items-center gap-2">
+                                  <div>Balance: </div>
+                                  <div>{rune.balance ? rune.balance : 0}</div>
+                                </div>
+                              </div>
+                            </Link>
+                            <Button
+                              onClick={() => {
+                                setRuneId(rune.runeId);
+                                onOpen();
+                              }}
+                              color="primary"
+                            >
+                              Withdraw
+                            </Button>
                           </div>
-                        </Link>
+                          <hr />
+                        </div>
                       ))}
                     </div>
                   </CardBody>
