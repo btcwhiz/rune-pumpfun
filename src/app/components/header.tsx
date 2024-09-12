@@ -13,6 +13,7 @@ import { authUser } from "../api/requests";
 import { displayAddress } from "../utils/pump";
 import Link from "next/link";
 import useSocket from "../hooks/useSocket";
+import moment from "moment-timezone";
 
 const links = [
   {
@@ -47,6 +48,17 @@ export default function Header() {
       const address = accounts[0];
       const pubKey = await unisat.getPublicKey();
       const uInfo: any = await authUser(address, pubKey, address, pubKey);
+      localStorage.setItem(
+        "wallet",
+        JSON.stringify({
+          type: "Unisat",
+          paymentAddress: address,
+          paymentPubkey: pubKey,
+          ordinalAddress: address,
+          ordinalPubkey: pubKey,
+          session: moment.now() + 60 * 1000,
+        })
+      );
       setUserInfo(uInfo);
       setPaymentAddress(address);
       setPaymentPubkey(pubKey);
@@ -64,6 +76,21 @@ export default function Header() {
     setOrdinalAddress("");
     setOrdinalPubkey("");
   };
+
+  useEffect(() => {
+    const autoConnect = async () => {
+      const storedWallet = localStorage.getItem("wallet");
+      if (storedWallet) {
+        const { type, session } = JSON.parse(storedWallet);
+        // console.log(type, session);
+        if (session > moment.now()) {
+          handleConnectWallet();
+        }
+      }
+    };
+
+    autoConnect();
+  }, []);
 
   return (
     <div className="z-10 lg:flex justify-center items-center p-10 w-full font-mono text-sm">
