@@ -26,7 +26,7 @@ import { IoSwapVerticalSharp } from "react-icons/io5";
 
 import ImageDisplay from "../components/ImageDIsplay";
 import { BTCImg, ImgStr } from "../config/config";
-import { getAllPools } from "../api/swap";
+import { getAllPools, getLiquidity } from "../api/swap";
 import AvatarDisplay from "../components/AvatarDisplay";
 import { preAddLiquidity, addLiquidity } from "../api/requests";
 import { MainContext } from "../contexts/MainContext";
@@ -53,6 +53,7 @@ export default function Page() {
   const [poolId, setPoolId] = useState<string>("");
   const [targetAmount, setTargetAmount] = useState<string>("");
   const [slippage, setSlippage] = useState<number>(3);
+  const [liquidities, setLiquidities] = useState<any[]>([]);
   const [pools, setPools] = useState<any[]>([]);
   const [direction, setDirection] = useState<Boolean>(true);
 
@@ -139,6 +140,9 @@ export default function Page() {
       }
       setPoolId(res[0].poolId);
     }
+    const resp = await getLiquidity();
+    console.log('resp :>> ', resp);
+    setLiquidities(resp);
   };
 
   useEffect(() => {
