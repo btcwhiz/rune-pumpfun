@@ -140,14 +140,21 @@ export default function Page() {
       }
       setPoolId(res[0].poolId);
     }
-    const resp = await getLiquidity();
-    console.log('resp :>> ', resp);
-    setLiquidities(resp);
   };
 
   useEffect(() => {
     getData();
   }, []);
+
+  const getLiquidityData = async () => {
+    const resp = await getLiquidity(userInfo.userId);
+    console.log("resp :>> ", resp);
+    setLiquidities(resp);
+  };
+
+  useEffect(() => {
+    userInfo.userId && getLiquidityData();
+  }, [userInfo]);
 
   useEffect(() => {
     if (socket) {
