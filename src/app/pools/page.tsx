@@ -33,6 +33,9 @@ import { MainContext } from "../contexts/MainContext";
 import useSocket from "../hooks/useSocket";
 import { unisatSignPsbt } from "../utils/pump";
 import { ListboxWrapper } from "../swap/ListboxWrapper";
+import { IoMdCloseCircle } from "react-icons/io";
+import Link from "next/link";
+import { displayBtc } from "../utils/util";
 
 export default function Page() {
   const socket = useSocket();
@@ -148,8 +151,8 @@ export default function Page() {
 
   const getLiquidityData = async () => {
     const resp = await getLiquidity(userInfo.userId);
-    console.log("resp :>> ", resp);
-    setLiquidities(resp);
+    console.log(resp.liquidities)
+    setLiquidities(resp.liquidities);
   };
 
   useEffect(() => {
@@ -168,91 +171,156 @@ export default function Page() {
   }, [poolId, socket]);
 
   return (
-    <div className="flex justify-center gap-3">
-      <div className="flex flex-col gap-3 border-1 bg-bgColor-light py-10 p-3 rounded-xl w-1/2">
-        <div className="font-bold text-3xl text-center">Add Liquidity</div>
-        <div className="flex flex-col gap-3">
-          <div className="flex flex-col gap-2 border-1 bg-bgColor-dark p-2 rounded-xl">
-            <div className="pl-3">From</div>
-            <div className="flex items-center gap-3 p-2">
-              <Input
-                value={baseAmount}
-                onChange={(e) => handleInputBaseAmount(e.target.value)}
-                type="number"
-              />
+    <div className="flex flex-col gap-2">
+      <div className="flex justify-center">
+        <div className="flex flex-col gap-3 border-1 bg-bgColor-light py-10 p-3 rounded-xl w-1/2">
+          <div className="font-bold text-3xl text-center">Add Liquidity</div>
+          <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-2 border-1 bg-bgColor-dark p-2 rounded-xl">
+              <div className="pl-3">From</div>
+              <div className="flex items-center gap-3 p-2">
+                <Input
+                  value={baseAmount}
+                  onChange={(e) => handleInputBaseAmount(e.target.value)}
+                  type="number"
+                />
+                <Button
+                  className="flex justify-between gap-1 border-1 p-2 rounded-xl w-44"
+                  onPress={() => {
+                    direction !== true && onOpen();
+                  }}
+                >
+                  <div className="flex items-center gap-1">
+                    <ImageDisplay
+                      src={baseToken.image}
+                      className="w-6 h-6"
+                    ></ImageDisplay>
+                    <span>
+                      {baseToken.runeName.length > 7
+                        ? `${baseToken.runeName.slice(0, 7)}.`
+                        : baseToken.runeName}
+                    </span>
+                  </div>
+                  <div>
+                    <FaChevronDown />
+                  </div>
+                </Button>
+              </div>
+            </div>
+            <div className="flex justify-center">
               <Button
-                className="flex justify-between gap-1 border-1 p-2 rounded-xl w-44"
-                onPress={() => {
-                  direction !== true && onOpen();
-                }}
+                isIconOnly
+                color="primary"
+                onPress={() => handleChangeToken()}
               >
-                <div className="flex items-center gap-1">
-                  <ImageDisplay
-                    src={baseToken.image}
-                    className="w-6 h-6"
-                  ></ImageDisplay>
-                  <span>
-                    {baseToken.runeName.length > 7
-                      ? `${baseToken.runeName.slice(0, 7)}.`
-                      : baseToken.runeName}
-                  </span>
-                </div>
-                <div>
-                  <FaChevronDown />
-                </div>
+                <IoSwapVerticalSharp />
+              </Button>
+            </div>
+            <div className="flex flex-col gap-2 border-1 bg-bgColor-dark p-2 rounded-xl">
+              <div className="pl-3">To</div>
+              <div className="flex items-center gap-3 p-2 rounded-xl">
+                <Input
+                  value={targetAmount}
+                  // onChange={(e) => setTargetAmount(e.target.value)}
+                  type="number"
+                  disabled
+                />
+                <Button
+                  className="flex items-center gap-1 border-1 p-2 rounded-xl w-44"
+                  onPress={() => {
+                    direction === true && onOpen();
+                  }}
+                >
+                  <div className="flex items-center gap-1">
+                    <ImageDisplay
+                      src={targetToken.image}
+                      className="w-6 h-6"
+                    ></ImageDisplay>
+                    <span>
+                      {targetToken.runeName.length > 7
+                        ? `${targetToken.runeName.slice(0, 7)}.`
+                        : targetToken.runeName}
+                    </span>
+                  </div>
+                  <div>
+                    <FaChevronDown />
+                  </div>
+                </Button>
+              </div>
+            </div>
+            <div className="flex justify-center">
+              <Button
+                color="primary"
+                className="w-44"
+                onClick={() => handleAddLiquidity()}
+                isLoading={isLoading}
+              >
+                Confirm
               </Button>
             </div>
           </div>
-          <div className="flex justify-center">
-            <Button
-              isIconOnly
-              color="primary"
-              onPress={() => handleChangeToken()}
-            >
-              <IoSwapVerticalSharp />
-            </Button>
-          </div>
-          <div className="flex flex-col gap-2 border-1 bg-bgColor-dark p-2 rounded-xl">
-            <div className="pl-3">To</div>
-            <div className="flex items-center gap-3 p-2 rounded-xl">
-              <Input
-                value={targetAmount}
-                // onChange={(e) => setTargetAmount(e.target.value)}
-                type="number"
-                disabled
-              />
-              <Button
-                className="flex items-center gap-1 border-1 p-2 rounded-xl w-44"
-                onPress={() => {
-                  direction === true && onOpen();
-                }}
-              >
-                <div className="flex items-center gap-1">
-                  <ImageDisplay
-                    src={targetToken.image}
-                    className="w-6 h-6"
-                  ></ImageDisplay>
-                  <span>
-                    {targetToken.runeName.length > 7
-                      ? `${targetToken.runeName.slice(0, 7)}.`
-                      : targetToken.runeName}
-                  </span>
-                </div>
-                <div>
-                  <FaChevronDown />
-                </div>
-              </Button>
+        </div>
+      </div>
+      <div className="grid grid-cols-2 px-5 gap-2">
+        <div>
+          <div className="text-center bold">My Pools</div>
+          <div>
+            <div className="grid grid-cols-4 text-center">
+              <div>BTC</div>
+              <div>Rune ID</div>
+              <div>Rune</div>
+              <div>Action</div>
             </div>
           </div>
-          <div className="flex justify-center">
-            <Button
-              color="primary"
-              className="w-44"
-              onClick={() => handleAddLiquidity()}
-              isLoading={isLoading}
-            >
-              Confirm
-            </Button>
+          <div>
+            <div className="grid gap-2">
+              {liquidities.filter(item => item.status === 1).map((item, index) => (
+                <div key={index} className="grid grid-cols-4 text-center items-center">
+                  <div>{displayBtc(item.btcAmount)}</div>
+                  <div>{item.runeId}</div>
+                  <div>{item.runeAmount}</div>
+                  <div>
+                    <Button isIconOnly color="primary" className=" text-2xl">
+                      <IoMdCloseCircle />
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div className="text-center bold">Liquidity Txs</div>
+          <div>
+            <div className="grid grid-cols-5 text-center">
+              <div>BTC</div>
+              <div>Name</div>
+              <div>Rune</div>
+              <div>Tx ID</div>
+              <div>Status</div>
+            </div>
+          </div>
+          <div>
+            <div className="grid gap-2">
+              {liquidities.map((item, index) => (
+                <div key={index} className="grid grid-cols-5 text-center items-center">
+                  <div>{displayBtc(item.btcAmount)}</div>
+                  <div title={item.runeName}>{`${item.runeName ? `${item.runeName.slice(0, 10)}...` : ``}`}</div>
+                  <div>{item.runeAmount}</div>
+                  <div>
+                    <Link href={`https://mempool.space/testnet/tx/${item.txId}`} target="_blink" className="underline">
+                      {item.txId && `${item.txId.slice(0, 5)}...`}
+                    </Link>
+                  </div>
+                  <div>
+                    {item.status === 0 ? "Pending" : ""}
+                    {item.status === 1 ? "Success" : ""}
+                    {item.status === 2 ? "Failed" : ""}
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
