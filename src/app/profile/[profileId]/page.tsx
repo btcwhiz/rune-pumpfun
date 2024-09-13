@@ -99,6 +99,8 @@ export default function Profile() {
           console.log("withdrawRes :>> ", withdrawRes);
           toast.success(withdrawRes.msg);
         }
+        getAllRuneBalances();
+        onClose()
         setLoading(false);
       } else {
         setLoading(false);
@@ -124,7 +126,7 @@ export default function Profile() {
           (item: any) => item.creatorAddress === userInfo.paymentAddress
         )
       );
-    } catch (error) {}
+    } catch (error) { }
   };
 
   useEffect(() => {
@@ -220,11 +222,10 @@ export default function Profile() {
                         <div key={index}>
                           <div className="flex justify-between items-center gap-2">
                             <Link
-                              href={`${
-                                rune.runeId
+                              href={`${rune.runeId
                                   ? `/rune/${encodeURIComponent(rune.runeId)}`
                                   : `#`
-                              }`}
+                                }`}
                               className="w-full"
                             >
                               <div className="flex flex-col gap-1 hover:bg-foreground-300 p-2">
@@ -265,11 +266,10 @@ export default function Profile() {
                         <div key={index}>
                           <div className="flex justify-between items-center gap-2">
                             <Link
-                              href={`${
-                                rune.runeId
+                              href={`${rune.runeId
                                   ? `/rune/${encodeURIComponent(rune.runeId)}`
                                   : `#`
-                              }`}
+                                }`}
                             >
                               <div className="flex flex-col gap-1 hover:bg-foreground-300 p-2">
                                 <div className="flex justify-between items-center gap-2">
