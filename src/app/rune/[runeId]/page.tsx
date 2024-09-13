@@ -36,7 +36,7 @@ import { DEFAULT_POOL, SATS_MULTIPLE } from "../../config/config";
 import { TradingChart } from "../../components/TVChart/TradingChart";
 import { coinInfo } from "../../utils/types";
 import { useParams } from "next/navigation";
-import { calcProgress, getTimeDifference } from "../../utils/util";
+import { calcProgress, displayBtc, getTimeDifference } from "../../utils/util";
 import ImageDisplay from "../../components/ImageDIsplay";
 import useSocket from "../../hooks/useSocket";
 
@@ -331,7 +331,7 @@ export default function CreateRune() {
             balance: runes[i].runebalance.balance,
             ...userInfo,
           });
-        } catch (error) { }
+        } catch (error) {}
       }
       setUserList(uList);
     } catch (error) {
@@ -350,7 +350,7 @@ export default function CreateRune() {
       console.log("rBalance :>> ", rBalance);
       setRuneBalance(rBalance.balance);
       setAvailableBurn(rBalance.availableBurn);
-    } catch (error) { }
+    } catch (error) {}
   };
 
   useEffect(() => {
@@ -429,12 +429,26 @@ export default function CreateRune() {
         <div className="gap-3 grid grid-cols-3 p-5">
           <div className="flex flex-col gap-5 col-span-2">
             <div>
-              <div className="flex items-center justify-between py-2">
-                <div>
-                  <div>Ticker: {runeInfo.runeName}</div>
+              <div className="flex justify-between items-center py-2">
+                <div className="flex items-center gap-2">
+                  <div><span className="text-orange">Ticker:</span> {runeInfo.runeName}</div>
+                  <div className="text-orange">
+                    {`Marketcap: 
+                      ${displayBtc(
+                        runeInfo.runeAmount *
+                          (runeInfo.pool / runeInfo.remainAmount)
+                      )}
+                    BTC`}
+                  </div>
                 </div>
                 <div>
-                  <div><span className="text-green">created by</span> {`${runeInfo.creatorAddress && runeInfo.creatorAddress.slice(0,5)}...`}</div>
+                  <div>
+                    <span className="text-orange">created by</span>{" "}
+                    {`${
+                      runeInfo.creatorAddress &&
+                      runeInfo.creatorAddress.slice(0, 5)
+                    }...`}
+                  </div>
                 </div>
               </div>
               <TradingChart param={coin}></TradingChart>
@@ -508,8 +522,9 @@ export default function CreateRune() {
                             setTarget(!target);
                           }}
                         >
-                          {`switch to ${target === true ? "BTC" : runeInfo?.runeName
-                            }`}
+                          {`switch to ${
+                            target === true ? "BTC" : runeInfo?.runeName
+                          }`}
                         </Button>
                         {target === true ? (
                           <Input
@@ -551,8 +566,9 @@ export default function CreateRune() {
                             <div>
                               {target === false
                                 ? `You would get ${estimatePrice} ${runeInfo.runeName}`
-                                : `You should pay ${estimatePrice / 10 ** 8
-                                } btc`}
+                                : `You should pay ${
+                                    estimatePrice / 10 ** 8
+                                  } btc`}
                             </div>
                             <Button
                               color="success"
@@ -567,7 +583,7 @@ export default function CreateRune() {
                             color="success"
                             onClick={() => handlePreBuy()}
                             isLoading={loading}
-                          // disabled={runeInfo.poolstate === 1}
+                            // disabled={runeInfo.poolstate === 1}
                           >
                             Buy
                           </Button>
@@ -620,8 +636,9 @@ export default function CreateRune() {
                         />
                         {sellFlag ? (
                           <div className="flex flex-col items-center gap-3">
-                            <div>{`You would get ${estimatePrice / SATS_MULTIPLE
-                              } btc`}</div>
+                            <div>{`You would get ${
+                              estimatePrice / SATS_MULTIPLE
+                            } btc`}</div>
                             <Button
                               color="danger"
                               onClick={() => handleSell()}
@@ -635,7 +652,7 @@ export default function CreateRune() {
                             color="danger"
                             onClick={() => handlePreSell()}
                             isLoading={loading}
-                          // disabled={runeInfo.poolstate === 1}
+                            // disabled={runeInfo.poolstate === 1}
                           >
                             Sell
                           </Button>
@@ -743,15 +760,13 @@ export default function CreateRune() {
               </div>
               <div className="flex justify-between items-center gap-2">
                 <span>Marketcap</span>
-                <span>{`${(runeInfo.runeAmount *
-                    (runeInfo.pool / runeInfo.remainAmount)) /
-                  SATS_MULTIPLE
-                  } BTC`}</span>
+                <span>{`${displayBtc(
+                  runeInfo.runeAmount * (runeInfo.pool / runeInfo.remainAmount)
+                )} BTC`}</span>
               </div>
               <div className="flex justify-between items-center gap-2">
                 <span>BTC collected</span>
-                <span>{`${(runeInfo.pool - DEFAULT_POOL) / SATS_MULTIPLE
-                  } BTC`}</span>
+                <span>{`${displayBtc(runeInfo.pool - DEFAULT_POOL)} BTC`}</span>
               </div>
               <div className="flex flex-col items-start gap-2">
                 <span>{`bonding curve progress: ${process}%`}</span>
@@ -781,13 +796,15 @@ export default function CreateRune() {
                       target="_blink"
                       href={`https://mempool.space/testnet/address/${item.multisig}`}
                     >
-                      {`${displayAddress(item.multisig)} ${item.ordinalAddress == runeInfo.creatorAddress
+                      {`${displayAddress(item.multisig)} ${
+                        item.ordinalAddress == runeInfo.creatorAddress
                           ? "Owner "
                           : ""
-                        } ${item.ordinalAddress == userInfo.ordinalAddress
+                      } ${
+                        item.ordinalAddress == userInfo.ordinalAddress
                           ? "You"
                           : ""
-                        }`}
+                      }`}
                     </Link>
                     <div>
                       {`${displayPercentage(
