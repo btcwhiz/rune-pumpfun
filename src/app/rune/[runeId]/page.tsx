@@ -434,7 +434,7 @@ export default function CreateRune() {
                   <div>Ticker: {runeInfo.runeName}</div>
                 </div>
                 <div>
-                  <div><span className="text-green">created by</span> {`${runeInfo.creatorAddress.slice(0,5)}...`}</div>
+                  <div><span className="text-green">created by</span> {`${runeInfo.creatorAddress && runeInfo.creatorAddress.slice(0,5)}...`}</div>
                 </div>
               </div>
               <TradingChart param={coin}></TradingChart>
