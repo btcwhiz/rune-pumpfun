@@ -99,6 +99,7 @@ export default function Profile() {
           console.log("withdrawRes :>> ", withdrawRes);
           toast.success(withdrawRes.msg);
         }
+        setRuneAmount("")
         getAllRuneBalances();
         onClose()
         setLoading(false);
