@@ -551,6 +551,7 @@ export const burnFunc = async (pendingBurnId: string, signedPsbt: string) => {
   } catch (error: any) {
     const msg: any = error.response.data.msg || "Something went wrong";
     console.log("error :>> ", error);
+    toast.error(msg);
     return { success: false };
   }
 };
