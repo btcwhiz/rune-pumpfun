@@ -285,7 +285,7 @@ export const getRuneFunc = async () => {
     const res = await axios.post(urlEndpoint);
     return res.data;
   } catch (error: any) {
-    const msg: any = error.response.data.msg || "Something went wrong";
+    // const msg: any = error.response.data.msg || "Something went wrong";
     console.log("error :>> ", error);
     return null;
   }
@@ -300,7 +300,7 @@ export const getRuneBalance = async (userId: string, runeId: string) => {
     });
     return res.data;
   } catch (error: any) {
-    const msg: any = error.response.data.msg || "Something went wrong";
+    // const msg: any = error.response.data.msg || "Something went wrong";
     console.log("error :>> ", error);
     return null;
   }
