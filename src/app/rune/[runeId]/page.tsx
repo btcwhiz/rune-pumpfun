@@ -36,7 +36,12 @@ import { DEFAULT_POOL, SATS_MULTIPLE } from "../../config/config";
 // import useSocket from "../../hooks/useSocket";
 import { TradingChart } from "../../components/TVChart/TradingChart";
 import { coinInfo } from "../../utils/types";
-import { calcProgress, displayBtc, getTimeDifference } from "../../utils/util";
+import {
+  calcAvailableRune,
+  calcProgress,
+  displayBtc,
+  getTimeDifference,
+} from "../../utils/util";
 import ImageDisplay from "../../components/ImageDIsplay";
 import useSocket from "../../hooks/useSocket";
 
@@ -339,6 +344,21 @@ export default function CreateRune() {
     }
   };
 
+  const handleMaxAmount = async (target: boolean) => {
+    if (target === true) {
+      const maxAmount = calcAvailableRune(
+        runeInfo.stage,
+        runeInfo.runeAmount,
+        runeInfo.remainAmount,
+        runeInfo.stage2Percent,
+        runeInfo.dexPercent
+      );
+      setBuyRuneAmount(`${maxAmount}`);
+    } else {
+      console.log("max btc");
+    }
+  };
+
   useEffect(() => {
     initialize();
     // eslint-disable-next-line
@@ -431,7 +451,10 @@ export default function CreateRune() {
             <div>
               <div className="flex justify-between items-center py-2">
                 <div className="flex items-center gap-2">
-                  <div><span className="text-orange">Ticker:</span> {runeInfo.runeName}</div>
+                  <div>
+                    <span className="text-orange">Ticker:</span>{" "}
+                    {runeInfo.runeName}
+                  </div>
                   <div className="text-orange">
                     {`Marketcap: 
                       ${displayBtc(
@@ -536,6 +559,14 @@ export default function CreateRune() {
                               setBuyFlag(false);
                               setBuyRuneAmount(e.target.value);
                             }}
+                            endContent={
+                              <Button
+                                color="primary"
+                                onClick={() => handleMaxAmount(target)}
+                              >
+                                Max
+                              </Button>
+                            }
                           />
                         ) : (
                           <Input
@@ -547,6 +578,14 @@ export default function CreateRune() {
                               setBuyFlag(false);
                               setBtcAmount(e.target.value);
                             }}
+                            // endContent={
+                            //   <Button
+                            //     color="primary"
+                            //     onClick={() => handleMaxAmount(target)}
+                            //   >
+                            //     Max
+                            //   </Button>
+                            // }
                           />
                         )}
 

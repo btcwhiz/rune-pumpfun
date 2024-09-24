@@ -32,7 +32,7 @@ export const calcProgress = (
   return progress;
 };
 
-export const calcAvailableRune = async (
+export const calcAvailableRune = (
   stage: number,
   totalSupply: number,
   remainAmount: number,
@@ -42,9 +42,9 @@ export const calcAvailableRune = async (
   try {
     const stage2Amount = (totalSupply * stage2Percent) / 100,
       dexAmount = (totalSupply * dexPercent) / 100;
-    if (stage === 1) {
+    if (stage === 0) {
       return remainAmount - stage2Amount - dexAmount;
-    } else if (stage === 2) {
+    } else if (stage === 1) {
       return remainAmount - dexAmount;
     } else {
       return remainAmount;
