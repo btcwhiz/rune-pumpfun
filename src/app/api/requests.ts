@@ -215,7 +215,7 @@ export const getAllTransactions = async (userId: string) => {
     const res = await axios.post(urlEndpoint, requestData);
     return res.data;
   } catch (error: any) {
-    const msg: any = error.response.data.msg || "Something went wrong";
+    // const msg: any = error.response.data.msg || "Something went wrong";
     console.log("error :>> ", error);
     return null;
   }
@@ -236,7 +236,7 @@ export const preWithdrawFunc = async (
     const res = await axios.post(urlEndpoint, requestData);
     return res.data;
   } catch (error: any) {
-    const msg: any = error.response.data.msg || "Something went wrong";
+    // const msg: any = error.response.data.msg || "Something went wrong";
     console.log("error :>> ", error);
     return null;
   }
@@ -261,7 +261,7 @@ export const withdrawFunc = async (
     const res = await axios.post(urlEndpoint, requestData);
     return res.data;
   } catch (error: any) {
-    const msg: any = error.response.data.msg || "Something went wrong";
+    // const msg: any = error.response.data.msg || "Something went wrong";
     console.log("error :>> ", error);
     return null;
   }
@@ -273,7 +273,7 @@ export const getPumpActionFunc = async (runeId: string) => {
     const res = await axios.post(urlEndpoint, { runeId });
     return res.data;
   } catch (error: any) {
-    const msg: any = error.response.data.msg || "Something went wrong";
+    // const msg: any = error.response.data.msg || "Something went wrong";
     console.log("error :>> ", error);
     return null;
   }
@@ -312,7 +312,7 @@ export const getRuneInfoFunc = async (runeId: string) => {
     const res = await axios.get(urlEndpoint);
     return res.data;
   } catch (error: any) {
-    const msg: any = error.response.data.msg || "Something went wrong";
+    // const msg: any = error.response.data.msg || "Something went wrong";
     console.log("error :>> ", error);
     return null;
   }
