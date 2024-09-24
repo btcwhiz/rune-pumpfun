@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import copy from "copy-to-clipboard";
 import { FaCopy, FaEdit, FaSave } from "react-icons/fa";
+import toast from "react-hot-toast";
 
 import {
   authUser,
@@ -29,7 +30,6 @@ import {
 } from "@nextui-org/react";
 import { displayAddress, unisatSignPsbt } from "../../utils/pump";
 import { MainContext } from "../../contexts/MainContext";
-import toast from "react-hot-toast";
 
 export default function Profile() {
   const router = useRouter();

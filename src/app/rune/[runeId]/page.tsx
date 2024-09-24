@@ -10,6 +10,7 @@ import {
   Tabs,
 } from "@nextui-org/react";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import { useContext, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import {
@@ -35,7 +36,6 @@ import { DEFAULT_POOL, SATS_MULTIPLE } from "../../config/config";
 // import useSocket from "../../hooks/useSocket";
 import { TradingChart } from "../../components/TVChart/TradingChart";
 import { coinInfo } from "../../utils/types";
-import { useParams } from "next/navigation";
 import { calcProgress, displayBtc, getTimeDifference } from "../../utils/util";
 import ImageDisplay from "../../components/ImageDIsplay";
 import useSocket from "../../hooks/useSocket";
