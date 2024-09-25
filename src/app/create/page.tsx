@@ -107,36 +107,34 @@ export default function CreateRune() {
 
       setLoading(true);
 
-      // const saveData = {
-      //   name,
-      //   ticker: rTicker,
-      //   description,
-      //   dexPercentage,
-      //   initialBuyAmount,
-      //   twitter,
-      //   telegram,
-      //   website,
-      // };
+      const saveData = {
+        name,
+        ticker: rTicker,
+        description,
+        dexPercentage,
+        initialBuyAmount,
+        twitter,
+        telegram,
+        website,
+      };
 
-      // const { status, etchingPsbt, etchingFee, waitEtchingData }: any =
-      //   await preEtchingRuneFunc(userInfo.userId, imageContent, saveData);
-      // if (status) {
-      //   setEtchingFeeRate(etchingFee);
-      //   console.log("etchingPsbt :>> ", etchingPsbt);
-      //   console.log("waitEtchingData :>> ", waitEtchingData);
+      const { status, etchingPsbt, etchingFee, waitEtchingData }: any =
+        await preEtchingRuneFunc(userInfo.userId, imageContent, saveData);
+      if (status) {
+        setEtchingFeeRate(etchingFee);
 
-      //   const signedPsbt = await unisatSignPsbt(etchingPsbt.psbt);
-      //   const { status, msg } = await etchingRuneFunc(
-      //     userInfo.userId,
-      //     signedPsbt,
-      //     waitEtchingData.waitEtchingId,
-      //     etchingPsbt.requestId
-      //   );
+        const signedPsbt = await unisatSignPsbt(etchingPsbt.psbt);
+        const { status, msg } = await etchingRuneFunc(
+          userInfo.userId,
+          signedPsbt,
+          waitEtchingData.waitEtchingId,
+          etchingPsbt.requestId
+        );
 
-      //   if (status) {
-      //     toast.success(msg);
-      //   }
-      // }
+        if (status) {
+          toast.success(msg);
+        }
+      }
       setImageData(null);
       setImageContent("");
       setTicker("");
