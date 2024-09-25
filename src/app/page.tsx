@@ -128,10 +128,10 @@ export default function Home() {
                               <span className="text-metal text-xs">ID</span>
                               <span>{item.runeId}</span>
                             </div>
-                            <div className="flex justify-between items-center gap-2 text-small">
+                            {/* <div className="flex justify-between items-center gap-2 text-small">
                               <span className="text-metal text-xs">Symbol</span>
                               <span>{item.runeSymbol}</span>
-                            </div>
+                            </div> */}
                             <div className="flex flex-wrap justify-between items-center gap-2 text-small">
                               <span className="text-metal text-xs">Name</span>
                               <span>{item.runeName}</span>
@@ -166,7 +166,7 @@ export default function Home() {
                                 ).toFixed(5)} BTC`}
                               </span>
                             </div>
-                            <div className="flex justify-between items-center gap-2 text-small">
+                            {/* <div className="flex justify-between items-center gap-2 text-small">
                               <span className="text-metal text-xs">
                                 BTC collected
                               </span>
@@ -174,7 +174,7 @@ export default function Home() {
                                 (item.pool - DEFAULT_POOL) /
                                 SATS_MULTIPLE
                               ).toFixed(5)} BTC`}</span>
-                            </div>
+                            </div> */}
                           </div>
                         </div>
                       </div>
