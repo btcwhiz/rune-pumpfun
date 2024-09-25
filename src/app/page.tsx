@@ -82,13 +82,21 @@ export default function Home() {
               return (
                 <Card
                   key={index}
-                  className="border-primary-50 bg-dark border text-primary-50"
+                  className="relative border-primary-50 bg-dark border text-primary-50"
                 >
                   <CardBody
                     className={`${
                       item.runeId ? "" : "bg-gray-500"
                     } flex flex-col justify-end`}
                   >
+                    {!item.runeId && (
+                      <div className="flex flex-col justify-center gap-3 text-2xl">
+                        <div className="flex justify-center font-bold">
+                          Pending
+                        </div>
+                        <Spinner></Spinner>
+                      </div>
+                    )}
                     <Link
                       href={`${
                         item.runeId
@@ -97,63 +105,78 @@ export default function Home() {
                       }`}
                       className="flex flex-col gap-3"
                     >
-                      {!item.runeId && (
-                        <div className="flex flex-col justify-center gap-3 text-2xl">
-                          <div className="flex justify-center font-bold">
-                            Pending
-                          </div>
-                          <Spinner></Spinner>
-                        </div>
-                      )}
-                      <div>
-                        <ImageDisplay src={item.image[0]}></ImageDisplay>
-                      </div>
-                      {item.poolstate === 1 && <div>Closed</div>}
-                      <div className="flex justify-between items-center gap-2">
-                        <span>Rune ID</span>
-                        <span>{item.runeId}</span>
-                      </div>
-                      <div className="flex justify-between items-center gap-2">
-                        <span>Rune Symbol</span>
-                        <span>{item.runeSymbol}</span>
-                      </div>
-                      <div className="flex justify-between items-center gap-2">
-                        <span>Rune Name</span>
-                        <span>{item.runeName}</span>
-                      </div>
-                      <div className="flex justify-between items-center gap-2">
-                        <span>Rune Description</span>
-                        <span>{item.runeDescription}</span>
-                      </div>
-                      <div className="flex justify-between items-center gap-2">
-                        <span>Remain Amount</span>
-                        <span>{item.remainAmount}</span>
-                      </div>
-                      <div className="flex justify-between items-center gap-2">
-                        <span>Price</span>
-                        <span>{`${item.pool / item.remainAmount} sats`}</span>
-                      </div>
-                      <div className="flex justify-between items-center gap-2">
-                        <span>Marketcap</span>
-                        <span>{`${
-                          (item.runeAmount * (item.pool / item.remainAmount)) /
-                          SATS_MULTIPLE
-                        } BTC`}</span>
-                      </div>
-                      <div className="flex justify-between items-center gap-2">
-                        <span>BTC collected</span>
-                        <span>{`${
-                          (item.pool - DEFAULT_POOL) / SATS_MULTIPLE
-                        } BTC`}</span>
-                      </div>
-                      <div className="flex justify-between items-center gap-2">
-                        <span>{`${progress}%`}</span>
+                      <div className="flex justify-between items-center gap-2 text-small">
+                        <span className="pl-2">{`${progress}%`}</span>
                         <Progress
                           size="md"
                           aria-label="Loading..."
                           value={progress}
                           className="max-w-md"
                         />
+                      </div>
+                      <div className="flex gap-3">
+                        <div>
+                          <ImageDisplay
+                            src={item.image[0]}
+                            className="w-32"
+                          ></ImageDisplay>
+                        </div>
+                        <div className="flex w-full">
+                          <div className="flex flex-col gap-1 w-full">
+                            {item.poolstate === 1 && <div>Closed</div>}
+                            <div className="flex justify-between items-center gap-2 text-small">
+                              <span className="text-metal text-xs">ID</span>
+                              <span>{item.runeId}</span>
+                            </div>
+                            <div className="flex justify-between items-center gap-2 text-small">
+                              <span className="text-metal text-xs">Symbol</span>
+                              <span>{item.runeSymbol}</span>
+                            </div>
+                            <div className="flex flex-wrap justify-between items-center gap-2 text-small">
+                              <span className="text-metal text-xs">Name</span>
+                              <span>{item.runeName}</span>
+                            </div>
+                            <div className="flex flex-wrap justify-between items-center gap-2 text-small">
+                              <span className="text-metal text-xs">
+                                Description
+                              </span>
+                              <span>{item.runeDescription}</span>
+                            </div>
+                            <div className="flex justify-between items-center gap-2 text-small">
+                              <span className="text-metal text-xs">
+                                Remain Amount
+                              </span>
+                              <span>{item.remainAmount}</span>
+                            </div>
+                            <div className="flex justify-between items-center gap-2 text-small">
+                              <span className="text-metal text-xs">Price</span>
+                              <span>{`${(item.pool / item.remainAmount).toFixed(
+                                5
+                              )} sats`}</span>
+                            </div>
+                            <div className="flex justify-between items-center gap-2 text-small">
+                              <span className="text-metal text-xs">
+                                Marketcap
+                              </span>
+                              <span className="text-tahiti">
+                                {`${(
+                                  (item.runeAmount *
+                                    (item.pool / item.remainAmount)) /
+                                  SATS_MULTIPLE
+                                ).toFixed(5)} BTC`}
+                              </span>
+                            </div>
+                            <div className="flex justify-between items-center gap-2 text-small">
+                              <span className="text-metal text-xs">
+                                BTC collected
+                              </span>
+                              <span>{`${(
+                                (item.pool - DEFAULT_POOL) /
+                                SATS_MULTIPLE
+                              ).toFixed(5)} BTC`}</span>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </Link>
                   </CardBody>

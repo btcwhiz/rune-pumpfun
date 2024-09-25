@@ -24,6 +24,7 @@
     "react-icons": "^5.2.1",
     "react-loading": "^2.0.3",
     "react-query": "^3.39.3",
+    "sass": "^1.79.3",
     "socket.io-client": "^4.7.5",
     "viem": "^2.17.9"
   },
