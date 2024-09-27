@@ -87,7 +87,7 @@ export default function Home() {
                   <CardBody
                     className={`${
                       item.runeId ? "" : "bg-gray-500"
-                    } flex flex-col justify-end`}
+                    } flex flex-col justify-around`}
                   >
                     {!item.runeId && (
                       <div className="flex flex-col justify-center gap-3 text-2xl">
@@ -123,7 +123,11 @@ export default function Home() {
                         </div>
                         <div className="flex w-full">
                           <div className="flex flex-col gap-1 w-full">
-                            {item.poolstate === 1 && <div>Closed</div>}
+                            {item.poolstate === 1 && (
+                              <div className="top-1/2 left-1/2 absolute font-Hadenut text-4xl text-danger -translate-x-1/2 -translate-y-1/2 -rotate-[17deg]">
+                                Closed
+                              </div>
+                            )}
                             <div className="flex justify-between items-center gap-2 text-small">
                               <span className="text-metal text-xs">ID</span>
                               <span>{item.runeId}</span>

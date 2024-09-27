@@ -34,6 +34,9 @@ const config: Config = {
         light: "#1C243E",
       },
     },
+    fontFamily: {
+      Hadenut: "Hadenut",
+    },
   },
   darkMode: "class",
   plugins: [nextui()],

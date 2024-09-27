@@ -33,3 +33,7 @@ input {
   }
 }
 
+@font-face {
+  font-family: "Hadenut";
+  src: url("/fonts/Hadenut-xRRy8.ttf");
+}
