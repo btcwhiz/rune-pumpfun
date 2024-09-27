@@ -3,34 +3,44 @@
 import React, { useContext, useEffect } from "react";
 import { Button } from "@nextui-org/react";
 import toast from "react-hot-toast";
-import copy from "copy-to-clipboard";
-import { FaCopy, FaUser } from "react-icons/fa";
+import { FaHome, FaPlus, FaUser } from "react-icons/fa";
 import { IoIosLogOut } from "react-icons/io";
 import { TfiReload } from "react-icons/tfi";
+import Link from "next/link";
+import moment from "moment-timezone";
 
 import { MainContext } from "../contexts/MainContext";
 import { authUser } from "../api/requests";
-import { displayAddress } from "../utils/pump";
-import Link from "next/link";
-import useSocket from "../hooks/useSocket";
-import moment from "moment-timezone";
+import { usePathname } from "next/navigation";
+import { GiMoneyStack } from "react-icons/gi";
+import { AiOutlineSwap } from "react-icons/ai";
+import { GrMoney } from "react-icons/gr";
 
 const links = [
   {
     label: "Home",
     link: "/",
+    icon: <FaHome />,
+  },
+  {
+    label: "Etching",
+    link: "/create",
+    icon: <FaPlus />,
   },
   {
     label: "Swap",
     link: "/swap",
+    icon: <AiOutlineSwap />,
   },
   {
     label: "Pools",
     link: "/pools",
+    icon: <GrMoney />,
   },
 ];
 
 export default function Header() {
+  const path = usePathname();
   const {
     setPaymentAddress,
     setPaymentPubkey,
@@ -56,7 +66,7 @@ export default function Header() {
           paymentPubkey: pubKey,
           ordinalAddress: address,
           ordinalPubkey: pubKey,
-          session: moment.now() + 60 * 1000,
+          session: moment.now() + 60 * 60 * 1000,
         })
       );
       setUserInfo(uInfo);
@@ -81,8 +91,7 @@ export default function Header() {
     const autoConnect = async () => {
       const storedWallet = localStorage.getItem("wallet");
       if (storedWallet) {
-        const { type, session } = JSON.parse(storedWallet);
-        // console.log(type, session);
+        const { session } = JSON.parse(storedWallet);
         if (session > moment.now()) {
           handleConnectWallet();
         }
@@ -93,53 +102,92 @@ export default function Header() {
   }, []);
 
   return (
-    <div className="z-10 lg:flex justify-center items-center p-10 w-full font-mono text-sm">
-      <div className="bottom-0 left-0 lg:static fixed flex justify-center items-center bg-gradient-to-t from-white dark:from-black via-white dark:via-black lg:bg-none w-full h-48 lg:size-auto gap-3">
-        <div className="flex items-center gap-3">
+    <div className="z-10 bg-bgColor-ghost px-12 border-b-2 border-bgColor-stroke w-full font-mono text-sm">
+      <div className="flex flex-wrap justify-between items-center bg-gradient-to-t dark:from-black dark:via-black lg:bg-none w-full lg:size-auto gap-3">
+        <div className="flex flex-wrap justify-center items-center gap-3">
           {links.map((item, index) => (
-            <Link
+            <Button
               key={index}
               href={item.link}
-              className="bg-primary-500 p-2 rounded-xl w-32 text-center"
+              as={Link}
+              className={`${
+                item.link === path
+                  ? "border-warning border-b text-warning"
+                  : "text-white"
+              } rounded-none flex items-center gap-2`}
+              color="warning"
+              variant="light"
             >
-              {item.label}
-            </Link>
+              {item.icon}
+              <span>{item.label}</span>
+            </Button>
           ))}
         </div>
-        {userInfo?.userId ? (
-          <div className="flex items-center gap-3">
-            <div>{`${userInfo.btcBalance / 10 ** 8} BTC`}</div>
-            <Button color="primary">
-              <Link
+        <div className="py-3">
+          {userInfo?.userId ? (
+            <div className="flex flex-wrap justify-center items-center gap-3">
+              {userInfo.role === 1 && (
+                <Button
+                  color="warning"
+                  href={`/pump-admin`}
+                  as={Link}
+                  className="flex items-center gap-2 text-white"
+                  variant="flat"
+                >
+                  <div>Admin</div>
+                </Button>
+              )}
+              <div>{`${userInfo.btcBalance / 10 ** 8} BTC`}</div>
+              <Button
+                color="warning"
+                onClick={() => handleConnectWallet()}
+                className="rounded-full"
+                isIconOnly
+                variant="flat"
+              >
+                <TfiReload className="text-white" />
+              </Button>
+              <Button
+                color="warning"
+                href={`/payment`}
+                as={Link}
+                className="flex items-center gap-2 text-white"
+                variant="flat"
+              >
+                <div>Payment</div>
+                <GiMoneyStack />
+              </Button>
+              <Button
+                as={Link}
+                color="warning"
                 href={`/profile/${encodeURIComponent(userInfo?.profileId)}`}
-                className="flex items-center gap-5"
+                className="flex items-center gap-2 text-white"
+                variant="flat"
               >
                 <div>Profile</div>
                 <FaUser />
-              </Link>
-            </Button>
+              </Button>
+              <Button
+                color="warning"
+                onClick={() => handleDisConnectWallet()}
+                className="rounded-full"
+                isIconOnly
+                variant="flat"
+              >
+                <IoIosLogOut className="text-white text-xl" />
+              </Button>
+            </div>
+          ) : (
             <Button
-              color="primary"
+              color="warning"
               onClick={() => handleConnectWallet()}
-              className="rounded-full"
-              isIconOnly
+              className="rounded-md text-white"
+              variant="flat"
             >
-              <TfiReload />
+              Connect Wallet
             </Button>
-            <Button
-              color="primary"
-              onClick={() => handleDisConnectWallet()}
-              className="flex items-center gap-5"
-            >
-              <div>Log out</div>
-              <IoIosLogOut />
-            </Button>
-          </div>
-        ) : (
-          <Button color="primary" onClick={() => handleConnectWallet()}>
-            Connect Wallet
-          </Button>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );

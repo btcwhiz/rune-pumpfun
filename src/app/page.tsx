@@ -52,32 +52,20 @@ export default function Home() {
     <main className="p-3 min-h-screen">
       <div className="flex flex-col gap-3">
         {/* --- Rune List --- */}
-        <div className="flex flex-col gap-3 p-10">
-          <div className="flex justify-center gap-5">
-            {userInfo.role === 1 && (
-              <Link className="p-3 border rounded-xl" href={"/pump-admin"}>
-                Admin
-              </Link>
-            )}
-            <Link className="p-3 border rounded-xl" href={"/create"}>
-              start a new coin
-            </Link>
-            <Link className="p-3 border rounded-xl" href={"/payment"}>
-              payment
-            </Link>
-          </div>
+        <div className="flex flex-col gap-3 md:px-10 p-2">
           <div className="flex items-center gap-3">
             <div>Runes</div>
             <Button
-              color="primary"
+              color="warning"
               onClick={() => getRunes()}
-              className="rounded-full"
+              className="rounded-full text-white"
               isIconOnly
+              variant="flat"
             >
               <TfiReload />
             </Button>
           </div>
-          <div className="gap-3 grid grid-cols-3">
+          <div className="gap-3 grid grid-cols-1 md:grid-cols-3">
             {runes.map((item, index) => {
               // let runeAmount = Math.round(item.runeAmount * 0.8);
               const progress = calcProgress(
@@ -88,7 +76,7 @@ export default function Home() {
               return (
                 <Card
                   key={index}
-                  className="relative border-primary-50 bg-dark border text-primary-50"
+                  className="relative bg-bgColor-ghost border border-bgColor-stroke text-primary-50"
                 >
                   <CardBody
                     className={`${
@@ -120,6 +108,7 @@ export default function Home() {
                           aria-label="Loading..."
                           value={progress}
                           className="max-w-md"
+                          color="warning"
                         />
                       </div>
                       <div className="flex gap-3">
@@ -132,8 +121,8 @@ export default function Home() {
                         <div className="flex w-full">
                           <div className="flex flex-col gap-1 w-full">
                             {item.poolstate === 1 && (
-                              <div className="top-1/2 left-1/2 absolute font-Hadenut text-4xl text-danger -translate-x-1/2 -translate-y-1/2 -rotate-[17deg]">
-                                Closed
+                              <div className="top-1/2 left-1/2 absolute font-Hadenut text-4xl text-warning -translate-x-1/2 -translate-y-1/2 -rotate-[17deg]">
+                                closed
                               </div>
                             )}
                             <div className="flex justify-between items-center gap-2 text-small">
