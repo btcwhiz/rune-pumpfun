@@ -1,8 +1,9 @@
 "use client";
-import { Accordion, AccordionItem, Button, Input } from "@nextui-org/react";
+
+import { useContext, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useContext, useRef, useState } from "react";
+import { Accordion, AccordionItem, Button, Input } from "@nextui-org/react";
 import toast from "react-hot-toast";
 import { etchingRuneFunc, preEtchingRuneFunc } from "../api/requests";
 import { MainContext } from "../contexts/MainContext";
@@ -182,6 +183,7 @@ export default function CreateRune() {
                     Upload Image
                   </Button>
                 </div>
+                <div>Max file Size: 50mb</div>
                 <input
                   type="file"
                   className="hidden opacity-0 min-w-full min-h-full"

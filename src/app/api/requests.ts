@@ -336,7 +336,7 @@ export const preEtchingRuneFunc = async (
       ...res.data,
     };
   } catch (error: any) {
-    console.log("error :111>> ", error);
+    console.log("error :>> ", error);
     const msg: any = error.response.data.msg || "Something went wrong";
     toast.error(msg);
     return {
