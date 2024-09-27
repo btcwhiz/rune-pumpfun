@@ -106,7 +106,9 @@ export default function Home() {
                       className="flex flex-col gap-3"
                     >
                       <div className="flex justify-between items-center gap-2 text-small">
-                        <span className="pl-2">{`${progress}%`}</span>
+                        <span className="pl-2">{`${
+                          progress?.toFixed(4) || 0
+                        }%`}</span>
                         <Progress
                           size="md"
                           aria-label="Loading..."
