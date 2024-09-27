@@ -19,6 +19,7 @@ import { MainContext } from "./contexts/MainContext";
 import ImageDisplay from "./components/ImageDIsplay";
 import { DEFAULT_POOL, SATS_MULTIPLE } from "./config/config";
 import { calcProgress } from "./utils/util";
+import { TfiReload } from "react-icons/tfi";
 
 export default function Home() {
   const { userInfo } = useContext(MainContext);
@@ -67,8 +68,13 @@ export default function Home() {
           </div>
           <div className="flex items-center gap-3">
             <div>Runes</div>
-            <Button onClick={() => getRunes()} color="primary">
-              Reload
+            <Button
+              color="primary"
+              onClick={() => getRunes()}
+              className="rounded-full"
+              isIconOnly
+            >
+              <TfiReload />
             </Button>
           </div>
           <div className="gap-3 grid grid-cols-3">

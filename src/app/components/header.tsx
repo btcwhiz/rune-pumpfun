@@ -122,6 +122,7 @@ export default function Header() {
               color="primary"
               onClick={() => handleConnectWallet()}
               className="rounded-full"
+              isIconOnly
             >
               <TfiReload />
             </Button>
