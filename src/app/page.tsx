@@ -126,40 +126,40 @@ export default function Home() {
                               </div>
                             )}
                             <div className="flex justify-between items-center gap-2 text-small">
-                              <span className="text-metal text-xs">ID</span>
+                              <span className="text-bgColor-stroke2 text-xs">ID</span>
                               <span>{item.runeId}</span>
                             </div>
                             {/* <div className="flex justify-between items-center gap-2 text-small">
-                              <span className="text-metal text-xs">Symbol</span>
+                              <span className="text-bgColor-stroke2 text-xs">Symbol</span>
                               <span>{item.runeSymbol}</span>
                             </div> */}
                             <div className="flex flex-wrap justify-between items-center gap-2 text-small">
-                              <span className="text-metal text-xs">Name</span>
+                              <span className="text-bgColor-stroke2 text-xs">Name</span>
                               <span>{item.runeName}</span>
                             </div>
                             <div className="flex flex-wrap justify-between items-center gap-2 text-small">
-                              <span className="text-metal text-xs">
+                              <span className="text-bgColor-stroke2 text-xs">
                                 Description
                               </span>
                               <span>{item.runeDescription}</span>
                             </div>
                             <div className="flex justify-between items-center gap-2 text-small">
-                              <span className="text-metal text-xs">
+                              <span className="text-bgColor-stroke2 text-xs">
                                 Remain Amount
                               </span>
                               <span>{item.remainAmount}</span>
                             </div>
                             <div className="flex justify-between items-center gap-2 text-small">
-                              <span className="text-metal text-xs">Price</span>
+                              <span className="text-bgColor-stroke2 text-xs">Price</span>
                               <span>{`${(item.pool / item.remainAmount).toFixed(
                                 5
                               )} sats`}</span>
                             </div>
                             <div className="flex justify-between items-center gap-2 text-small">
-                              <span className="text-metal text-xs">
+                              <span className="text-bgColor-stroke2 text-xs">
                                 Marketcap
                               </span>
-                              <span className="text-tahiti">
+                              <span className="text-warning">
                                 {`${(
                                   (item.runeAmount *
                                     (item.pool / item.remainAmount)) /
@@ -168,7 +168,7 @@ export default function Home() {
                               </span>
                             </div>
                             {/* <div className="flex justify-between items-center gap-2 text-small">
-                              <span className="text-metal text-xs">
+                              <span className="text-bgColor-stroke2 text-xs">
                                 BTC collected
                               </span>
                               <span>{`${(
