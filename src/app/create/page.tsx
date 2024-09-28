@@ -2,9 +2,9 @@
 
 import { useContext, useRef, useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { Accordion, AccordionItem, Button, Input } from "@nextui-org/react";
 import toast from "react-hot-toast";
+import { LuUpload } from "react-icons/lu";
 import { etchingRuneFunc, preEtchingRuneFunc } from "../api/requests";
 import { MainContext } from "../contexts/MainContext";
 import { unisatSignPsbt } from "../utils/pump";
@@ -88,54 +88,54 @@ export default function CreateRune() {
 
   const handleEtchingRune = async () => {
     try {
-      let rTicker: any = ticker;
-      if (!rTicker) rTicker = "$";
-      if (!imageContent || !name) {
-        return toast.error("Invalid parameters");
-      }
-      if (initialBuyAmount) {
-        if (
-          !Number(initialBuyAmount) ||
-          !Math.round(Number(initialBuyAmount)) ||
-          Math.round(Number(initialBuyAmount)) > 1000000
-        ) {
-          return toast.error("Invalid initial rune amount");
-        }
-      }
-      if (dexPercentage < 20 || dexPercentage > 50) {
-        return toast.error("Dex Percentage range should be from 20 to 50!");
-      }
+      // let rTicker: any = ticker;
+      // if (!rTicker) rTicker = "$";
+      // if (!imageContent || !name) {
+      //   return toast.error("Invalid parameters");
+      // }
+      // if (initialBuyAmount) {
+      //   if (
+      //     !Number(initialBuyAmount) ||
+      //     !Math.round(Number(initialBuyAmount)) ||
+      //     Math.round(Number(initialBuyAmount)) > 1000000
+      //   ) {
+      //     return toast.error("Invalid initial rune amount");
+      //   }
+      // }
+      // if (dexPercentage < 20 || dexPercentage > 50) {
+      //   return toast.error("Dex Percentage range should be from 20 to 50!");
+      // }
 
-      setLoading(true);
+      // setLoading(true);
 
-      const saveData = {
-        name,
-        ticker: rTicker,
-        description,
-        dexPercentage,
-        initialBuyAmount,
-        twitter,
-        telegram,
-        website,
-      };
+      // const saveData = {
+      //   name,
+      //   ticker: rTicker,
+      //   description,
+      //   dexPercentage,
+      //   initialBuyAmount,
+      //   twitter,
+      //   telegram,
+      //   website,
+      // };
 
-      const { status, etchingPsbt, etchingFee, waitEtchingData }: any =
-        await preEtchingRuneFunc(userInfo.userId, imageContent, saveData);
-      if (status) {
-        setEtchingFeeRate(etchingFee);
+      // const { status, etchingPsbt, etchingFee, waitEtchingData }: any =
+      //   await preEtchingRuneFunc(userInfo.userId, imageContent, saveData);
+      // if (status) {
+      //   setEtchingFeeRate(etchingFee);
 
-        const signedPsbt = await unisatSignPsbt(etchingPsbt.psbt);
-        const { status, msg } = await etchingRuneFunc(
-          userInfo.userId,
-          signedPsbt,
-          waitEtchingData.waitEtchingId,
-          etchingPsbt.requestId
-        );
+      //   const signedPsbt = await unisatSignPsbt(etchingPsbt.psbt);
+      //   const { status, msg } = await etchingRuneFunc(
+      //     userInfo.userId,
+      //     signedPsbt,
+      //     waitEtchingData.waitEtchingId,
+      //     etchingPsbt.requestId
+      //   );
 
-        if (status) {
-          toast.success(msg);
-        }
-      }
+      //   if (status) {
+      //     toast.success(msg);
+      //   }
+      // }
       setImageData(null);
       setImageContent("");
       setTicker("");
@@ -147,135 +147,139 @@ export default function CreateRune() {
       setWebsite("");
       setLoading(false);
       setEtchingFeeRate("");
+      // fileInputRef?.current?.value = "";
     } catch (error) {
       setLoading(false);
     }
   };
 
   return (
-    <main className="p-3 min-h-screen">
-      <div className="flex flex-col gap-3">
-        <div className="flex justify-center">
-          <Link className="p-3 border rounded-xl" href={"/"}>
-            Go Back
-          </Link>
-        </div>
-        <div className="flex justify-center">
-          {/* Etching */}
-          <div className="w-[420px]">
-            <div className="flex flex-col gap-3">
-              <div className="flex items-center gap-3">
-                {imageData && (
+    <div className="flex justify-center p-3 md:pt-20">
+      <div>
+        <div className="flex flex-col gap-3 border-2 bg-bgColor-ghost p-6 border-bgColor-stroke rounded-2xl w-[420px]">
+          <div className="py-3 font-bold text-2xl text-center">Etching</div>
+          <div className="flex items-center">
+            <div className="flex justify-center w-full">
+              <Button
+                onClick={handleUploadImage}
+                isLoading={loading}
+                className="bg-bgColor-stroke px-0 w-[140px] h-[140px] outline-2 outline-bgColor-stroke outline-dashed outline-offset-2"
+              >
+                {imageData ? (
                   <Image
                     alt="rune meme"
                     // @ts-ignore
                     src={URL.createObjectURL(imageData)}
-                    width={50}
-                    height={50}
+                    width={140}
+                    height={140}
                   ></Image>
-                )}
-                <div>
-                  <Button
-                    color="success"
-                    onClick={handleUploadImage}
-                    isLoading={loading}
-                  >
-                    Upload Image
-                  </Button>
-                </div>
-                <div>Max file Size: 50mb</div>
-                <input
-                  type="file"
-                  className="hidden opacity-0 min-w-full min-h-full"
-                  ref={fileInputRef}
-                  accept="image/*"
-                  onChange={handleImageUpload}
-                />
-              </div>
-              <Input
-                type="text"
-                label="Rune Symbol (optional)"
-                value={ticker}
-                className="bg-transparent"
-                color="primary"
-                onChange={(e) => setTicker(e.target.value)}
-              />
-              <Input
-                type="text"
-                label="Rune Name"
-                value={name}
-                color="primary"
-                onChange={(e) => setName(e.target.value)}
-              />
-              <Input
-                type="textarea"
-                label="Rune Description"
-                value={description}
-                color="primary"
-                onChange={(e) => setDescription(e.target.value)}
-              />
-              <Input
-                type="number"
-                label="Dex Percentage(min: 20, max: 50)"
-                value={`${dexPercentage}`}
-                color="primary"
-                onChange={(e) => setDexPercentage(Number(e.target.value))}
-              />
-              <Input
-                type="text"
-                label="First buy rune amount(optional)"
-                value={initialBuyAmount}
-                color="primary"
-                onChange={(e) => setInitialBuyAmount(e.target.value)}
-              />
-              <Accordion itemClasses={itemClasses}>
-                <AccordionItem
-                  key="1"
-                  aria-label="Show more options"
-                  title="Show more options"
-                >
-                  <div className="flex flex-col gap-3 !text-primary-50">
-                    <Input
-                      type="text"
-                      label="twitter link"
-                      placeholder="(optional)"
-                      value={twitter}
-                      color="primary"
-                      onChange={(e) => setTwitter(e.target.value)}
-                    />
-                    <Input
-                      type="text"
-                      label="telegram link"
-                      placeholder="(optional)"
-                      value={telegram}
-                      color="primary"
-                      onChange={(e) => setTelegram(e.target.value)}
-                    />
-                    <Input
-                      type="text"
-                      label="website"
-                      placeholder="(optional)"
-                      value={website}
-                      color="primary"
-                      onChange={(e) => setWebsite(e.target.value)}
-                    />
+                ) : (
+                  <div className="flex flex-col items-center gap-2 text-white">
+                    <LuUpload size={20} />
+                    <div>Upload</div>
+                    <div>Max Size: 50mb</div>
                   </div>
-                </AccordionItem>
-              </Accordion>
-              {etchingFeeRate && (
-                <div>{`You should pay ${etchingFeeRate} for etching`}</div>
-              )}
-              <Button
-                color="success"
-                onClick={() => handleEtchingRune()}
-                isLoading={loading}
-              >
-                Etching
+                )}
               </Button>
             </div>
+            <input
+              type="file"
+              className="hidden opacity-0 min-w-full min-h-full"
+              ref={fileInputRef}
+              accept="image/*"
+              onChange={handleImageUpload}
+            />
           </div>
+          <Input
+            type="text"
+            label="Rune Symbol (optional)"
+            value={ticker}
+            color="warning"
+            variant="bordered"
+            onChange={(e) => setTicker(e.target.value)}
+          />
+          <Input
+            type="text"
+            label="Rune Name"
+            value={name}
+            color="warning"
+            variant="bordered"
+            onChange={(e) => setName(e.target.value)}
+          />
+          <Input
+            type="textarea"
+            label="Rune Description"
+            value={description}
+            color="warning"
+            variant="bordered"
+            onChange={(e) => setDescription(e.target.value)}
+          />
+          <Input
+            type="number"
+            label="Dex Percentage(min: 20, max: 50)"
+            value={`${dexPercentage}`}
+            color="warning"
+            variant="bordered"
+            onChange={(e) => setDexPercentage(Number(e.target.value))}
+          />
+          <Input
+            type="text"
+            label="First buy rune amount(optional)"
+            value={initialBuyAmount}
+            color="warning"
+            variant="bordered"
+            onChange={(e) => setInitialBuyAmount(e.target.value)}
+          />
+          <Accordion itemClasses={itemClasses}>
+            <AccordionItem
+              key="1"
+              aria-label="Show more options"
+              title="Show more options"
+            >
+              <div className="flex flex-col gap-3 !text-primary-50">
+                <Input
+                  type="text"
+                  label="twitter link"
+                  placeholder="(optional)"
+                  value={twitter}
+                  color="warning"
+                  variant="bordered"
+                  onChange={(e) => setTwitter(e.target.value)}
+                />
+                <Input
+                  type="text"
+                  label="telegram link"
+                  placeholder="(optional)"
+                  value={telegram}
+                  color="warning"
+                  variant="bordered"
+                  onChange={(e) => setTelegram(e.target.value)}
+                />
+                <Input
+                  type="text"
+                  label="website"
+                  placeholder="(optional)"
+                  value={website}
+                  color="warning"
+                  variant="bordered"
+                  onChange={(e) => setWebsite(e.target.value)}
+                />
+              </div>
+            </AccordionItem>
+          </Accordion>
+          {etchingFeeRate && (
+            <div>{`You should pay ${etchingFeeRate} for etching`}</div>
+          )}
+          <Button
+            color="warning"
+            onClick={() => handleEtchingRune()}
+            isLoading={loading}
+            className="text-white"
+          >
+            Etching
+          </Button>
         </div>
       </div>
-    </main>
+    </div>
   );
 }

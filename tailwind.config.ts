@@ -33,6 +33,7 @@ const config: Config = {
         dark: "#16171B",
         ghost: "#1D1E22",
         stroke: "#292B2E",
+        stroke2: "#3F3F3F",
         light: "#1C243E",
       },
     },
