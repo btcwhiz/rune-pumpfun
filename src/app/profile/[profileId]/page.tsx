@@ -64,19 +64,12 @@ export default function Profile() {
   const handleWithdraw = async () => {
     try {
       if (userInfo.userId && runeId && runeAmount) {
-        console.log(
-          "userInfo.userId, runeId && runeAmount :>> ",
-          userInfo.userId,
-          runeId,
-          runeAmount
-        );
         setLoading(true);
         const preWithdrawRes = await preWithdrawFunc(
           userInfo.userId,
           runeId,
           runeAmount
         );
-        console.log("preWithdrawRes :>> ", preWithdrawRes);
         if (runeId === "btc") {
           const signedPsbt = await unisatSignPsbt(preWithdrawRes?.psbt);
           const withdrawRes = await withdrawFunc(
@@ -86,7 +79,6 @@ export default function Profile() {
             preWithdrawRes.requestId,
             signedPsbt
           );
-          console.log("withdrawRes :>> ", withdrawRes);
           toast.success(withdrawRes.msg);
         } else {
           const withdrawRes = await withdrawFunc(
@@ -96,12 +88,11 @@ export default function Profile() {
             preWithdrawRes.requestId,
             ""
           );
-          console.log("withdrawRes :>> ", withdrawRes);
           toast.success(withdrawRes.msg);
         }
-        setRuneAmount("")
+        setRuneAmount("");
         getAllRuneBalances();
-        onClose()
+        onClose();
         setLoading(false);
       } else {
         setLoading(false);
@@ -127,7 +118,7 @@ export default function Profile() {
           (item: any) => item.creatorAddress === userInfo.paymentAddress
         )
       );
-    } catch (error) { }
+    } catch (error) {}
   };
 
   useEffect(() => {
@@ -138,17 +129,17 @@ export default function Profile() {
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex justify-center">
-        <Link className="p-3 border rounded-xl" href={"/"}>
-          Go Back
-        </Link>
-      </div>
-      <div className="flex justify-center">
-        <div className="flex flex-col justify-center gap-3 w-[700px] max-w-[700px]">
+      <div className="flex justify-center p-3 md:pt-20">
+        <div className="flex flex-col justify-center gap-3 border-2 bg-bgColor-ghost p-6 border-bgColor-stroke rounded-xl w-[700px] max-w-[700px]">
+          <div className="py-3 font-bold text-2xl text-center">
+            User Profile
+          </div>
           <div className="flex items-center">
             <div className="flex items-center gap-3 w-full">
               <Input
                 className="w-full text-ellipsis"
+                color="warning"
+                variant="bordered"
                 value={pId}
                 disabled={!isEditable}
                 onChange={(e) => {
@@ -157,12 +148,17 @@ export default function Profile() {
               ></Input>
               {profileId === userInfo.profileId ? (
                 pId !== profileId ? (
-                  <Button color="primary" onClick={() => handleChangeProfile()}>
+                  <Button
+                    color="warning"
+                    variant="flat"
+                    onClick={() => handleChangeProfile()}
+                  >
                     <FaSave />
                   </Button>
                 ) : (
                   <Button
-                    color="primary"
+                    color="warning"
+                    variant="flat"
                     onClick={() => {
                       setIsEditable(!isEditable);
                     }}
@@ -185,7 +181,8 @@ export default function Profile() {
               <div className="flex items-center gap-2">
                 <div>{`${displayAddress(profileInfo?.paymentAddress)}`}</div>
                 <Button
-                  color="primary"
+                  color="warning"
+                  variant="flat"
                   onClick={() => copy(profileInfo?.paymentAddress)}
                   className="flex justify-center items-center"
                 >
@@ -198,7 +195,8 @@ export default function Profile() {
               <div className="flex items-center gap-2">
                 <div>{`${displayAddress(profileInfo?.multisigWallet)}`}</div>
                 <Button
-                  color="primary"
+                  color="warning"
+                  variant="flat"
                   onClick={() => copy(profileInfo?.multisigWallet)}
                   className="flex justify-center items-center"
                 >
@@ -208,28 +206,27 @@ export default function Profile() {
             </div>
           </div>
           <div>
-            <Tabs
-              aria-label="Options"
-              color="primary"
-              className="bg-dark text-primary-50"
-            >
+            <Tabs aria-label="Options" color="warning" variant="underlined">
               <Tab key="runes-held" title="Runes Held">
-                <Card>
+                <Card className="border-2 bg-bgColor-ghost border-bgColor-stroke text-white">
                   <CardBody>
-                    <div>Runes Held</div>
+                    <div className="py-3 font-bold text-center text-xl">
+                      Runes Held
+                    </div>
                     <hr />
                     <div className="flex flex-col gap-2">
                       {runes.map((rune: any, index: number) => (
                         <div key={index}>
                           <div className="flex justify-between items-center gap-2">
                             <Link
-                              href={`${rune.runeId
+                              href={`${
+                                rune.runeId
                                   ? `/rune/${encodeURIComponent(rune.runeId)}`
                                   : `#`
-                                }`}
+                              }`}
                               className="w-full"
                             >
-                              <div className="flex flex-col gap-1 hover:bg-foreground-300 p-2">
+                              <div className="flex flex-col gap-1 py-2">
                                 <div className="flex justify-between items-center gap-2">
                                   <span>Rune Name</span>
                                   <span>{rune?.runeName}</span>
@@ -245,7 +242,9 @@ export default function Profile() {
                                 setRuneId(rune.runeId);
                                 onOpen();
                               }}
-                              color="primary"
+                              color="warning"
+                              variant="flat"
+                              disabled={rune.balance ? false : true}
                             >
                               Withdraw
                             </Button>
@@ -258,19 +257,22 @@ export default function Profile() {
                 </Card>
               </Tab>
               <Tab key="runes-created" title="Runes Created">
-                <Card>
+                <Card className="border-2 bg-bgColor-ghost border-bgColor-stroke text-white">
                   <CardBody>
-                    <div>Runes Created</div>
+                    <div className="py-3 font-bold text-center text-xl">
+                      Runes Created
+                    </div>
                     <hr />
                     <div className="flex flex-col gap-2">
                       {myRunes.map((rune: any, index: number) => (
                         <div key={index}>
                           <div className="flex justify-between items-center gap-2">
                             <Link
-                              href={`${rune.runeId
+                              href={`${
+                                rune.runeId
                                   ? `/rune/${encodeURIComponent(rune.runeId)}`
                                   : `#`
-                                }`}
+                              }`}
                             >
                               <div className="flex flex-col gap-1 hover:bg-foreground-300 p-2">
                                 <div className="flex justify-between items-center gap-2">
@@ -288,7 +290,8 @@ export default function Profile() {
                                 setRuneId(rune.runeId);
                                 onOpen();
                               }}
-                              color="primary"
+                              color="warning"
+                              variant="flat"
                             >
                               Withdraw
                             </Button>
@@ -316,15 +319,21 @@ export default function Profile() {
                 <Input
                   type="text"
                   label="Rune Amount"
+                  color="warning"
+                  variant="bordered"
                   value={runeAmount}
                   onChange={(e) => setRuneAmount(e.target.value)}
                 />
               </ModalBody>
               <ModalFooter>
-                <Button color="primary" onPress={() => handleWithdraw()}>
+                <Button
+                  color="warning"
+                  variant="flat"
+                  onPress={() => handleWithdraw()}
+                >
                   Withdraw
                 </Button>
-                <Button color="danger" variant="light" onPress={onClose}>
+                <Button color="warning" variant="light" onPress={onClose}>
                   Close
                 </Button>
               </ModalFooter>
