@@ -441,36 +441,34 @@ export default function CreateRune() {
   return (
     <main className="p-3 min-h-screen">
       <div className="flex flex-col gap-3">
-        <div className="flex justify-center">
-          <Link className="p-3 border rounded-xl" href={"/"}>
-            Go Back
-          </Link>
-        </div>
         <div className="gap-3 grid grid-cols-3 p-5">
           <div className="flex flex-col gap-5 col-span-2">
             <div>
               <div className="flex justify-between items-center py-2">
                 <div className="flex items-center gap-2">
                   <div>
-                    <span className="text-orange">Ticker:</span>{" "}
-                    {runeInfo.runeName}
+                    <span>Ticker: </span>
+                    <span className="text-warning">{runeInfo.runeName}</span>
                   </div>
-                  <div className="text-orange">
-                    {`Marketcap: 
-                      ${displayBtc(
+                  <div className="flex items-center gap-2">
+                    <span>Marketcap: </span>
+                    <div className="text-warning">
+                      {`${displayBtc(
                         runeInfo.runeAmount *
                           (runeInfo.pool / runeInfo.remainAmount)
-                      )}
-                    BTC`}
+                      )} BTC`}
+                    </div>
                   </div>
                 </div>
                 <div>
-                  <div>
-                    <span className="text-orange">created by</span>{" "}
-                    {`${
-                      runeInfo.creatorAddress &&
-                      runeInfo.creatorAddress.slice(0, 5)
-                    }...`}
+                  <div className="flex items-center gap-2">
+                    <span>Created by</span>
+                    <span className="text-warning">
+                      {`${
+                        runeInfo.creatorAddress &&
+                        runeInfo.creatorAddress.slice(0, 5)
+                      }...`}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -478,12 +476,14 @@ export default function CreateRune() {
             </div>
             <div>
               {/* Transaction History */}
-              <Tabs aria-label="Options" color="primary">
+              <Tabs aria-label="Options" color="warning" variant="underlined">
                 <Tab key="trades" title="Trades">
-                  <Card>
+                  <Card className="border-2 bg-bgColor-ghost border-bgColor-stroke text-white">
                     <CardBody>
                       <div>
-                        <div>Transaction History</div>
+                        <div className="py-3 font-bold text-center text-lg">
+                          Transaction History
+                        </div>
                         <div className="flex items-center">
                           <div className="w-10">No</div>
                           <div className="gap-3 grid grid-cols-5 w-full">
@@ -517,9 +517,11 @@ export default function CreateRune() {
                   </Card>
                 </Tab>
                 <Tab key="thread" title="Thread">
-                  <Card>
+                  <Card className="border-2 bg-bgColor-ghost border-bgColor-stroke text-white">
                     <CardBody>
-                      <div>Thread</div>
+                      <div className="py-3 font-bold text-center text-lg">
+                        Thread
+                      </div>
                     </CardBody>
                   </Card>
                 </Tab>
@@ -527,9 +529,9 @@ export default function CreateRune() {
             </div>
           </div>
           <div className="flex flex-col gap-3">
-            <Tabs aria-label="Options" color="primary">
+            <Tabs aria-label="Options" color="warning" variant="underlined">
               <Tab key="buy" title="Buy">
-                <Card>
+                <Card className="border-2 bg-bgColor-ghost border-bgColor-stroke text-white">
                   <CardBody className="flex flex-col gap-3">
                     {/* Buy */}
                     <div className="flex justify-around">
@@ -539,13 +541,14 @@ export default function CreateRune() {
                     <div className="flex flex-col gap-3">
                       <div className="flex flex-col gap-3">
                         <Button
-                          color="primary"
+                          color="warning"
+                          variant="flat"
                           onClick={() => {
                             setBuyFlag(false);
                             setTarget(!target);
                           }}
                         >
-                          {`switch to ${
+                          {`Switch to ${
                             target === true ? "BTC" : runeInfo?.runeName
                           }`}
                         </Button>
@@ -553,6 +556,8 @@ export default function CreateRune() {
                           <Input
                             type="text"
                             label="Rune Amount"
+                            color="warning"
+                            variant="bordered"
                             value={buyRuneAmount}
                             disabled={loading}
                             onChange={(e) => {
@@ -561,7 +566,8 @@ export default function CreateRune() {
                             }}
                             endContent={
                               <Button
-                                color="primary"
+                                color="warning"
+                                variant="flat"
                                 onClick={() => handleMaxAmount(target)}
                               >
                                 Max
@@ -572,6 +578,8 @@ export default function CreateRune() {
                           <Input
                             type="text"
                             label="BTC Amount"
+                            color="warning"
+                            variant="bordered"
                             value={btcAmount}
                             disabled={loading}
                             onChange={(e) => {
@@ -592,6 +600,8 @@ export default function CreateRune() {
                         <Input
                           type="number"
                           label="Slippage (%)"
+                          color="warning"
+                          variant="bordered"
                           value={`${slippage}`}
                           disabled={loading}
                           min={0}
@@ -610,7 +620,8 @@ export default function CreateRune() {
                                   } btc`}
                             </div>
                             <Button
-                              color="success"
+                              color="warning"
+                              variant="flat"
                               onClick={() => handleBuy()}
                               isLoading={loading}
                             >
@@ -619,7 +630,8 @@ export default function CreateRune() {
                           </div>
                         ) : (
                           <Button
-                            color="success"
+                            color="warning"
+                            variant="flat"
                             onClick={() => handlePreBuy()}
                             isLoading={loading}
                             // disabled={runeInfo.poolstate === 1}
@@ -633,7 +645,7 @@ export default function CreateRune() {
                 </Card>
               </Tab>
               <Tab key="sell" title="Sell">
-                <Card>
+                <Card className="border-2 bg-bgColor-ghost border-bgColor-stroke text-white">
                   <CardBody className="flex gap-3">
                     <div className="flex justify-around">
                       <div>Your balance</div>
@@ -655,6 +667,8 @@ export default function CreateRune() {
                         <Input
                           type="text"
                           label="Sell Rune Amount"
+                          color="warning"
+                          variant="bordered"
                           value={sellRuneAmount}
                           disabled={loading}
                           onChange={(e) => {
@@ -665,6 +679,8 @@ export default function CreateRune() {
                         <Input
                           type="number"
                           label="Slippage (%)"
+                          color="warning"
+                          variant="bordered"
                           value={`${slippage}`}
                           disabled={loading}
                           min={0}
@@ -679,7 +695,8 @@ export default function CreateRune() {
                               estimatePrice / SATS_MULTIPLE
                             } btc`}</div>
                             <Button
-                              color="danger"
+                              color="warning"
+                              variant="flat"
                               onClick={() => handleSell()}
                               isLoading={loading}
                             >
@@ -688,7 +705,8 @@ export default function CreateRune() {
                           </div>
                         ) : (
                           <Button
-                            color="danger"
+                            color="warning"
+                            variant="flat"
                             onClick={() => handlePreSell()}
                             isLoading={loading}
                             // disabled={runeInfo.poolstate === 1}
@@ -702,7 +720,7 @@ export default function CreateRune() {
                 </Card>
               </Tab>
               <Tab key="burn" title="Burn">
-                <Card>
+                <Card className="border-2 bg-bgColor-ghost border-bgColor-stroke text-white">
                   <CardBody className="flex gap-3">
                     <div className="flex justify-around">
                       <div>Available Burn Balance</div>
@@ -715,6 +733,8 @@ export default function CreateRune() {
                         <Input
                           type="text"
                           label="Burn Rune Amount"
+                          color="warning"
+                          variant="bordered"
                           value={burnRuneAmount}
                           disabled={loading}
                           onChange={(e) => setBurnRuneAmount(e.target.value)}
@@ -726,7 +746,8 @@ export default function CreateRune() {
                           </div>
                         )}
                         <Button
-                          color="danger"
+                          color="warning"
+                          variant="flat"
                           onClick={() => handleBurn()}
                           isLoading={loading}
                         >
