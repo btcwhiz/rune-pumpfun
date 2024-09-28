@@ -161,11 +161,11 @@ export default function Page() {
   }, [poolId, socket, direction]);
 
   return (
-    <div className="flex justify-center gap-3">
-      <div className="flex flex-col gap-3 border-1 bg-bgColor-light py-10 p-3 rounded-xl w-1/2">
-        <div className="font-bold text-3xl text-center">Swap</div>
+    <div className="flex justify-center gap-3 p-3 md:pt-20">
+      <div className="flex flex-col gap-3 border-2 bg-bgColor-ghost py-10 p-3 border-bgColor-stroke rounded-xl w-1/2">
+        <div className="py-3 font-bold text-2xl text-center">Swap</div>
         <div className="flex flex-col gap-3">
-          <div className="flex flex-col gap-2 border-1 bg-bgColor-dark p-2 rounded-xl">
+          <div className="flex flex-col gap-2 bg-bgColor-dark p-2 rounded-xl">
             <div className="flex justify-between items-center px-3">
               <div>From</div>
               <div>
@@ -179,9 +179,16 @@ export default function Page() {
                 value={baseAmount}
                 onChange={(e) => handleInputBaseAmount(e.target.value)}
                 type="number"
+                variant="bordered"
+                color="warning"
+                classNames={{
+                  inputWrapper: "border-bgColor-stroke",
+                }}
               />
               <Button
-                className="flex justify-between gap-1 border-1 p-2 rounded-xl w-44"
+                className="flex justify-between gap-1 p-2 rounded-xl w-44"
+                variant="flat"
+                color="warning"
                 onPress={() => {
                   direction !== true && onOpen();
                 }}
@@ -206,13 +213,15 @@ export default function Page() {
           <div className="flex justify-center">
             <Button
               isIconOnly
-              color="primary"
+              variant="flat"
+              color="warning"
               onPress={() => handleChangeToken()}
+              className="text-white"
             >
               <IoSwapVerticalSharp />
             </Button>
           </div>
-          <div className="flex flex-col gap-2 border-1 bg-bgColor-dark p-2 rounded-xl">
+          <div className="flex flex-col gap-2 bg-bgColor-dark p-2 rounded-xl">
             <div className="flex justify-between items-center px-3">
               <div>To</div>
               <div>
@@ -226,9 +235,16 @@ export default function Page() {
                 value={targetAmount}
                 onChange={(e) => handleInputTargeAmount(e.target.value)}
                 type="number"
+                variant="bordered"
+                color="warning"
+                classNames={{
+                  inputWrapper: "border-bgColor-stroke",
+                }}
               />
               <Button
-                className="flex items-center gap-1 border-1 p-2 rounded-xl w-44"
+                className="flex items-center gap-1 p-2 rounded-xl w-44"
+                variant="flat"
+                color="warning"
                 onPress={() => {
                   direction === true && onOpen();
                 }}
@@ -250,7 +266,7 @@ export default function Page() {
               </Button>
             </div>
           </div>
-          <div className="border-1 rounded-xl">
+          <div className="bg-bgColor-dark rounded-xl">
             <Accordion variant="bordered" itemClasses={itemClasses}>
               <AccordionItem
                 key="1"
@@ -273,8 +289,9 @@ export default function Page() {
           </div>
           <div className="flex justify-center">
             <Button
-              color="primary"
-              className="w-44"
+              variant="flat"
+              color="warning"
+              className="w-44 text-white"
               onClick={() => handleSwapToken()}
               isLoading={isLoading}
             >
@@ -288,13 +305,13 @@ export default function Page() {
         isOpen={isOpen}
         placement={"center"}
         onOpenChange={onOpenChange}
-        className="bg-dark"
+        className="bg-bgColor-ghost"
       >
         <ModalContent>
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1">Runes</ModalHeader>
-              <ModalBody>
+              <ModalBody className="border-none">
                 <ListboxWrapper>
                   <Listbox
                     classNames={{
@@ -308,12 +325,13 @@ export default function Page() {
                     selectionMode="single"
                     // onSelectionChange={setValues}
                     variant="flat"
+                    color="warning"
                   >
                     {(item) => (
                       <ListboxItem
                         key={item.runeId}
                         textValue={item.runeName}
-                        className="w-full"
+                        className="border-none w-full"
                         onClick={() => {
                           if (poolId !== item.poolId) setPoolId(item.poolId);
                           if (direction === true) {
@@ -339,7 +357,7 @@ export default function Page() {
                 </ListboxWrapper>
               </ModalBody>
               <ModalFooter>
-                <Button color="danger" variant="light" onPress={onClose}>
+                <Button color="warning" variant="ghost" onPress={onClose}>
                   Close
                 </Button>
               </ModalFooter>
