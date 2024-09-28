@@ -125,107 +125,110 @@ export default function CreateRune() {
   }, [userInfo.userId]);
 
   return (
-    <main className="p-3 min-h-screen">
-      <div className="flex flex-col gap-3">
-        <div className="flex justify-center">
-          <Link className="p-3 border rounded-xl" href={"/"}>
-            Go Back
-          </Link>
+    <div className="flex flex-col gap-3 p-3 min-h-screen">
+      <div className="flex flex-col justify-center gap-3 p-3">
+        <div className="justify-between gap-3 grid grid-cols-2">
+          {/* Deposit */}
+          <div className="flex flex-col gap-3 border-2 bg-bgColor-ghost p-2 border-bgColor-stroke rounded-xl">
+            <div className="py-3 font-bold text-center text-lg">Deposit</div>
+            <div className="flex flex-col gap-3">
+              <Input
+                type="text"
+                label="Deposit Amount"
+                color="warning"
+                variant="bordered"
+                value={depositAmount}
+                onChange={(e) => setDepositAmount(e.target.value)}
+              />
+              <Button
+                color="warning"
+                variant="flat"
+                onClick={() => handleDeposit()}
+                isLoading={loading}
+              >
+                {loading ? "Loading" : "Deposit"}
+              </Button>
+            </div>
+          </div>
+
+          {/* Withdraw */}
+          <div className="flex flex-col gap-3 border-2 bg-bgColor-ghost p-2 border-bgColor-stroke rounded-xl">
+            <div className="py-3 font-bold text-center text-lg">Withdraw</div>
+            <div className="flex flex-col gap-3">
+              <Input
+                type="text"
+                label="Rune ID"
+                color="warning"
+                variant="bordered"
+                placeholder="'btc' or rune id"
+                value={runeId}
+                onChange={(e) => setRuneId(e.target.value)}
+              />
+              <Input
+                type="text"
+                label="Withdraw Amount"
+                color="warning"
+                variant="bordered"
+                value={withdrawAmount}
+                onChange={(e) => setWithdrawAmount(e.target.value)}
+              />
+              <Button
+                color="warning"
+                variant="flat"
+                onClick={() => handleWithdraw()}
+                isLoading={loading}
+              >
+                {loading ? "Loading" : "Withdraw"}
+              </Button>
+            </div>
+          </div>
         </div>
-        <div className="flex flex-col justify-center p-3">
-          <div className="justify-between gap-3 grid grid-cols-2">
-            {/* Deposit */}
-            <div className="flex flex-col gap-3">
-              <div className="text-center">Deposit</div>
-              <div className="flex flex-col gap-3">
-                <Input
-                  type="text"
-                  label="Deposit Amount"
-                  value={depositAmount}
-                  onChange={(e) => setDepositAmount(e.target.value)}
-                />
-                <Button
-                  color="success"
-                  onClick={() => handleDeposit()}
-                  isLoading={loading}
-                >
-                  {loading ? "Loading" : "Deposit"}
-                </Button>
-              </div>
-            </div>
 
-            {/* Withdraw */}
-            <div className="flex flex-col gap-3">
-              <div className="text-center">Withdraw</div>
-              <div className="flex flex-col gap-3">
-                <Input
-                  type="text"
-                  label="Rune ID"
-                  placeholder="'btc' or rune id"
-                  value={runeId}
-                  onChange={(e) => setRuneId(e.target.value)}
-                />
-                <Input
-                  type="text"
-                  label="Withdraw Amount"
-                  value={withdrawAmount}
-                  onChange={(e) => setWithdrawAmount(e.target.value)}
-                />
-                <Button
-                  color="danger"
-                  onClick={() => handleWithdraw()}
-                  isLoading={loading}
-                >
-                  {loading ? "Loading" : "Withdraw"}
-                </Button>
-              </div>
-            </div>
+        {/* Payment History */}
+        <div className="border-2 bg-bgColor-ghost p-10 border-bgColor-stroke rounded-xl">
+          <div className="py-3 font-bold text-center text-lg">
+            Payment History
+          </div>
+          <div className="gap-3 grid grid-cols-6">
+            <div>No</div>
+            <div>Action</div>
+            <div>Type</div>
+            <div>RuneID</div>
+            <div>Amount</div>
+            <div>TxId</div>
           </div>
 
-          {/* Payment History */}
-          <div className="p-10">
-            <div>Payment History</div>
-            <div className="gap-3 grid grid-cols-6">
-              <div>No</div>
-              <div>Action</div>
-              <div>Type</div>
-              <div>RuneID</div>
-              <div>Amount</div>
-              <div>TxId</div>
-            </div>
-
-            {allTransactions.map((item, index) => (
-              <div key={index} className="gap-3 grid grid-cols-6">
-                <div>{index + 1}</div>
-                <div className="uppercase">
-                  {item.type === 0 ? "deposit" : "withdraw"}
-                </div>
-                <div className="uppercase">
-                  {item.withdrawType === 0 ? "btc" : "rune"}
-                </div>
-                <div>{item.runeId}</div>
-                <div>
-                  {item.amount / (item.withdrawType === 0 ? SATS_MULTIPLE : 1)}
-                </div>
-                <Link
-                  className="font-bold underline"
-                  target="_blink"
-                  href={`https://mempool.space/testnet/tx/${item.txId}`}
-                >
-                  <div className="flex items-center gap-2">
-                    <span>
-                      {`${item.txId.slice(0, 8)}...${item.txId.slice(
-                        item.txId.length - 8,
-                        item.txId.length - 1
-                      )}`}
-                    </span>
-                  </div>
-                </Link>
+          {allTransactions.map((item, index) => (
+            <div key={index} className="gap-3 grid grid-cols-6">
+              <div>{index + 1}</div>
+              <div className="uppercase">
+                {item.type === 0 ? "deposit" : "withdraw"}
               </div>
-            ))}
-          </div>
+              <div className="uppercase">
+                {item.withdrawType === 0 ? "btc" : "rune"}
+              </div>
+              <div>{item.runeId}</div>
+              <div>
+                {item.amount / (item.withdrawType === 0 ? SATS_MULTIPLE : 1)}
+              </div>
+              <Link
+                className="font-bold underline"
+                target="_blink"
+                href={`https://mempool.space/testnet/tx/${item.txId}`}
+              >
+                <div className="flex items-center gap-2">
+                  <span>
+                    {`${item.txId.slice(0, 8)}...${item.txId.slice(
+                      item.txId.length - 8,
+                      item.txId.length - 1
+                    )}`}
+                  </span>
+                </div>
+              </Link>
+            </div>
+          ))}
         </div>
       </div>
-    </main>
+    </div>
   );
 }
