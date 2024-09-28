@@ -151,7 +151,7 @@ export default function Page() {
 
   const getLiquidityData = async () => {
     const resp = await getLiquidity(userInfo.userId);
-    console.log(resp.liquidities)
+    console.log(resp.liquidities);
     setLiquidities(resp.liquidities);
   };
 
@@ -171,21 +171,30 @@ export default function Page() {
   }, [poolId, socket]);
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 p-3 md:pt-20">
       <div className="flex justify-center">
-        <div className="flex flex-col gap-3 border-1 bg-bgColor-light py-10 p-3 rounded-xl w-1/2">
-          <div className="font-bold text-3xl text-center">Add Liquidity</div>
+        <div className="flex flex-col gap-3 border-2 bg-bgColor-ghost py-10 p-3 border-bgColor-stroke rounded-xl w-1/2">
+          <div className="py-3 font-bold text-2xl text-center">
+            Add Liquidity
+          </div>
           <div className="flex flex-col gap-3">
-            <div className="flex flex-col gap-2 border-1 bg-bgColor-dark p-2 rounded-xl">
+            <div className="flex flex-col gap-2 bg-bgColor-dark p-2 rounded-xl">
               <div className="pl-3">From</div>
               <div className="flex items-center gap-3 p-2">
                 <Input
                   value={baseAmount}
                   onChange={(e) => handleInputBaseAmount(e.target.value)}
                   type="number"
+                  variant="bordered"
+                  color="warning"
+                  classNames={{
+                    inputWrapper: "border-bgColor-stroke",
+                  }}
                 />
                 <Button
-                  className="flex justify-between gap-1 border-1 p-2 rounded-xl w-44"
+                  className="flex justify-between gap-1 p-2 rounded-xl w-44"
+                  variant="flat"
+                  color="warning"
                   onPress={() => {
                     direction !== true && onOpen();
                   }}
@@ -210,23 +219,31 @@ export default function Page() {
             <div className="flex justify-center">
               <Button
                 isIconOnly
-                color="primary"
+                color="warning"
+                className="text-white"
                 onPress={() => handleChangeToken()}
               >
                 <IoSwapVerticalSharp />
               </Button>
             </div>
-            <div className="flex flex-col gap-2 border-1 bg-bgColor-dark p-2 rounded-xl">
+            <div className="flex flex-col gap-2 bg-bgColor-dark p-2 rounded-xl">
               <div className="pl-3">To</div>
               <div className="flex items-center gap-3 p-2 rounded-xl">
                 <Input
                   value={targetAmount}
                   // onChange={(e) => setTargetAmount(e.target.value)}
                   type="number"
+                  variant="bordered"
+                  color="warning"
+                  classNames={{
+                    inputWrapper: "border-bgColor-stroke",
+                  }}
                   disabled
                 />
                 <Button
-                  className="flex items-center gap-1 border-1 p-2 rounded-xl w-44"
+                  className="flex items-center gap-1 p-2 rounded-xl w-44"
+                  variant="flat"
+                  color="warning"
                   onPress={() => {
                     direction === true && onOpen();
                   }}
@@ -250,8 +267,8 @@ export default function Page() {
             </div>
             <div className="flex justify-center">
               <Button
-                color="primary"
-                className="w-44"
+                color="warning"
+                className="w-44 text-white"
                 onClick={() => handleAddLiquidity()}
                 isLoading={isLoading}
               >
@@ -261,9 +278,9 @@ export default function Page() {
           </div>
         </div>
       </div>
-      <div className="grid grid-cols-2 px-5 gap-2">
-        <div>
-          <div className="text-center bold">My Pools</div>
+      <div className="gap-2 grid grid-cols-2 px-5 md:pt-10">
+        <div className="border-2 bg-bgColor-ghost p-2 border-bgColor-stroke rounded-xl">
+          <div className="py-3 font-bold text-center text-lg">My Pools</div>
           <div>
             <div className="grid grid-cols-4 text-center">
               <div>BTC</div>
@@ -273,25 +290,32 @@ export default function Page() {
             </div>
           </div>
           <div>
-            <div className="grid gap-2">
-              {liquidities.filter(item => item.status === 1).map((item, index) => (
-                <div key={index} className="grid grid-cols-4 text-center items-center">
-                  <div>{displayBtc(item.btcAmount)}</div>
-                  <div>{item.runeId}</div>
-                  <div>{item.runeAmount}</div>
-                  <div>
-                    <Button isIconOnly color="primary" className=" text-2xl">
-                      <IoMdCloseCircle />
-                    </Button>
+            <div className="gap-2 grid">
+              {liquidities
+                .filter((item) => item.status === 1)
+                .map((item, index) => (
+                  <div
+                    key={index}
+                    className="items-center grid grid-cols-4 text-center"
+                  >
+                    <div>{displayBtc(item.btcAmount)}</div>
+                    <div>{item.runeId}</div>
+                    <div>{item.runeAmount}</div>
+                    <div>
+                      <Button isIconOnly color="primary" className="text-2xl">
+                        <IoMdCloseCircle />
+                      </Button>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
             </div>
           </div>
         </div>
 
-        <div>
-          <div className="text-center bold">Liquidity Txs</div>
+        <div className="border-2 bg-bgColor-ghost p-2 border-bgColor-stroke rounded-xl">
+          <div className="py-3 font-bold text-center text-lg">
+            Liquidity Txs
+          </div>
           <div>
             <div className="grid grid-cols-5 text-center">
               <div>BTC</div>
@@ -302,14 +326,23 @@ export default function Page() {
             </div>
           </div>
           <div>
-            <div className="grid gap-2">
+            <div className="gap-2 grid">
               {liquidities.map((item, index) => (
-                <div key={index} className="grid grid-cols-5 text-center items-center">
+                <div
+                  key={index}
+                  className="items-center grid grid-cols-5 text-center"
+                >
                   <div>{displayBtc(item.btcAmount)}</div>
-                  <div title={item.runeName}>{`${item.runeName ? `${item.runeName.slice(0, 10)}...` : ``}`}</div>
+                  <div title={item.runeName}>{`${
+                    item.runeName ? `${item.runeName.slice(0, 10)}...` : ``
+                  }`}</div>
                   <div>{item.runeAmount}</div>
                   <div>
-                    <Link href={`https://mempool.space/testnet/tx/${item.txId}`} target="_blink" className="underline">
+                    <Link
+                      href={`https://mempool.space/testnet/tx/${item.txId}`}
+                      target="_blink"
+                      className="underline"
+                    >
                       {item.txId && `${item.txId.slice(0, 5)}...`}
                     </Link>
                   </div>
@@ -329,7 +362,7 @@ export default function Page() {
         isOpen={isOpen}
         placement={"center"}
         onOpenChange={onOpenChange}
-        className="bg-dark"
+        className="bg-bgColor-ghost"
       >
         <ModalContent>
           {(onClose) => (
@@ -349,6 +382,7 @@ export default function Page() {
                     selectionMode="single"
                     // onSelectionChange={setValues}
                     variant="flat"
+                    color="warning"
                   >
                     {(item) => (
                       <ListboxItem
@@ -380,7 +414,7 @@ export default function Page() {
                 </ListboxWrapper>
               </ModalBody>
               <ModalFooter>
-                <Button color="danger" variant="light" onPress={onClose}>
+                <Button color="warning" variant="ghost" onPress={onClose}>
                   Close
                 </Button>
               </ModalFooter>

@@ -53,7 +53,7 @@ export const preDepositFunc = async (
     };
     console.log("requestData :>> ", requestData);
     const res = await axios.post(urlEndpoint, requestData);
-    console.log("res :>> ", res);
+    // console.log("res :>> ", res);
     return res.data;
   } catch (error: any) {
     const msg: any = error.response.data.msg || "Something went wrong";
@@ -76,7 +76,7 @@ export const depositFunc = async (
     };
     console.log("requestData :>> ", requestData);
     const res = await axios.post(urlEndpoint, requestData);
-    console.log("res :>> ", res);
+    // console.log("res :>> ", res);
     return res.data;
   } catch (error: any) {
     const msg: any = error.response.data.msg || "Something went wrong";
@@ -105,7 +105,7 @@ export const pumpPreBuyFunc = async (
     };
     console.log("requestData :>> ", requestData);
     const res = await axios.post(urlEndpoint, requestData);
-    console.log("res :>> ", res);
+    // console.log("res :>> ", res);
     return res.data;
   } catch (error: any) {
     const msg: any = error.response.data.msg || "Something went wrong";
@@ -166,7 +166,7 @@ export const pumpPreSellFunc = async (
     };
     console.log("requestData :>> ", requestData);
     const res = await axios.post(urlEndpoint, requestData);
-    console.log("res :>> ", res);
+    // console.log("res :>> ", res);
     return res.data;
   } catch (error: any) {
     const msg: any = error.response.data.msg || "Something went wrong";
@@ -527,7 +527,7 @@ export const preBurn = async (
     };
     console.log("requestData :>> ", requestData);
     const res = await axios.post(urlEndpoint, requestData);
-    console.log("res :>> ", res);
+    // console.log("res :>> ", res);
     return res.data;
   } catch (error: any) {
     const msg: any = error.response.data.msg || "Something went wrong";
@@ -546,7 +546,7 @@ export const burnFunc = async (pendingBurnId: string, signedPsbt: string) => {
     };
     console.log("requestData :>> ", requestData);
     const res = await axios.post(urlEndpoint, requestData);
-    console.log("res :>> ", res);
+    // console.log("res :>> ", res);
     return res.data;
   } catch (error: any) {
     const msg: any = error.response.data.msg || "Something went wrong";

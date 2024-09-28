@@ -111,7 +111,7 @@ export default function Page() {
 
   const getData = async () => {
     const res = await getAllPools();
-    console.log("res :>> ", res);
+    // console.log("res :>> ", res);
     setPools(res);
     if (res.length > 0) {
       if (direction === true) {

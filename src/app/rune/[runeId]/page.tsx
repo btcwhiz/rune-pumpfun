@@ -119,7 +119,7 @@ export default function CreateRune() {
           target,
           slippage
         );
-        console.log("res :>> ", res);
+        // console.log("res :>> ", res);
         setBuyPsbtData(res?.requestData);
         setLoading(false);
         if (res?.requestData) {
