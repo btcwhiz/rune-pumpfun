@@ -114,7 +114,7 @@ export default function Header() {
                 item.link === path
                   ? "border-warning border-b text-warning"
                   : "text-white"
-              } rounded-none flex items-center gap-2`}
+              } rounded-none flex items-center gap-2 h-16`}
               color="warning"
               variant="light"
             >

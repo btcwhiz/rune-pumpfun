@@ -29,6 +29,7 @@ const config: Config = {
       silver: "#ecebff",
       "bubble-gum": "#ff77e9",
       bermuda: "#78dcca",
+      placeHolder: "#6A6A6A",
       bgColor: {
         dark: "#16171B",
         ghost: "#1D1E22",
