@@ -31,6 +31,7 @@ import {
 import { displayAddress, unisatSignPsbt } from "../../utils/pump";
 import { MainContext } from "../../contexts/MainContext";
 import PumpInput from "../../components/PumpInput";
+import { IoMdCloseCircle } from "react-icons/io";
 
 export default function Profile() {
   const router = useRouter();
@@ -143,29 +144,48 @@ export default function Profile() {
                 disabled={!isEditable}
                 onChange={setPId}
               ></PumpInput>
-              {profileId === userInfo.profileId ? (
-                pId !== profileId ? (
-                  <Button
-                    color="warning"
-                    variant="flat"
-                    onClick={() => handleChangeProfile()}
-                  >
-                    <FaSave />
-                  </Button>
-                ) : (
-                  <Button
-                    color="warning"
-                    variant="flat"
-                    onClick={() => {
-                      setIsEditable(!isEditable);
-                    }}
-                  >
-                    <FaEdit />
-                  </Button>
-                )
-              ) : (
-                <></>
-              )}
+              {
+                <div className="flex gap-2">
+                  {profileId === userInfo.profileId ? (
+                    pId !== profileId ? (
+                      <Button
+                        color="warning"
+                        variant="flat"
+                        onClick={() => handleChangeProfile()}
+                        isIconOnly
+                      >
+                        <FaSave />
+                      </Button>
+                    ) : (
+                      <Button
+                        color="warning"
+                        variant="flat"
+                        onClick={() => {
+                          setIsEditable(!isEditable);
+                        }}
+                        isIconOnly
+                      >
+                        <FaEdit />
+                      </Button>
+                    )
+                  ) : (
+                    <></>
+                  )}
+                  <div>
+                    {isEditable && (
+                      <Button
+                        color="warning"
+                        variant="flat"
+                        onClick={() => {
+                          setIsEditable(!isEditable);
+                        }}
+                        isIconOnly
+                      >
+                        <IoMdCloseCircle />
+                      </Button>)}
+                  </div>
+                </div>
+              }
             </div>
           </div>
           <div className="flex flex-col justify-center gap-3">
