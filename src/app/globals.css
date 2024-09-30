@@ -33,7 +33,30 @@ input {
   }
 }
 
+
+/* Font Style */
 @font-face {
   font-family: "Hadenut";
   src: url("/fonts/Hadenut-xRRy8.ttf");
+}
+
+
+/* Scroll Bar */
+body::-webkit-scrollbar {
+  width: 8px;
+  /* width of the entire scrollbar */
+}
+
+body::-webkit-scrollbar-track {
+  background: #292B2E;
+  /* color of the tracking area */
+}
+
+body::-webkit-scrollbar-thumb {
+  background-color: #1D1E22;
+  /* color of the scroll thumb */
+  border-radius: 20px;
+  /* roundness of the scroll thumb */
+  border: 1px solid #292B2E;
+  /* creates padding around scroll thumb */
 }

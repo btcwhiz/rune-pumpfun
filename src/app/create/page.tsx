@@ -237,17 +237,17 @@ export default function CreateRune() {
           >
             <div className="flex flex-col gap-3 !text-primary-50">
               <PumpInput
-                label="Twitter Link"
+                label="Twitter Link (Optional)"
                 value={twitter}
                 onChange={setTwitter}
               ></PumpInput>
               <PumpInput
-                label="Telegram Link"
+                label="Telegram Link (Optional)"
                 value={telegram}
                 onChange={setTelegram}
               ></PumpInput>
               <PumpInput
-                label="Website"
+                label="Website (Optional)"
                 value={website}
                 onChange={setWebsite}
               ></PumpInput>
