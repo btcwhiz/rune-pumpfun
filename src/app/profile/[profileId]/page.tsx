@@ -202,6 +202,7 @@ export default function Profile() {
                   variant="flat"
                   onClick={() => copy(profileInfo?.paymentAddress)}
                   className="flex justify-center items-center"
+                  isIconOnly
                 >
                   <FaCopy />
                 </Button>
@@ -216,6 +217,7 @@ export default function Profile() {
                   variant="flat"
                   onClick={() => copy(profileInfo?.multisigWallet)}
                   className="flex justify-center items-center"
+                  isIconOnly
                 >
                   <FaCopy />
                 </Button>
