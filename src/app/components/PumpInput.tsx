@@ -17,18 +17,24 @@ export const InputStyles = {
 
 const PumpInput = ({
     type = "text",
-    label,
+    label = "",
     value,
     color = "warning",
+    placeholder = "",
+    className = "",
     classNames = InputStyles,
     onChange,
+    disabled = false
 }: {
     type?: string,
-    label: string,
+    label?: string,
     value: string,
     color?: "default" | "primary" | "secondary" | "success" | "warning" | "danger" | undefined,
+    placeholder?: string,
+    className?: string,
     classNames?: object,
-    onChange: (value: string) => void,
+    onChange?: (value: string | any) => void,
+    disabled?: boolean
 }) => {
     return (
         <Input
@@ -36,8 +42,19 @@ const PumpInput = ({
             label={label}
             value={value}
             color={color}
+            className={className}
             classNames={classNames}
-            onChange={(e) => onChange(e.target.value)}
+            onChange={(e) => {
+                if (onChange) {
+                    if (type === "number") {
+                        onChange(Number(e.target.value))
+                    } else {
+                        onChange(e.target.value)
+                    }
+                }
+            }}
+            disabled={disabled}
+            placeholder={placeholder}
         />
     )
 }

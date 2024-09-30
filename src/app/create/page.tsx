@@ -216,14 +216,12 @@ export default function CreateRune() {
           value={description}
           onChange={setDescription}
         ></PumpInput>
-        <Input
+        <PumpInput
           type="number"
           label="Dex Percentage(min: 20, max: 50)"
           value={`${dexPercentage}`}
-          color="warning"
-          classNames={InputStyles}
-          onChange={(e) => setDexPercentage(Number(e.target.value))}
-        />
+          onChange={setDexPercentage}
+        ></PumpInput>
         <PumpInput
           label="First buy rune amount(optional)"
           value={initialBuyAmount}

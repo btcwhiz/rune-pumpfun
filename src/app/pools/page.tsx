@@ -36,6 +36,7 @@ import { ListboxWrapper } from "../swap/ListboxWrapper";
 import { IoMdCloseCircle } from "react-icons/io";
 import Link from "next/link";
 import { displayBtc } from "../utils/util";
+import PumpInput from "../components/PumpInput";
 
 export default function Page() {
   const socket = useSocket();
@@ -90,18 +91,18 @@ export default function Page() {
           targetToken.runeId,
           targetAmount
         );
-      console.log(
-        "success, pendingSwapId, feeId, psbtHex :>> ",
-        success,
-        pendingLiquidityId,
-        feeId,
-        psbtHex
-      );
+      // console.log(
+      //   "success, pendingSwapId, feeId, psbtHex :>> ",
+      //   success,
+      //   pendingLiquidityId,
+      //   feeId,
+      //   psbtHex
+      // );
       if (success === true) {
-        console.log("psbtHex, pendingSwapId :>> ", psbtHex, pendingLiquidityId);
+        // console.log("psbtHex, pendingSwapId :>> ", psbtHex, pendingLiquidityId);
         const signedPsbt = await (window as any).unisat.signPsbt(psbtHex);
         // const signedPsbt = await unisatSignPsbt(psbtHex);
-        console.log("signedPsbt :>> ", signedPsbt);
+        // console.log("signedPsbt :>> ", signedPsbt);
         const { success } = await addLiquidity(
           pendingLiquidityId,
           feeId,
@@ -151,7 +152,6 @@ export default function Page() {
 
   const getLiquidityData = async () => {
     const resp = await getLiquidity(userInfo.userId);
-    console.log(resp.liquidities);
     setLiquidities(resp.liquidities);
   };
 
@@ -181,16 +181,11 @@ export default function Page() {
             <div className="flex flex-col gap-2 bg-bgColor-dark p-2 rounded-xl">
               <div className="pl-3">From</div>
               <div className="flex items-center gap-3 p-2">
-                <Input
-                  value={baseAmount}
-                  onChange={(e) => handleInputBaseAmount(e.target.value)}
+                <PumpInput
                   type="number"
-                  variant="bordered"
-                  color="warning"
-                  classNames={{
-                    inputWrapper: "border-bgColor-stroke",
-                  }}
-                />
+                  value={baseAmount}
+                  onChange={handleInputBaseAmount}
+                ></PumpInput>
                 <Button
                   className="flex justify-between gap-1 p-2 rounded-xl w-44"
                   variant="flat"
@@ -229,17 +224,11 @@ export default function Page() {
             <div className="flex flex-col gap-2 bg-bgColor-dark p-2 rounded-xl">
               <div className="pl-3">To</div>
               <div className="flex items-center gap-3 p-2 rounded-xl">
-                <Input
-                  value={targetAmount}
-                  // onChange={(e) => setTargetAmount(e.target.value)}
+                <PumpInput
                   type="number"
-                  variant="bordered"
-                  color="warning"
-                  classNames={{
-                    inputWrapper: "border-bgColor-stroke",
-                  }}
-                  disabled
-                />
+                  value={targetAmount}
+                  disabled={true}
+                ></PumpInput>
                 <Button
                   className="flex items-center gap-1 p-2 rounded-xl w-44"
                   variant="flat"
@@ -333,9 +322,8 @@ export default function Page() {
                   className="items-center grid grid-cols-5 text-center"
                 >
                   <div>{displayBtc(item.btcAmount)}</div>
-                  <div title={item.runeName}>{`${
-                    item.runeName ? `${item.runeName.slice(0, 10)}...` : ``
-                  }`}</div>
+                  <div title={item.runeName}>{`${item.runeName ? `${item.runeName.slice(0, 10)}...` : ``
+                    }`}</div>
                   <div>{item.runeAmount}</div>
                   <div>
                     <Link

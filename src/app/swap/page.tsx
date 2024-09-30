@@ -32,6 +32,7 @@ import { MainContext } from "../contexts/MainContext";
 import toast from "react-hot-toast";
 import useSocket from "../hooks/useSocket";
 import { displayBtc } from "../utils/util";
+import PumpInput from "../components/PumpInput";
 
 export default function Page() {
   const socket = useSocket();
@@ -89,9 +90,9 @@ export default function Page() {
         targetAmount
       );
       if (success === true) {
-        console.log("psbtHex, pendingSwapId :>> ", psbtHex, pendingSwapId);
+        // console.log("psbtHex, pendingSwapId :>> ", psbtHex, pendingSwapId);
         const signedPsbt = await (window as any).unisat.signPsbt(psbtHex);
-        console.log("signedPsbt :>> ", signedPsbt);
+        // console.log("signedPsbt :>> ", signedPsbt);
         const { success } = await swapToken(pendingSwapId, feeId, signedPsbt);
         if (success) toast.success("Success, please wait while tx confirming");
       }
@@ -175,16 +176,11 @@ export default function Page() {
               </div>
             </div>
             <div className="flex items-center gap-3 p-2">
-              <Input
-                value={baseAmount}
-                onChange={(e) => handleInputBaseAmount(e.target.value)}
+              <PumpInput
                 type="number"
-                variant="bordered"
-                color="warning"
-                classNames={{
-                  inputWrapper: "border-bgColor-stroke",
-                }}
-              />
+                value={baseAmount}
+                onChange={handleInputBaseAmount}
+              ></PumpInput>
               <Button
                 className="flex justify-between gap-1 p-2 rounded-xl w-44"
                 variant="flat"
@@ -231,16 +227,11 @@ export default function Page() {
               </div>
             </div>
             <div className="flex items-center gap-3 p-2 rounded-xl">
-              <Input
-                value={targetAmount}
-                onChange={(e) => handleInputTargeAmount(e.target.value)}
+              <PumpInput
                 type="number"
-                variant="bordered"
-                color="warning"
-                classNames={{
-                  inputWrapper: "border-bgColor-stroke",
-                }}
-              />
+                value={targetAmount}
+                onChange={handleInputTargeAmount}
+              ></PumpInput>
               <Button
                 className="flex items-center gap-1 p-2 rounded-xl w-44"
                 variant="flat"

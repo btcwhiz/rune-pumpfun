@@ -30,6 +30,7 @@ import {
 } from "@nextui-org/react";
 import { displayAddress, unisatSignPsbt } from "../../utils/pump";
 import { MainContext } from "../../contexts/MainContext";
+import PumpInput from "../../components/PumpInput";
 
 export default function Profile() {
   const router = useRouter();
@@ -118,7 +119,7 @@ export default function Profile() {
           (item: any) => item.creatorAddress === userInfo.paymentAddress
         )
       );
-    } catch (error) {}
+    } catch (error) { }
   };
 
   useEffect(() => {
@@ -136,16 +137,12 @@ export default function Profile() {
           </div>
           <div className="flex items-center">
             <div className="flex items-center gap-3 w-full">
-              <Input
+              <PumpInput
                 className="w-full text-ellipsis"
-                color="warning"
-                variant="bordered"
                 value={pId}
                 disabled={!isEditable}
-                onChange={(e) => {
-                  if (isEditable) setPId(e.target.value);
-                }}
-              ></Input>
+                onChange={setPId}
+              ></PumpInput>
               {profileId === userInfo.profileId ? (
                 pId !== profileId ? (
                   <Button
@@ -219,11 +216,10 @@ export default function Profile() {
                         <div key={index}>
                           <div className="flex justify-between items-center gap-2">
                             <Link
-                              href={`${
-                                rune.runeId
-                                  ? `/rune/${encodeURIComponent(rune.runeId)}`
-                                  : `#`
-                              }`}
+                              href={`${rune.runeId
+                                ? `/rune/${encodeURIComponent(rune.runeId)}`
+                                : `#`
+                                }`}
                               className="w-full"
                             >
                               <div className="flex flex-col gap-1 py-2">
@@ -268,11 +264,10 @@ export default function Profile() {
                         <div key={index}>
                           <div className="flex justify-between items-center gap-2">
                             <Link
-                              href={`${
-                                rune.runeId
-                                  ? `/rune/${encodeURIComponent(rune.runeId)}`
-                                  : `#`
-                              }`}
+                              href={`${rune.runeId
+                                ? `/rune/${encodeURIComponent(rune.runeId)}`
+                                : `#`
+                                }`}
                             >
                               <div className="flex flex-col gap-1 hover:bg-foreground-300 p-2">
                                 <div className="flex justify-between items-center gap-2">

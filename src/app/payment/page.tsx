@@ -16,6 +16,7 @@ import { MainContext } from "../contexts/MainContext";
 import { unisatSignPsbt } from "../utils/pump";
 import { SATS_MULTIPLE } from "../config/config";
 import useSocket from "../hooks/useSocket";
+import PumpInput from "../components/PumpInput";
 
 export default function CreateRune() {
   const socket = useSocket();
@@ -132,14 +133,11 @@ export default function CreateRune() {
           <div className="flex flex-col gap-3 border-2 bg-bgColor-ghost p-2 border-bgColor-stroke rounded-xl">
             <div className="py-3 font-bold text-center text-lg">Deposit</div>
             <div className="flex flex-col gap-3">
-              <Input
-                type="text"
+              <PumpInput
                 label="Deposit Amount"
-                color="warning"
-                variant="bordered"
                 value={depositAmount}
-                onChange={(e) => setDepositAmount(e.target.value)}
-              />
+                onChange={setDepositAmount}
+              ></PumpInput>
               <Button
                 color="warning"
                 variant="flat"
@@ -155,23 +153,16 @@ export default function CreateRune() {
           <div className="flex flex-col gap-3 border-2 bg-bgColor-ghost p-2 border-bgColor-stroke rounded-xl">
             <div className="py-3 font-bold text-center text-lg">Withdraw</div>
             <div className="flex flex-col gap-3">
-              <Input
-                type="text"
-                label="Rune ID"
-                color="warning"
-                variant="bordered"
-                placeholder="'btc' or rune id"
+              <PumpInput
+                label="Rune ID ('btc' or rune id)"
                 value={runeId}
-                onChange={(e) => setRuneId(e.target.value)}
-              />
-              <Input
-                type="text"
+                onChange={setRuneId}
+              ></PumpInput>
+              <PumpInput
                 label="Withdraw Amount"
-                color="warning"
-                variant="bordered"
                 value={withdrawAmount}
-                onChange={(e) => setWithdrawAmount(e.target.value)}
-              />
+                onChange={setWithdrawAmount}
+              ></PumpInput>
               <Button
                 color="warning"
                 variant="flat"
