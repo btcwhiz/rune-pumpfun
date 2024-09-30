@@ -8,6 +8,7 @@ import { LuUpload } from "react-icons/lu";
 import { etchingRuneFunc, preEtchingRuneFunc } from "../api/requests";
 import { MainContext } from "../contexts/MainContext";
 import { unisatSignPsbt } from "../utils/pump";
+import PumpInput, { InputStyles } from "../components/PumpInput";
 
 const styles = {
   input: [
@@ -28,13 +29,9 @@ export default function CreateRune() {
   const itemClasses = {
     base: "py-0 w-full",
     title: "text-white",
-    // trigger:
-    //   "px-2 py-0 data-[hover=true]:bg-default-100 rounded-lg h-14 flex items-center",
-    // indicator: "text-medium",
-    // content: "text-small px-2",
   };
 
-  const { ordinalAddress, userInfo } = useContext(MainContext);
+  const { userInfo } = useContext(MainContext);
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -103,54 +100,54 @@ export default function CreateRune() {
 
   const handleEtchingRune = async () => {
     try {
-      // let rTicker: any = ticker;
-      // if (!rTicker) rTicker = "$";
-      // if (!imageContent || !name) {
-      //   return toast.error("Invalid parameters");
-      // }
-      // if (initialBuyAmount) {
-      //   if (
-      //     !Number(initialBuyAmount) ||
-      //     !Math.round(Number(initialBuyAmount)) ||
-      //     Math.round(Number(initialBuyAmount)) > 1000000
-      //   ) {
-      //     return toast.error("Invalid initial rune amount");
-      //   }
-      // }
-      // if (dexPercentage < 20 || dexPercentage > 50) {
-      //   return toast.error("Dex Percentage range should be from 20 to 50!");
-      // }
+      let rTicker: any = ticker;
+      if (!rTicker) rTicker = "$";
+      if (!imageContent || !name) {
+        return toast.error("Invalid parameters");
+      }
+      if (initialBuyAmount) {
+        if (
+          !Number(initialBuyAmount) ||
+          !Math.round(Number(initialBuyAmount)) ||
+          Math.round(Number(initialBuyAmount)) > 1000000
+        ) {
+          return toast.error("Invalid initial rune amount");
+        }
+      }
+      if (dexPercentage < 20 || dexPercentage > 50) {
+        return toast.error("Dex Percentage range should be from 20 to 50!");
+      }
 
-      // setLoading(true);
+      setLoading(true);
 
-      // const saveData = {
-      //   name,
-      //   ticker: rTicker,
-      //   description,
-      //   dexPercentage,
-      //   initialBuyAmount,
-      //   twitter,
-      //   telegram,
-      //   website,
-      // };
+      const saveData = {
+        name,
+        ticker: rTicker,
+        description,
+        dexPercentage,
+        initialBuyAmount,
+        twitter,
+        telegram,
+        website,
+      };
 
-      // const { status, etchingPsbt, etchingFee, waitEtchingData }: any =
-      //   await preEtchingRuneFunc(userInfo.userId, imageContent, saveData);
-      // if (status) {
-      //   setEtchingFeeRate(etchingFee);
+      const { status, etchingPsbt, etchingFee, waitEtchingData }: any =
+        await preEtchingRuneFunc(userInfo.userId, imageContent, saveData);
+      if (status) {
+        setEtchingFeeRate(etchingFee);
 
-      //   const signedPsbt = await unisatSignPsbt(etchingPsbt.psbt);
-      //   const { status, msg } = await etchingRuneFunc(
-      //     userInfo.userId,
-      //     signedPsbt,
-      //     waitEtchingData.waitEtchingId,
-      //     etchingPsbt.requestId
-      //   );
+        const signedPsbt = await unisatSignPsbt(etchingPsbt.psbt);
+        const { status, msg } = await etchingRuneFunc(
+          userInfo.userId,
+          signedPsbt,
+          waitEtchingData.waitEtchingId,
+          etchingPsbt.requestId
+        );
 
-      //   if (status) {
-      //     toast.success(msg);
-      //   }
-      // }
+        if (status) {
+          toast.success(msg);
+        }
+      }
       setImageData(null);
       setImageContent("");
       setTicker("");
@@ -162,7 +159,6 @@ export default function CreateRune() {
       setWebsite("");
       setLoading(false);
       setEtchingFeeRate("");
-      // fileInputRef?.current?.value = "";
     } catch (error) {
       setLoading(false);
     }
@@ -204,46 +200,35 @@ export default function CreateRune() {
             onChange={handleImageUpload}
           />
         </div>
-        <Input
-          type="text"
+        <PumpInput
           label="Rune Symbol (optional)"
           value={ticker}
-          color="warning"
-          classNames={styles}
-          onChange={(e) => setTicker(e.target.value)}
-        />
-        <Input
-          type="text"
+          onChange={setTicker}
+        ></PumpInput>
+        <PumpInput
           label="Rune Name"
           value={name}
-          color="warning"
-          variant="bordered"
-          onChange={(e) => setName(e.target.value)}
-        />
-        <Input
+          onChange={setName}
+        ></PumpInput>
+        <PumpInput
           type="textarea"
           label="Rune Description"
           value={description}
-          color="warning"
-          variant="bordered"
-          onChange={(e) => setDescription(e.target.value)}
-        />
+          onChange={setDescription}
+        ></PumpInput>
         <Input
           type="number"
           label="Dex Percentage(min: 20, max: 50)"
           value={`${dexPercentage}`}
           color="warning"
-          variant="bordered"
+          classNames={InputStyles}
           onChange={(e) => setDexPercentage(Number(e.target.value))}
         />
-        <Input
-          type="text"
+        <PumpInput
           label="First buy rune amount(optional)"
           value={initialBuyAmount}
-          color="warning"
-          variant="bordered"
-          onChange={(e) => setInitialBuyAmount(e.target.value)}
-        />
+          onChange={setInitialBuyAmount}
+        ></PumpInput>
         <Accordion itemClasses={itemClasses}>
           <AccordionItem
             key="1"
@@ -251,33 +236,21 @@ export default function CreateRune() {
             title="Show more options"
           >
             <div className="flex flex-col gap-3 !text-primary-50">
-              <Input
-                type="text"
-                label="twitter link"
-                placeholder="(optional)"
+              <PumpInput
+                label="Twitter Link"
                 value={twitter}
-                color="warning"
-                variant="bordered"
-                onChange={(e) => setTwitter(e.target.value)}
-              />
-              <Input
-                type="text"
-                label="telegram link"
-                placeholder="(optional)"
+                onChange={setTwitter}
+              ></PumpInput>
+              <PumpInput
+                label="Telegram Link"
                 value={telegram}
-                color="warning"
-                variant="bordered"
-                onChange={(e) => setTelegram(e.target.value)}
-              />
-              <Input
-                type="text"
-                label="website"
-                placeholder="(optional)"
+                onChange={setTelegram}
+              ></PumpInput>
+              <PumpInput
+                label="Website"
                 value={website}
-                color="warning"
-                variant="bordered"
-                onChange={(e) => setWebsite(e.target.value)}
-              />
+                onChange={setWebsite}
+              ></PumpInput>
             </div>
           </AccordionItem>
         </Accordion>
