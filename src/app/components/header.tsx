@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { Button } from "@nextui-org/react";
 import toast from "react-hot-toast";
 import { FaHome, FaPlus, FaUser } from "react-icons/fa";
@@ -8,13 +8,14 @@ import { IoIosLogOut } from "react-icons/io";
 import { TfiReload } from "react-icons/tfi";
 import Link from "next/link";
 import moment from "moment-timezone";
-
-import { MainContext } from "../contexts/MainContext";
-import { authUser } from "../api/requests";
 import { usePathname } from "next/navigation";
 import { GiMoneyStack } from "react-icons/gi";
 import { AiOutlineSwap } from "react-icons/ai";
 import { GrMoney } from "react-icons/gr";
+
+import { MainContext } from "../contexts/MainContext";
+import { authUser } from "../api/requests";
+import useSocket from "../hooks/useSocket";
 
 const links = [
   {
@@ -41,7 +42,10 @@ const links = [
 
 export default function Header() {
   const path = usePathname();
+  const socket = useSocket();
+  const loadingRef = useRef(false);
   const {
+    paymentAddress,
     setPaymentAddress,
     setPaymentPubkey,
     setOrdinalAddress,
@@ -53,27 +57,29 @@ export default function Header() {
   const handleConnectWallet = async () => {
     const currentWindow: any = window;
     if (currentWindow?.unisat) {
-      const unisat: any = currentWindow.unisat;
-      const accounts = await unisat.requestAccounts();
-      const address = accounts[0];
-      const pubKey = await unisat.getPublicKey();
-      const uInfo: any = await authUser(address, pubKey, address, pubKey);
-      localStorage.setItem(
-        "wallet",
-        JSON.stringify({
-          type: "Unisat",
-          paymentAddress: address,
-          paymentPubkey: pubKey,
-          ordinalAddress: address,
-          ordinalPubkey: pubKey,
-          session: moment.now() + 60 * 60 * 1000,
-        })
-      );
-      setUserInfo(uInfo);
-      setPaymentAddress(address);
-      setPaymentPubkey(pubKey);
-      setOrdinalAddress(address);
-      setOrdinalPubkey(pubKey);
+      if (!paymentAddress) {
+        const unisat: any = currentWindow.unisat;
+        const accounts = await unisat.requestAccounts();
+        const address = accounts[0];
+        const pubKey = await unisat.getPublicKey();
+        const uInfo: any = await authUser(address, pubKey, address, pubKey);
+        localStorage.setItem(
+          "wallet",
+          JSON.stringify({
+            type: "Unisat",
+            paymentAddress: address,
+            paymentPubkey: pubKey,
+            ordinalAddress: address,
+            ordinalPubkey: pubKey,
+            session: moment.now() + 60 * 60 * 1000,
+          })
+        );
+        setUserInfo(uInfo);
+        setPaymentAddress(address);
+        setPaymentPubkey(pubKey);
+        setOrdinalAddress(address);
+        setOrdinalPubkey(pubKey);
+      }
     } else {
       toast.error("Plz install unisat wallet");
     }
@@ -92,14 +98,32 @@ export default function Header() {
       const storedWallet = localStorage.getItem("wallet");
       if (storedWallet) {
         const { session } = JSON.parse(storedWallet);
-        if (session > moment.now()) {
-          handleConnectWallet();
+        if (session > moment.now() && !loadingRef.current) {
+          loadingRef.current = true;
+          await handleConnectWallet();
+          loadingRef.current = false;
         }
       }
     };
 
     autoConnect();
   }, []);
+
+  useEffect(() => {
+    if (socket) {
+      socket.on("newPumpAction", (pumpData: any) => {
+        console.log("pumpData :>> ", pumpData);
+      });
+      socket.on("newRuneToken", (newRuneToken: any) => {
+        console.log("newRuneToken :>> ", newRuneToken);
+      });
+
+      return () => {
+        socket.off("newPumpAction");
+        socket.off("newRuneToken");
+      };
+    }
+  }, [socket]);
 
   return (
     <div className="z-10 bg-bgColor-ghost px-12 border-b-2 border-bgColor-stroke w-full font-mono text-sm">

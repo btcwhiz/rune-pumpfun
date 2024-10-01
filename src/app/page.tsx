@@ -122,7 +122,7 @@ export default function Home() {
                           <div className="flex flex-col gap-1 w-full">
                             {item.poolstate === 1 && (
                               <div className="top-1/2 left-1/2 absolute font-Hadenut text-4xl text-warning -translate-x-1/2 -translate-y-1/2 -rotate-[17deg]">
-                                closed
+                                Closed!
                               </div>
                             )}
                             <div className="flex justify-between items-center gap-2 text-small">

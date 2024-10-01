@@ -1,7 +1,7 @@
 "use client";
 
 // import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+// import { Inter } from "next/font/google";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { NextUIProvider } from "@nextui-org/system";
 import { Toaster } from "react-hot-toast";
@@ -10,7 +10,7 @@ import { MainProvider } from "./contexts/MainContext";
 import "./globals.css";
 import Header from "./components/header";
 
-const inter = Inter({ subsets: ["latin"] });
+// const inter = Inter({ subsets: ["latin"] });
 
 export const queryClient = new QueryClient();
 
@@ -26,7 +26,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body>
         <NextTopLoader color="#FD9800" />
         <Toaster />
         <QueryClientProvider client={queryClient}>
