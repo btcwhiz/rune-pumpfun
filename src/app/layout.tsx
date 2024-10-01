@@ -9,6 +9,7 @@ import NextTopLoader from "nextjs-toploader";
 import { MainProvider } from "./contexts/MainContext";
 import "./globals.css";
 import Header from "./components/header";
+import Trend from "./components/trend";
 
 // const inter = Inter({ subsets: ["latin"] });
 
@@ -34,6 +35,7 @@ export default function RootLayout({
             <MainProvider>
               <div>
                 <Header></Header>
+                <Trend></Trend>
                 {children}
               </div>
             </MainProvider>

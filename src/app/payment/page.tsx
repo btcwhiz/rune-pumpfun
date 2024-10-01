@@ -65,7 +65,7 @@ export default function CreateRune() {
           }
           setLoading(false);
         } else {
-          console.log("Invalid parameters");
+          return toast.error("Please connect wallet");
         }
       } else {
         toast.error("Please install unisat");
@@ -113,7 +113,7 @@ export default function CreateRune() {
         setLoading(false);
       } else {
         setLoading(false);
-        console.log("Invalid Parameters");
+        return toast.error("Please connect wallet");
       }
     } catch (error) {
       console.log("error :>> ", error);

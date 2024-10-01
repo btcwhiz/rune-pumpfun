@@ -15,7 +15,6 @@ import { GrMoney } from "react-icons/gr";
 
 import { MainContext } from "../contexts/MainContext";
 import { authUser } from "../api/requests";
-import useSocket from "../hooks/useSocket";
 
 const links = [
   {
@@ -42,7 +41,6 @@ const links = [
 
 export default function Header() {
   const path = usePathname();
-  const socket = useSocket();
   const loadingRef = useRef(false);
   const {
     paymentAddress,
@@ -108,22 +106,6 @@ export default function Header() {
 
     autoConnect();
   }, []);
-
-  useEffect(() => {
-    if (socket) {
-      socket.on("newPumpAction", (pumpData: any) => {
-        console.log("pumpData :>> ", pumpData);
-      });
-      socket.on("newRuneToken", (newRuneToken: any) => {
-        console.log("newRuneToken :>> ", newRuneToken);
-      });
-
-      return () => {
-        socket.off("newPumpAction");
-        socket.off("newRuneToken");
-      };
-    }
-  }, [socket]);
 
   return (
     <div className="z-10 bg-bgColor-ghost px-12 border-b-2 border-bgColor-stroke w-full font-mono text-sm">

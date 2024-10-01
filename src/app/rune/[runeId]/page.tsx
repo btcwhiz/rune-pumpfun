@@ -44,6 +44,7 @@ import {
 } from "../../utils/util";
 import ImageDisplay from "../../components/ImageDIsplay";
 import useSocket from "../../hooks/useSocket";
+import { InputStyles } from "../../components/PumpInput";
 
 export default function CreateRune() {
   let { runeId }: any = useParams();
@@ -132,7 +133,7 @@ export default function CreateRune() {
           }
         }
       } else {
-        toast.error("Invalid parameters");
+        return toast.error("Please connect wallet");
       }
     } catch (error) {
       setLoading(false);
@@ -184,7 +185,7 @@ export default function CreateRune() {
           socket.emit("update-user", { userId: userInfo.userId });
         }
       } else {
-        return toast.error("Invalid parameters");
+        return toast.error("Please connect wallet");
       }
     } catch (error) {
       setBuyFlag(false);
@@ -213,7 +214,7 @@ export default function CreateRune() {
         setLoading(false);
       } else {
         setLoading(false);
-        toast.error("Invalid Parameters");
+        return toast.error("Please connect wallet");
       }
     } catch (error) {
       setLoading(false);
@@ -256,7 +257,7 @@ export default function CreateRune() {
           socket.emit("update-user", { userId: userInfo.userId });
         }
       } else {
-        toast.error("Invalid parameters");
+        return toast.error("Please connect wallet");
       }
     } catch (error) {
       setSellFlag(false);
@@ -293,7 +294,7 @@ export default function CreateRune() {
         initialize();
         getRuneBalanceFunc();
       } else {
-        toast.error("Invalid parameters");
+        return toast.error("Please connect wallet");
       }
     } catch (error) {
       setSellFlag(false);
@@ -557,7 +558,7 @@ export default function CreateRune() {
                             type="text"
                             label="Rune Amount"
                             color="warning"
-                            variant="bordered"
+                            classNames={InputStyles}
                             value={buyRuneAmount}
                             disabled={loading}
                             onChange={(e) => {
@@ -579,7 +580,7 @@ export default function CreateRune() {
                             type="text"
                             label="BTC Amount"
                             color="warning"
-                            variant="bordered"
+                            classNames={InputStyles}
                             value={btcAmount}
                             disabled={loading}
                             onChange={(e) => {
@@ -600,10 +601,10 @@ export default function CreateRune() {
                         <Input
                           type="number"
                           label="Slippage (%)"
-                          color="warning"
-                          variant="bordered"
                           value={`${slippage}`}
                           disabled={loading}
+                          color="warning"
+                          classNames={InputStyles}
                           min={0}
                           onChange={(e) => {
                             setBuyFlag(false);
@@ -668,7 +669,7 @@ export default function CreateRune() {
                           type="text"
                           label="Sell Rune Amount"
                           color="warning"
-                          variant="bordered"
+                          classNames={InputStyles}
                           value={sellRuneAmount}
                           disabled={loading}
                           onChange={(e) => {
@@ -680,7 +681,7 @@ export default function CreateRune() {
                           type="number"
                           label="Slippage (%)"
                           color="warning"
-                          variant="bordered"
+                          classNames={InputStyles}
                           value={`${slippage}`}
                           disabled={loading}
                           min={0}
@@ -734,7 +735,7 @@ export default function CreateRune() {
                           type="text"
                           label="Burn Rune Amount"
                           color="warning"
-                          variant="bordered"
+                          classNames={InputStyles}
                           value={burnRuneAmount}
                           disabled={loading}
                           onChange={(e) => setBurnRuneAmount(e.target.value)}

@@ -98,7 +98,7 @@ export default function Profile() {
         setLoading(false);
       } else {
         setLoading(false);
-        console.log("Invalid Parameters");
+        return toast.error("Please connect wallet");
       }
     } catch (error) {
       console.log("error :>> ", error);
