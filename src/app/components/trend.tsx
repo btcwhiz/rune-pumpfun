@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import moment from "moment-timezone";
 import { Bounce } from "react-awesome-reveal";
 
 import useSocket from "../hooks/useSocket";
@@ -28,6 +29,14 @@ export default function Trend() {
     }
   };
 
+  const displayDate = (date: string) => {
+    // Convert the date string to a moment object in the local timezone
+    const localDate = moment.tz(date, moment.tz.guess());
+
+    // Format the date as MM/DD/YY
+    return localDate.format("MM/DD/YY");
+  };
+
   useEffect(() => {
     if (socket) {
       socket.emit("getTrend");
@@ -49,7 +58,7 @@ export default function Trend() {
   return (
     <div className="z-10 bg-bgColor-ghost p-2 border-b-2 border-bgColor-stroke w-full font-mono text-sm flex gap-1">
       {newTrade?.profileId && (
-        <Bounce delay={500} triggerOnce={true}>
+        <Bounce key={newTrade.key} delay={500} triggerOnce={true}>
           <div className="flex justify-start">
             <div className="flex justify-between items-center gap-1 bg-warning-800 p-3 rounded-xl">
               <Link
@@ -84,7 +93,7 @@ export default function Trend() {
         </Bounce>
       )}
       {newRune?.profileId && (
-        <Bounce delay={500} triggerOnce={true}>
+        <Bounce key={newRune.key} delay={500} triggerOnce={true}>
           <div className="flex justify-start">
             <div className="flex justify-between items-center gap-1 bg-warning-900 p-3 rounded-xl">
               <Link
@@ -100,6 +109,8 @@ export default function Trend() {
               >
                 {displayRune(newRune.runeName)}
               </Link>
+              <div>on</div>
+              <div className="text-warning">{displayDate(newRune.now)}</div>
             </div>
           </div>
         </Bounce>
