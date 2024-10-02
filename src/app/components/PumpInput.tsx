@@ -13,7 +13,6 @@ export const InputStyles = {
     "border-bgColor-stroke",
     "hover:border-bgColor-stroke",
   ],
-  innerWrapper: ["flex", "!items-center"],
 };
 
 const PumpInput = ({
