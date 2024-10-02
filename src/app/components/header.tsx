@@ -52,31 +52,36 @@ export default function Header() {
     setUserInfo,
   } = useContext(MainContext);
 
+  const walletConnectProcess = async () => {
+    const currentWindow: any = window;
+    const unisat: any = currentWindow.unisat;
+    const accounts = await unisat.requestAccounts();
+    const address = accounts[0];
+    const pubKey = await unisat.getPublicKey();
+    const uInfo: any = await authUser(address, pubKey, address, pubKey);
+    localStorage.setItem(
+      "wallet",
+      JSON.stringify({
+        type: "Unisat",
+        paymentAddress: address,
+        paymentPubkey: pubKey,
+        ordinalAddress: address,
+        ordinalPubkey: pubKey,
+        session: moment.now() + 60 * 60 * 1000,
+      })
+    );
+    setUserInfo(uInfo);
+    setPaymentAddress(address);
+    setPaymentPubkey(pubKey);
+    setOrdinalAddress(address);
+    setOrdinalPubkey(pubKey);
+  };
+
   const handleConnectWallet = async () => {
     const currentWindow: any = window;
     if (currentWindow?.unisat) {
       if (!paymentAddress) {
-        const unisat: any = currentWindow.unisat;
-        const accounts = await unisat.requestAccounts();
-        const address = accounts[0];
-        const pubKey = await unisat.getPublicKey();
-        const uInfo: any = await authUser(address, pubKey, address, pubKey);
-        localStorage.setItem(
-          "wallet",
-          JSON.stringify({
-            type: "Unisat",
-            paymentAddress: address,
-            paymentPubkey: pubKey,
-            ordinalAddress: address,
-            ordinalPubkey: pubKey,
-            session: moment.now() + 60 * 60 * 1000,
-          })
-        );
-        setUserInfo(uInfo);
-        setPaymentAddress(address);
-        setPaymentPubkey(pubKey);
-        setOrdinalAddress(address);
-        setOrdinalPubkey(pubKey);
+        walletConnectProcess();
       }
     } else {
       toast.error("Plz install unisat wallet");
@@ -146,7 +151,7 @@ export default function Header() {
               <div>{`${userInfo.btcBalance / 10 ** 8} BTC`}</div>
               <Button
                 color="warning"
-                onClick={() => handleConnectWallet()}
+                onClick={() => walletConnectProcess()}
                 className="rounded-full"
                 isIconOnly
                 variant="flat"
