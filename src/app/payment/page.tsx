@@ -19,7 +19,7 @@ import useSocket from "../hooks/useSocket";
 import PumpInput from "../components/PumpInput";
 
 export default function CreateRune() {
-  const socket = useSocket();
+  const { socket, isConnected } = useSocket();
   const { userInfo } = useContext(MainContext);
 
   const [loading, setLoading] = useState<boolean>(false);
@@ -59,7 +59,7 @@ export default function CreateRune() {
             );
             getTxs();
             toast.success(depositRes.msg);
-            if (socket) {
+            if (socket && isConnected) {
               socket.emit("update-user", { userId: userInfo.userId });
             }
           }

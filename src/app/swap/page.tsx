@@ -35,7 +35,7 @@ import { displayBtc } from "../utils/util";
 import PumpInput from "../components/PumpInput";
 
 export default function Page() {
-  const socket = useSocket();
+  const { socket, isConnected } = useSocket();
   const { userInfo } = useContext(MainContext);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
@@ -125,19 +125,23 @@ export default function Page() {
   };
 
   const handleInputBaseAmount = async (amount: any) => {
-    if (direction === true) {
-      socket.emit("predict-rune", { poolId, amount, type: "base" });
-    } else {
-      socket.emit("predict-btc", { poolId, amount, type: "base" });
+    if (socket && isConnected) {
+      if (direction === true) {
+        socket.emit("predict-rune", { poolId, amount, type: "base" });
+      } else {
+        socket.emit("predict-btc", { poolId, amount, type: "base" });
+      }
     }
     setBaseAmount(amount);
   };
 
   const handleInputTargeAmount = async (amount: any) => {
-    if (direction === true) {
-      socket.emit("predict-btc", { poolId, amount, type: "target" });
-    } else {
-      socket.emit("predict-rune", { poolId, amount, type: "target" });
+    if (socket && isConnected) {
+      if (direction === true) {
+        socket.emit("predict-btc", { poolId, amount, type: "target" });
+      } else {
+        socket.emit("predict-rune", { poolId, amount, type: "target" });
+      }
     }
     setTargetAmount(amount);
   };

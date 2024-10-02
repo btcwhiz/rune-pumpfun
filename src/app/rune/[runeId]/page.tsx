@@ -68,7 +68,7 @@ export default function CreateRune() {
     date: new Date("2022-07-01"),
   } as coinInfo);
   const { userInfo } = useContext(MainContext);
-  const socket = useSocket();
+  const {socket, isConnected} = useSocket();
 
   const [runeInfo, setRuneInfo] = useState<any>({});
   const [runeBalance, setRuneBalance] = useState<number>(0);
@@ -181,7 +181,7 @@ export default function CreateRune() {
         setBuyFlag(false);
         setLoading(false);
         getRuneBalanceFunc();
-        if (socket) {
+        if (socket && isConnected) {
           socket.emit("update-user", { userId: userInfo.userId });
         }
       } else {

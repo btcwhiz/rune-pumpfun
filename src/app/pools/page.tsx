@@ -39,7 +39,7 @@ import { displayBtc } from "../utils/util";
 import PumpInput from "../components/PumpInput";
 
 export default function Page() {
-  const socket = useSocket();
+  const { socket, isConnected } = useSocket();
   const { userInfo } = useContext(MainContext);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
@@ -125,10 +125,12 @@ export default function Page() {
   };
 
   const handleInputBaseAmount = async (amount: any) => {
-    if (direction === true) {
-      socket.emit("predict-pool-rune", { poolId, amount });
-    } else {
-      socket.emit("predict-pool-btc", { poolId, amount });
+    if (socket && isConnected) {
+      if (direction === true) {
+        socket.emit("predict-pool-rune", { poolId, amount });
+      } else {
+        socket.emit("predict-pool-btc", { poolId, amount });
+      }
     }
     setBaseAmount(amount);
   };
@@ -160,7 +162,7 @@ export default function Page() {
   }, [userInfo]);
 
   useEffect(() => {
-    if (socket) {
+    if (socket && isConnected) {
       socket.on("estimate-pool", (target: any) => {
         setTargetAmount(target.predictAmount);
       });
@@ -168,7 +170,7 @@ export default function Page() {
         socket.off("estimate-pool");
       };
     }
-  }, [poolId, socket]);
+  }, [poolId, socket, isConnected]);
 
   return (
     <div className="flex flex-col gap-2 p-3 md:pt-20">
@@ -322,8 +324,9 @@ export default function Page() {
                   className="items-center grid grid-cols-5 text-center"
                 >
                   <div>{displayBtc(item.btcAmount)}</div>
-                  <div title={item.runeName}>{`${item.runeName ? `${item.runeName.slice(0, 10)}...` : ``
-                    }`}</div>
+                  <div title={item.runeName}>{`${
+                    item.runeName ? `${item.runeName.slice(0, 10)}...` : ``
+                  }`}</div>
                   <div>{item.runeAmount}</div>
                   <div>
                     <Link
