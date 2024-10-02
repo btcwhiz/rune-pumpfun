@@ -487,9 +487,8 @@ export default function CreateRune() {
                         </div>
                         <div className="flex items-center">
                           <div className="w-10">No</div>
-                          <div className="gap-3 grid grid-cols-5 w-full">
+                          <div className="gap-3 grid grid-cols-4 w-full">
                             <div>Type</div>
-                            <div>Symbol</div>
                             <div>Rune</div>
                             <div>BTC</div>
                             <div>Date</div>
@@ -498,13 +497,12 @@ export default function CreateRune() {
                         {pumpActions.map((item, index) => (
                           <div key={index} className="flex items-center">
                             <div className="w-10">{index + 1}</div>
-                            <div className="gap-3 grid grid-cols-5 w-full">
+                            <div className="gap-3 grid grid-cols-4 w-full">
                               <div>
                                 {item.type == 0 && "Buy"}
                                 {item.type == 1 && "Sell"}
                                 {item.type == 2 && "Burn"}
                               </div>
-                              <div>{item.runeSymbol}</div>
                               <div>{item.runeAmount}</div>
                               <div>
                                 {(item.btcAmount / SATS_MULTIPLE).toFixed(12)}
