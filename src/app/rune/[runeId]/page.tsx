@@ -68,7 +68,7 @@ export default function CreateRune() {
     date: new Date("2022-07-01"),
   } as coinInfo);
   const { userInfo } = useContext(MainContext);
-  const {socket, isConnected} = useSocket();
+  const { socket, isConnected } = useSocket();
 
   const [runeInfo, setRuneInfo] = useState<any>({});
   const [runeBalance, setRuneBalance] = useState<number>(0);
@@ -566,13 +566,15 @@ export default function CreateRune() {
                               setBuyRuneAmount(e.target.value);
                             }}
                             endContent={
-                              <Button
-                                color="warning"
-                                variant="flat"
-                                onClick={() => handleMaxAmount(target)}
-                              >
-                                Max
-                              </Button>
+                              <div className="flex justify-center items-center">
+                                <Button
+                                  color="warning"
+                                  variant="flat"
+                                  onClick={() => handleMaxAmount(target)}
+                                >
+                                  Max
+                                </Button>
+                              </div>
                             }
                           />
                         ) : (
