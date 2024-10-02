@@ -558,7 +558,21 @@ export default function CreateRune() {
                             type="text"
                             label="Rune Amount"
                             color="warning"
-                            classNames={InputStyles}
+                            classNames={{
+                              input: [
+                                "bg-bgColor-dark",
+                                "hover:border-warning",
+                                "!placeholder:text-placeHolder",
+                              ],
+                              inputWrapper: [
+                                "!bg-bgColor-dark",
+                                "!hover:bg-bgColor-stroke",
+                                "border-2",
+                                "border-bgColor-stroke",
+                                "hover:border-bgColor-stroke",
+                              ],
+                              innerWrapper: ["flex", "!items-center"],
+                            }}
                             value={buyRuneAmount}
                             disabled={loading}
                             onChange={(e) => {
