@@ -9,9 +9,9 @@ import useSocket from "../hooks/useSocket";
 import { SATS_MULTIPLE } from "../config/config";
 
 export default function Trend() {
+  const { socket, isConnected } = useSocket();
   const [newTrade, setNewTrade] = useState<any>({});
   const [newRune, setNewRune] = useState<any>({});
-  const socket = useSocket();
 
   const displayBtc = (btcAmount: any) => {
     try {
@@ -38,7 +38,7 @@ export default function Trend() {
   };
 
   useEffect(() => {
-    if (socket) {
+    if (isConnected && socket) {
       socket.emit("getTrend");
 
       socket.on("newPumpAction", (pumpData: any) => {
@@ -53,7 +53,7 @@ export default function Trend() {
         socket.off("newRuneToken");
       };
     }
-  }, [socket]);
+  }, [socket, isConnected]);
 
   return (
     <div className="z-10 bg-bgColor-ghost p-2 border-b-2 border-bgColor-stroke w-full font-mono text-sm flex gap-1">
