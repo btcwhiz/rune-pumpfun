@@ -1,69 +1,46 @@
 "use client";
 
-import { useContext, useEffect, useState } from "react";
-import { Button, Input, Progress, Spinner } from "@nextui-org/react";
+import { useEffect, useState } from "react";
+import { Button, Progress, Spinner } from "@nextui-org/react";
 import Link from "next/link";
-import Image from "next/image";
-import toast from "react-hot-toast";
-import { Tabs, Tab, Card, CardBody } from "@nextui-org/react";
-import {
-  checkUser,
-  getPumpActionFunc,
-  getRuneFunc,
-  pumpBuyFunc,
-  pumpPreBuyFunc,
-  pumpPreSellFunc,
-  pumpSellFunc,
-} from "./api/requests";
-import { MainContext } from "./contexts/MainContext";
+import { Card, CardBody } from "@nextui-org/react";
+import { getRuneFunc } from "./api/requests";
 import ImageDisplay from "./components/ImageDIsplay";
-import { DEFAULT_POOL, SATS_MULTIPLE } from "./config/config";
+import { SATS_MULTIPLE } from "./config/config";
 import { calcProgress } from "./utils/util";
 import { TfiReload } from "react-icons/tfi";
 
 export default function Home() {
-  const { userInfo } = useContext(MainContext);
-
   const [runes, setRunes] = useState<any[]>([]);
 
   const getRunes = async () => {
     let runeRes: any = await getRuneFunc();
-    setRunes(runeRes.runes);
+    setRunes([...runeRes.waitingRunes, ...runeRes.runes]);
   };
-
   useEffect(() => {
     getRunes();
     // eslint-disable-next-line
   }, []);
-
-  // const handleCheckUser = async (userId: string) => {
-  //   const res = await checkUser(userId);
-  //   console.log("res :>> ", res);
-  // };
-
-  // useEffect(() => {
-  //   if (userInfo.userId) {
-  //     console.log("userInfo :>> ", userInfo);
-  //     handleCheckUser(userInfo.userId);
-  //   }
-  // }, [userInfo]);
 
   return (
     <main className="p-3 min-h-screen">
       <div className="flex flex-col gap-3">
         {/* --- Rune List --- */}
         <div className="flex flex-col gap-3 md:px-10 p-2">
-          <div className="flex items-center gap-3">
-            <div>Runes</div>
-            <Button
-              color="warning"
-              onClick={() => getRunes()}
-              className="rounded-full text-white"
-              isIconOnly
-              variant="flat"
-            >
-              <TfiReload />
-            </Button>
+          <div>
+            <div className="flex items-center gap-3">
+              <div>Runes</div>
+              <Button
+                color="warning"
+                onClick={() => getRunes()}
+                className="rounded-full text-white"
+                isIconOnly
+                variant="flat"
+              >
+                <TfiReload />
+              </Button>
+            </div>
+            <div></div>
           </div>
           <div className="gap-3 grid grid-cols-1 md:grid-cols-3">
             {runes.map((item, index) => {
@@ -80,17 +57,9 @@ export default function Home() {
                 >
                   <CardBody
                     className={`${
-                      item.runeId ? "" : "bg-gray-500"
+                      item.runeId ? "#" : "bg-gray-500"
                     } flex flex-col justify-around`}
                   >
-                    {!item.runeId && (
-                      <div className="flex flex-col justify-center gap-3 text-2xl">
-                        <div className="flex justify-center font-bold">
-                          Pending
-                        </div>
-                        <Spinner></Spinner>
-                      </div>
-                    )}
                     <Link
                       href={`${
                         item.runeId
@@ -114,7 +83,7 @@ export default function Home() {
                       <div className="flex gap-3">
                         <div>
                           <ImageDisplay
-                            src={item.image[0]}
+                            src={item.image || item.imageString}
                             className="w-32"
                           ></ImageDisplay>
                         </div>
@@ -125,8 +94,18 @@ export default function Home() {
                                 Closed!
                               </div>
                             )}
+                            {!item.runeId && (
+                              <div className="top-1/2 left-1/2 absolute font-Hadenut text-4xl text-danger -translate-x-1/2 -translate-y-1/2 -rotate-[17deg]">
+                                <div className="flex justify-center font-bold gap-2">
+                                  <span>Pending</span>{" "}
+                                  <Spinner color="danger"></Spinner>
+                                </div>
+                              </div>
+                            )}
                             <div className="flex justify-between items-center gap-2 text-small">
-                              <span className="text-bgColor-stroke2 text-xs">ID</span>
+                              <span className="text-bgColor-stroke2 text-xs">
+                                ID
+                              </span>
                               <span>{item.runeId}</span>
                             </div>
                             {/* <div className="flex justify-between items-center gap-2 text-small">
@@ -134,7 +113,9 @@ export default function Home() {
                               <span>{item.runeSymbol}</span>
                             </div> */}
                             <div className="flex flex-wrap justify-between items-center gap-2 text-small">
-                              <span className="text-bgColor-stroke2 text-xs">Name</span>
+                              <span className="text-bgColor-stroke2 text-xs">
+                                Name
+                              </span>
                               <span>{item.runeName}</span>
                             </div>
                             <div className="flex flex-wrap justify-between items-center gap-2 text-small">
@@ -150,7 +131,9 @@ export default function Home() {
                               <span>{item.remainAmount}</span>
                             </div>
                             <div className="flex justify-between items-center gap-2 text-small">
-                              <span className="text-bgColor-stroke2 text-xs">Price</span>
+                              <span className="text-bgColor-stroke2 text-xs">
+                                Price
+                              </span>
                               <span>{`${(item.pool / item.remainAmount).toFixed(
                                 5
                               )} sats`}</span>
@@ -167,15 +150,6 @@ export default function Home() {
                                 ).toFixed(5)} BTC`}
                               </span>
                             </div>
-                            {/* <div className="flex justify-between items-center gap-2 text-small">
-                              <span className="text-bgColor-stroke2 text-xs">
-                                BTC collected
-                              </span>
-                              <span>{`${(
-                                (item.pool - DEFAULT_POOL) /
-                                SATS_MULTIPLE
-                              ).toFixed(5)} BTC`}</span>
-                            </div> */}
                           </div>
                         </div>
                       </div>
