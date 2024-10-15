@@ -86,30 +86,31 @@ export default function CreateRune() {
           runeId,
           withdrawAmount
         );
-        console.log("preWithdrawRes :>> ", preWithdrawRes);
-        if (runeId === "btc") {
-          const signedPsbt = await unisatSignPsbt(preWithdrawRes?.psbt);
-          const withdrawRes = await withdrawFunc(
-            userInfo.userId,
-            runeId,
-            withdrawAmount,
-            preWithdrawRes.requestId,
-            signedPsbt
-          );
-          console.log("withdrawRes :>> ", withdrawRes);
-          toast.success(withdrawRes.msg);
-        } else {
-          const withdrawRes = await withdrawFunc(
-            userInfo.userId,
-            runeId,
-            withdrawAmount,
-            preWithdrawRes.requestId,
-            ""
-          );
-          console.log("withdrawRes :>> ", withdrawRes);
-          toast.success(withdrawRes.msg);
+        if (preWithdrawRes !== null) {
+          if (runeId === "btc") {
+            const signedPsbt = await unisatSignPsbt(preWithdrawRes?.psbt);
+            const withdrawRes = await withdrawFunc(
+              userInfo.userId,
+              runeId,
+              withdrawAmount,
+              preWithdrawRes.requestId,
+              signedPsbt
+            );
+            console.log("withdrawRes :>> ", withdrawRes);
+            toast.success(withdrawRes.msg);
+          } else {
+            const withdrawRes = await withdrawFunc(
+              userInfo.userId,
+              runeId,
+              withdrawAmount,
+              preWithdrawRes.requestId,
+              ""
+            );
+            console.log("withdrawRes :>> ", withdrawRes);
+            toast.success(withdrawRes.msg);
+          }
+          getTxs();
         }
-        getTxs();
         setLoading(false);
       } else {
         setLoading(false);
