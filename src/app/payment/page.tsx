@@ -14,7 +14,7 @@ import {
 } from "../api/requests";
 import { MainContext } from "../contexts/MainContext";
 import { unisatSignPsbt } from "../utils/pump";
-import { SATS_MULTIPLE } from "../config/config";
+import { SATS_MULTIPLE, testVersion } from "../config/config";
 import useSocket from "../hooks/useSocket";
 import PumpInput from "../components/PumpInput";
 
@@ -205,7 +205,9 @@ export default function CreateRune() {
               <Link
                 className="font-bold underline"
                 target="_blink"
-                href={`https://mempool.space/testnet/tx/${item.txId}`}
+                href={`https://mempool.space${
+                  testVersion ? "/testnet" : ""
+                }/tx/${item.txId}`}
               >
                 <div className="flex items-center gap-2">
                   <span>

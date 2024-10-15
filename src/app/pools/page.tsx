@@ -25,7 +25,7 @@ import { FaPlus } from "react-icons/fa6";
 import { IoSwapVerticalSharp } from "react-icons/io5";
 
 import ImageDisplay from "../components/ImageDIsplay";
-import { BTCImg, ImgStr } from "../config/config";
+import { BTCImg, ImgStr, testVersion } from "../config/config";
 import { getAllPools, getLiquidity } from "../api/swap";
 import AvatarDisplay from "../components/AvatarDisplay";
 import { preAddLiquidity, addLiquidity } from "../api/requests";
@@ -330,7 +330,9 @@ export default function Page() {
                   <div>{item.runeAmount}</div>
                   <div>
                     <Link
-                      href={`https://mempool.space/testnet/tx/${item.txId}`}
+                      href={`https://mempool.space${
+                        testVersion ? "/testnet" : ""
+                      }/tx/${item.txId}`}
                       target="_blink"
                       className="underline"
                     >

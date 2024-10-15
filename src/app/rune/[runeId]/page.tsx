@@ -32,7 +32,7 @@ import {
   displayPercentage,
   unisatSignPsbt,
 } from "../../utils/pump";
-import { DEFAULT_POOL, SATS_MULTIPLE } from "../../config/config";
+import { DEFAULT_POOL, SATS_MULTIPLE, testVersion } from "../../config/config";
 // import useSocket from "../../hooks/useSocket";
 import { TradingChart } from "../../components/TVChart/TradingChart";
 import { coinInfo } from "../../utils/types";
@@ -869,7 +869,9 @@ export default function CreateRune() {
                     <Link
                       className="font-bold underline"
                       target="_blink"
-                      href={`https://mempool.space/testnet/address/${item.multisig}`}
+                      href={`https://mempool.space${
+                        testVersion ? "/testnet" : ""
+                      }/address/${item.multisig}`}
                     >
                       {`${displayAddress(item.multisig)} ${
                         item.ordinalAddress == runeInfo.creatorAddress
