@@ -123,7 +123,6 @@ export default function CreateRune() {
   };
 
   useEffect(() => {
-    console.log("userInfo :>> ", userInfo);
     userInfo.userId && getTxs();
   }, [userInfo.userId]);
 
