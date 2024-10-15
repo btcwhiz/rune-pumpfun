@@ -122,6 +122,7 @@ export default function CreateRune() {
   };
 
   useEffect(() => {
+    console.log("userInfo :>> ", userInfo);
     userInfo.userId && getTxs();
   }, [userInfo.userId]);
 
@@ -162,6 +163,17 @@ export default function CreateRune() {
                 label="Withdraw Amount"
                 value={withdrawAmount}
                 onChange={setWithdrawAmount}
+                // endContent={
+                //   <div className="flex justify-center items-center">
+                //     <Button
+                //       color="warning"
+                //       variant="flat"
+                //       onClick={() => setWithdrawAmount(userInfo.btcBalance)}
+                //     >
+                //       Max
+                //     </Button>
+                //   </div>
+                // }
               ></PumpInput>
               <Button
                 color="warning"

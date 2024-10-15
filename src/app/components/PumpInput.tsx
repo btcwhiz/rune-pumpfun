@@ -1,4 +1,5 @@
 import { Input } from "@nextui-org/react";
+import { ReactNode } from "react";
 
 export const InputStyles = {
   input: [
@@ -25,6 +26,7 @@ const PumpInput = ({
   classNames = InputStyles,
   onChange,
   disabled = false,
+  endContent,
 }: {
   type?: string;
   label?: string;
@@ -42,6 +44,7 @@ const PumpInput = ({
   classNames?: object;
   onChange?: (value: string | any) => void;
   disabled?: boolean;
+  endContent?: ReactNode;
 }) => {
   return (
     <Input
