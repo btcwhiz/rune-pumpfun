@@ -113,28 +113,43 @@ export default function Header() {
   }, []);
 
   return (
-    <div className="z-10 bg-bgColor-ghost px-12 border-b-2 border-bgColor-stroke w-full font-mono text-sm">
-      <div className="flex flex-wrap justify-between items-center bg-gradient-to-t dark:from-black dark:via-black lg:bg-none w-full lg:size-auto gap-3">
+    <div className="z-10 bg-bgColor-ghost px-2 sm:px-12 border-b-2 border-bgColor-stroke w-full font-mono text-sm">
+      <div className="flex flex-wrap justify-center md:justify-between items-center bg-gradient-to-t dark:from-black dark:via-black lg:bg-none w-full lg:size-auto gap-3">
         <div className="flex flex-wrap justify-center items-center gap-3">
           {links.map((item, index) => (
-            <Button
-              key={index}
-              href={item.link}
-              as={Link}
-              className={`${
-                item.link === path
-                  ? "border-warning border-b text-warning"
-                  : "text-white"
-              } rounded-none flex items-center gap-2 h-16`}
-              color="warning"
-              variant="light"
-            >
-              {item.icon}
-              <span>{item.label}</span>
-            </Button>
+            <div key={index}>
+              <Button
+                href={item.link}
+                as={Link}
+                className={`${
+                  item.link === path
+                    ? "border-warning border-b text-warning"
+                    : "text-white"
+                } rounded-none items-center sm:gap-2 sm:h-16 hidden sm:flex`}
+                color="warning"
+                variant="light"
+              >
+                {item.icon}
+                <span>{item.label}</span>
+              </Button>
+              <Button
+                href={item.link}
+                as={Link}
+                className={`${
+                  item.link === path
+                    ? "border-warning border-b text-warning"
+                    : "text-white"
+                } rounded-none flex sm:hidden items-center sm:gap-2 sm:h-16`}
+                color="warning"
+                variant="light"
+                isIconOnly
+              >
+                {item.icon}
+              </Button>
+            </div>
           ))}
         </div>
-        <div className="py-3">
+        <div className="py-3 flex justify-center items-center">
           {userInfo?.userId ? (
             <div className="flex flex-wrap justify-center items-center gap-3">
               {userInfo.role === 1 && (
@@ -148,7 +163,10 @@ export default function Header() {
                   <div>Admin</div>
                 </Button>
               )}
-              <div>{`${userInfo.btcBalance / 10 ** 8} BTC`}</div>
+              <div className="flex gap-1 items-center bg-bgColor-dark border-2 border-bgColor-stroke rounded-lg p-2">
+                {`${userInfo.btcBalance / 10 ** 8}`}
+                <span className="text-orange font-bold">BTC</span>
+              </div>
               <Button
                 color="warning"
                 onClick={() => walletConnectProcess()}
@@ -162,20 +180,40 @@ export default function Header() {
                 color="warning"
                 href={`/payment`}
                 as={Link}
-                className="flex items-center gap-2 text-white"
+                className="hidden sm:flex items-center gap-2 text-white"
                 variant="flat"
               >
                 <div>Payment</div>
                 <GiMoneyStack />
               </Button>
               <Button
+                color="warning"
+                href={`/payment`}
+                as={Link}
+                className="flex sm:hidden items-center gap-2 text-white rounded-full"
+                variant="flat"
+                isIconOnly
+              >
+                <GiMoneyStack />
+              </Button>
+              <Button
                 as={Link}
                 color="warning"
                 href={`/profile/${encodeURIComponent(userInfo?.profileId)}`}
-                className="flex items-center gap-2 text-white"
+                className="hidden sm:flex items-center gap-2 text-white"
                 variant="flat"
               >
                 <div>Profile</div>
+                <FaUser />
+              </Button>
+              <Button
+                as={Link}
+                color="warning"
+                href={`/profile/${encodeURIComponent(userInfo?.profileId)}`}
+                className="flex sm:hidden items-center gap-2 text-white rounded-full"
+                variant="flat"
+                isIconOnly
+              >
                 <FaUser />
               </Button>
               <Button

@@ -9,6 +9,7 @@ import { etchingRuneFunc, preEtchingRuneFunc } from "../api/requests";
 import { MainContext } from "../contexts/MainContext";
 import { unisatSignPsbt } from "../utils/pump";
 import PumpInput, { InputStyles } from "../components/PumpInput";
+import { displayBtc } from "../utils/util";
 
 const styles = {
   input: [
@@ -87,7 +88,7 @@ export default function CreateRune() {
             const base64String = reader.result as string;
             // Display the Base64 string in a textarea
             const hexString = base64ToHex(base64String.split(",")[1]);
-            console.log(hexString);
+            // console.log(hexString);
             setImageContent(hexString);
           };
 
@@ -175,21 +176,22 @@ export default function CreateRune() {
               isLoading={loading}
               className="bg-bgColor-stroke px-0 w-[140px] h-[140px] outline-2 outline-bgColor-stroke outline-dashed outline-offset-2"
             >
-              {imageData ? (
-                <Image
-                  alt="rune meme"
-                  // @ts-ignore
-                  src={URL.createObjectURL(imageData)}
-                  width={140}
-                  height={140}
-                ></Image>
-              ) : (
-                <div className="flex flex-col items-center gap-2 text-white">
-                  <LuUpload size={20} />
-                  <div>Upload</div>
-                  <div>Max Size: 50mb</div>
-                </div>
-              )}
+              {!loading &&
+                (imageData ? (
+                  <Image
+                    alt="rune meme"
+                    // @ts-ignore
+                    src={URL.createObjectURL(imageData)}
+                    width={140}
+                    height={140}
+                  ></Image>
+                ) : (
+                  <div className="flex flex-col items-center gap-2 text-white">
+                    <LuUpload size={20} />
+                    <div>Upload</div>
+                    <div>Max Size: 50mb</div>
+                  </div>
+                ))}
             </Button>
           </div>
           <input
@@ -253,7 +255,9 @@ export default function CreateRune() {
           </AccordionItem>
         </Accordion>
         {etchingFeeRate && (
-          <div>{`You should pay ${etchingFeeRate} for etching`}</div>
+          <div>{`You should pay ${displayBtc(
+            Number(etchingFeeRate)
+          )} for etching`}</div>
         )}
         <Button
           color="warning"

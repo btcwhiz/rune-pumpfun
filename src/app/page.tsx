@@ -20,10 +20,16 @@ export default function Home() {
 
   const getRunes = async () => {
     let runeRes: any = await getRuneFunc();
-    console.log("runeRes :>> ", runeRes);
-    setRunes(runeRes.runes);
-    setFilteredRunes(runeRes.runes);
-    setPendingRunes(runeRes.waitingRunes);
+    if (runeRes) {
+      setSearchKey("");
+      setRunes(runeRes.runes);
+      if (selected === "pending") {
+        setFilteredRunes(runeRes.waitingRunes);
+      } else {
+        setFilteredRunes(runeRes.runes);
+      }
+      setPendingRunes(runeRes.waitingRunes);
+    }
   };
 
   useEffect(() => {
@@ -95,11 +101,11 @@ export default function Home() {
   };
 
   return (
-    <main className="p-3 min-h-screen">
+    <main className="p-2 min-h-screen">
       <div className="flex flex-col gap-3">
         {/* --- Rune List --- */}
         <div className="flex flex-col gap-3 md:px-10 p-2">
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center flex-col gap-2 sm:flex-row">
             <div className="flex items-center gap-3">
               <Tabs
                 aria-label="Options"

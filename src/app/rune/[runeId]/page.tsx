@@ -90,6 +90,8 @@ export default function CreateRune() {
   const [pumpActions, setPumpActions] = useState<any[]>([]);
   const [process, setProcess] = useState<number>(0);
 
+  const [stage, setStage] = useState<string>("info");
+
   // Burn
   const [availableBurn, setAvailableBurn] = useState<string>("");
   const [burnRuneAmount, setBurnRuneAmount] = useState<string>("");
@@ -368,7 +370,6 @@ export default function CreateRune() {
   const getRuneBalanceFunc = async () => {
     try {
       const rBalance = await getRuneBalance(userInfo.userId, runeId);
-      console.log("rBalance :>> ", rBalance);
       setRuneBalance(rBalance.balance);
       setAvailableBurn(rBalance.availableBurn);
     } catch (error) {}
@@ -439,10 +440,446 @@ export default function CreateRune() {
   //   }
   // }, [socket]);
 
+  // Rune Stage
+  const RuneChart = () => {
+    return <TradingChart param={coin}></TradingChart>;
+  };
+
+  // Transaction History Stage
+  const TransactionHistory = () => {
+    return (
+      <div>
+        {/* Transaction History */}
+        <Tabs aria-label="Options" color="warning" variant="underlined">
+          <Tab key="trades" title="Trades">
+            <Card className="border-2 bg-bgColor-ghost border-bgColor-stroke text-white">
+              <CardBody>
+                <div>
+                  <div className="py-3 font-bold text-center text-lg">
+                    Transaction History
+                  </div>
+                  <div className="flex items-center">
+                    <div className="w-10">No</div>
+                    <div className="gap-3 grid grid-cols-4 w-full">
+                      <div>Type</div>
+                      <div>Rune</div>
+                      <div>BTC</div>
+                      <div>Date</div>
+                    </div>
+                  </div>
+                  {pumpActions.map((item, index) => (
+                    <div key={index} className="flex items-center">
+                      <div className="w-10">{index + 1}</div>
+                      <div className="gap-3 grid grid-cols-4 w-full">
+                        <div>
+                          {item.type == 0 && "Buy"}
+                          {item.type == 1 && "Sell"}
+                          {item.type == 2 && "Burn"}
+                        </div>
+                        <div>{item.runeAmount}</div>
+                        <div>
+                          {(item.btcAmount / SATS_MULTIPLE).toFixed(12)}
+                        </div>
+                        <div>{getTimeDifference(item.created_at)}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardBody>
+            </Card>
+          </Tab>
+          <Tab key="thread" title="Thread">
+            <Card className="border-2 bg-bgColor-ghost border-bgColor-stroke text-white">
+              <CardBody>
+                <div className="py-3 font-bold text-center text-lg">Thread</div>
+              </CardBody>
+            </Card>
+          </Tab>
+        </Tabs>
+      </div>
+    );
+  };
+
+  // Rune Info Stage
+  const RuneTokenInfo = () => {
+    return (
+      <div className="flex flex-col gap-3">
+        <div>
+          {runeInfo?.image && (
+            <ImageDisplay
+              src={`${runeInfo?.image[0]?.imageString || ""}`}
+            ></ImageDisplay>
+          )}
+        </div>
+        <div className="flex justify-start gap-5">
+          {runeInfo?.twitter ? (
+            <Link href={runeInfo?.twitter} target="_blank">
+              {`[twitter]`}
+            </Link>
+          ) : (
+            <></>
+          )}
+          {runeInfo?.telegram ? (
+            <Link href={runeInfo?.telegram} target="_blank">
+              {`[telegram]`}
+            </Link>
+          ) : (
+            <></>
+          )}
+          {runeInfo?.website ? (
+            <Link href={runeInfo?.website} target="_blank">
+              {`[website]`}
+            </Link>
+          ) : (
+            <></>
+          )}
+        </div>
+        <div className="flex flex-col gap-2">
+          <div className="flex justify-between items-center gap-2">
+            <span>Stage</span>
+            <span>{runeInfo?.stage + 1}</span>
+          </div>
+          <div className="flex justify-between items-center gap-2">
+            <span>Rune ID</span>
+            <span>{runeInfo?.runeId}</span>
+          </div>
+          <div className="flex justify-between items-center gap-2">
+            <span>Rune Symbol</span>
+            <span>{runeInfo?.runeSymbol}</span>
+          </div>
+          <div className="flex justify-between items-center gap-2">
+            <span>Rune Name</span>
+            <span>{runeInfo?.runeName}</span>
+          </div>
+          <div className="flex justify-between items-center gap-2">
+            <span>Rune Description</span>
+            <span>{runeInfo?.runeDescription}</span>
+          </div>
+          <div className="flex justify-between items-center gap-2">
+            <span>Remain Amount</span>
+            <span>{runeInfo?.remainAmount}</span>
+          </div>
+          <div className="flex justify-between items-center gap-2">
+            <span>Price</span>
+            <span>{`${runeInfo?.pool / runeInfo?.remainAmount} sats`}</span>
+          </div>
+          <div className="flex justify-between items-center gap-2">
+            <span>Marketcap</span>
+            <span>{`${displayBtc(
+              runeInfo.runeAmount * (runeInfo.pool / runeInfo.remainAmount)
+            )} BTC`}</span>
+          </div>
+          <div className="flex justify-between items-center gap-2">
+            <span>BTC collected</span>
+            <span>{`${displayBtc(runeInfo.pool - DEFAULT_POOL)} BTC`}</span>
+          </div>
+          <div className="flex flex-col items-start gap-2">
+            <span>{`bonding curve progress: ${process}%`}</span>
+            <Progress size="md" aria-label="Loading..." value={process} />
+          </div>
+        </div>
+        <div>
+          <div className="flex justify-between items-center font-bold text-xl">
+            <div>Holder distribution</div>
+            <div>{userList.length}</div>
+          </div>
+          <div>
+            <div className="flex justify-between">
+              <div>Bonding Curve</div>
+              <div>
+                {`${displayPercentage(
+                  runeInfo.remainAmount,
+                  runeInfo.runeAmount,
+                  runeInfo.poolstate
+                )}%`}
+              </div>
+            </div>
+            {userList.map((item: any, index: number) => (
+              <div key={index} className="flex justify-between">
+                <Link
+                  className="font-bold underline"
+                  target="_blink"
+                  href={`https://mempool.space${
+                    testVersion ? "/testnet" : ""
+                  }/address/${item.multisig}`}
+                >
+                  {`${displayAddress(item.multisig)} ${
+                    item.ordinalAddress == runeInfo.creatorAddress
+                      ? "Owner "
+                      : ""
+                  } ${
+                    item.ordinalAddress == userInfo.ordinalAddress ? "You" : ""
+                  }`}
+                </Link>
+                <div>
+                  {`${displayPercentage(
+                    item.balance,
+                    runeInfo.runeAmount,
+                    runeInfo.poolstate
+                  )}%`}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // Buy & Sell
+  const BuySell = () => {
+    return (
+      <Tabs aria-label="Options" color="warning" variant="underlined">
+        <Tab key="buy" title="Buy">
+          <Card className="border-2 bg-bgColor-ghost border-bgColor-stroke text-white">
+            <CardBody className="flex flex-col gap-3">
+              {/* Buy */}
+              <div className="flex justify-around">
+                <div>Your balance</div>
+                <div>{runeBalance}</div>
+              </div>
+              <div className="flex flex-col gap-3">
+                <div className="flex flex-col gap-3">
+                  <Button
+                    color="warning"
+                    variant="flat"
+                    onClick={() => {
+                      setBuyFlag(false);
+                      setTarget(!target);
+                    }}
+                  >
+                    {`Switch to ${
+                      target === true ? "BTC" : runeInfo?.runeName
+                    }`}
+                  </Button>
+                  {target === true ? (
+                    <Input
+                      type="text"
+                      label="Rune Amount"
+                      color="warning"
+                      classNames={{
+                        input: [
+                          "bg-bgColor-dark",
+                          "hover:border-warning",
+                          "!placeholder:text-placeHolder",
+                        ],
+                        inputWrapper: [
+                          "!bg-bgColor-dark",
+                          "!hover:bg-bgColor-stroke",
+                          "border-2",
+                          "border-bgColor-stroke",
+                          "hover:border-bgColor-stroke",
+                        ],
+                        innerWrapper: ["flex", "!items-center"],
+                      }}
+                      value={buyRuneAmount}
+                      disabled={loading}
+                      onChange={(e) => {
+                        setBuyFlag(false);
+                        setBuyRuneAmount(e.target.value);
+                      }}
+                      endContent={
+                        <div className="flex justify-center items-center">
+                          <Button
+                            color="warning"
+                            variant="flat"
+                            onClick={() => handleMaxAmount(target)}
+                          >
+                            Max
+                          </Button>
+                        </div>
+                      }
+                    />
+                  ) : (
+                    <Input
+                      type="text"
+                      label="BTC Amount"
+                      color="warning"
+                      classNames={InputStyles}
+                      value={btcAmount}
+                      disabled={loading}
+                      onChange={(e) => {
+                        setBuyFlag(false);
+                        setBtcAmount(e.target.value);
+                      }}
+                      // endContent={
+                      //   <Button
+                      //     color="primary"
+                      //     onClick={() => handleMaxAmount(target)}
+                      //   >
+                      //     Max
+                      //   </Button>
+                      // }
+                    />
+                  )}
+
+                  <Input
+                    type="number"
+                    label="Slippage (%)"
+                    value={`${slippage}`}
+                    disabled={loading}
+                    color="warning"
+                    classNames={InputStyles}
+                    min={0}
+                    onChange={(e) => {
+                      setBuyFlag(false);
+                      setSlippage(e.target.value);
+                    }}
+                  />
+                  {buyFlag ? (
+                    <div className="flex flex-col items-center gap-3">
+                      <div>
+                        {target === false
+                          ? `You would get ${estimatePrice} ${runeInfo.runeName}`
+                          : `You should pay ${estimatePrice / 10 ** 8} btc`}
+                      </div>
+                      <Button
+                        color="warning"
+                        variant="flat"
+                        onClick={() => handleBuy()}
+                        isLoading={loading}
+                      >
+                        Confirm
+                      </Button>
+                    </div>
+                  ) : (
+                    <Button
+                      color="warning"
+                      variant="flat"
+                      onClick={() => handlePreBuy()}
+                      isLoading={loading}
+                      // disabled={runeInfo.poolstate === 1}
+                    >
+                      Buy
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </CardBody>
+          </Card>
+        </Tab>
+        <Tab key="sell" title="Sell">
+          <Card className="border-2 bg-bgColor-ghost border-bgColor-stroke text-white">
+            <CardBody className="flex gap-3">
+              <div className="flex justify-around">
+                <div>Your balance</div>
+                <div>{runeBalance}</div>
+              </div>
+              {/* Sell */}
+              <div className="flex flex-col gap-3">
+                <div className="text-center">Sell</div>
+                <div className="flex flex-col gap-3">
+                  {/* <Input
+                  type="text"
+                  label="Rune ID"
+                  value={runeId}
+                  onChange={(e) => {
+                    setSellFlag(false);
+                    setRuneId(e.target.value);
+                  }}
+                /> */}
+                  <Input
+                    type="text"
+                    label="Sell Rune Amount"
+                    color="warning"
+                    classNames={InputStyles}
+                    value={sellRuneAmount}
+                    disabled={loading}
+                    onChange={(e) => {
+                      setSellFlag(false);
+                      setSellRuneAmount(e.target.value);
+                    }}
+                  />
+                  <Input
+                    type="number"
+                    label="Slippage (%)"
+                    color="warning"
+                    classNames={InputStyles}
+                    value={`${slippage}`}
+                    disabled={loading}
+                    min={0}
+                    onChange={(e) => {
+                      setSellFlag(false);
+                      setSlippage(e.target.value);
+                    }}
+                  />
+                  {sellFlag ? (
+                    <div className="flex flex-col items-center gap-3">
+                      <div>{`You would get ${
+                        estimatePrice / SATS_MULTIPLE
+                      } btc`}</div>
+                      <Button
+                        color="warning"
+                        variant="flat"
+                        onClick={() => handleSell()}
+                        isLoading={loading}
+                      >
+                        Confirm
+                      </Button>
+                    </div>
+                  ) : (
+                    <Button
+                      color="warning"
+                      variant="flat"
+                      onClick={() => handlePreSell()}
+                      isLoading={loading}
+                      // disabled={runeInfo.poolstate === 1}
+                    >
+                      Sell
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </CardBody>
+          </Card>
+        </Tab>
+        <Tab key="burn" title="Burn">
+          <Card className="border-2 bg-bgColor-ghost border-bgColor-stroke text-white">
+            <CardBody className="flex gap-3">
+              <div className="flex justify-around">
+                <div>Available Burn Balance</div>
+                <div>{availableBurn}</div>
+              </div>
+              {/* Sell */}
+              <div className="flex flex-col gap-3">
+                <div className="text-center">Burn</div>
+                <div className="flex flex-col gap-3">
+                  <Input
+                    type="text"
+                    label="Burn Rune Amount"
+                    color="warning"
+                    classNames={InputStyles}
+                    value={burnRuneAmount}
+                    disabled={loading}
+                    onChange={(e) => setBurnRuneAmount(e.target.value)}
+                  />
+                  {estimateRuneAmount && (
+                    <div className="flex items-center gap-1 pl-2">
+                      <div>You will get</div>
+                      <div>{`${estimateRuneAmount} runes`}</div>
+                    </div>
+                  )}
+                  <Button
+                    color="warning"
+                    variant="flat"
+                    onClick={() => handleBurn()}
+                    isLoading={loading}
+                  >
+                    Burn
+                  </Button>
+                </div>
+              </div>
+            </CardBody>
+          </Card>
+        </Tab>
+      </Tabs>
+    );
+  };
+
   return (
     <main className="p-3 min-h-screen">
       <div className="flex flex-col gap-3">
-        <div className="gap-3 grid grid-cols-3 p-5">
+        <div className="gap-3 hidden md:grid grid-cols-3 p-5">
           <div className="flex flex-col gap-5 col-span-2">
             <div>
               <div className="flex justify-between items-center py-2">
@@ -473,427 +910,39 @@ export default function CreateRune() {
                   </div>
                 </div>
               </div>
-              <TradingChart param={coin}></TradingChart>
+              <RuneChart />
             </div>
-            <div>
-              {/* Transaction History */}
-              <Tabs aria-label="Options" color="warning" variant="underlined">
-                <Tab key="trades" title="Trades">
-                  <Card className="border-2 bg-bgColor-ghost border-bgColor-stroke text-white">
-                    <CardBody>
-                      <div>
-                        <div className="py-3 font-bold text-center text-lg">
-                          Transaction History
-                        </div>
-                        <div className="flex items-center">
-                          <div className="w-10">No</div>
-                          <div className="gap-3 grid grid-cols-4 w-full">
-                            <div>Type</div>
-                            <div>Rune</div>
-                            <div>BTC</div>
-                            <div>Date</div>
-                          </div>
-                        </div>
-                        {pumpActions.map((item, index) => (
-                          <div key={index} className="flex items-center">
-                            <div className="w-10">{index + 1}</div>
-                            <div className="gap-3 grid grid-cols-4 w-full">
-                              <div>
-                                {item.type == 0 && "Buy"}
-                                {item.type == 1 && "Sell"}
-                                {item.type == 2 && "Burn"}
-                              </div>
-                              <div>{item.runeAmount}</div>
-                              <div>
-                                {(item.btcAmount / SATS_MULTIPLE).toFixed(12)}
-                              </div>
-                              <div>{getTimeDifference(item.created_at)}</div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </CardBody>
-                  </Card>
-                </Tab>
-                <Tab key="thread" title="Thread">
-                  <Card className="border-2 bg-bgColor-ghost border-bgColor-stroke text-white">
-                    <CardBody>
-                      <div className="py-3 font-bold text-center text-lg">
-                        Thread
-                      </div>
-                    </CardBody>
-                  </Card>
-                </Tab>
-              </Tabs>
-            </div>
+            <TransactionHistory />
           </div>
           <div className="flex flex-col gap-3">
-            <Tabs aria-label="Options" color="warning" variant="underlined">
-              <Tab key="buy" title="Buy">
-                <Card className="border-2 bg-bgColor-ghost border-bgColor-stroke text-white">
-                  <CardBody className="flex flex-col gap-3">
-                    {/* Buy */}
-                    <div className="flex justify-around">
-                      <div>Your balance</div>
-                      <div>{runeBalance}</div>
-                    </div>
-                    <div className="flex flex-col gap-3">
-                      <div className="flex flex-col gap-3">
-                        <Button
-                          color="warning"
-                          variant="flat"
-                          onClick={() => {
-                            setBuyFlag(false);
-                            setTarget(!target);
-                          }}
-                        >
-                          {`Switch to ${
-                            target === true ? "BTC" : runeInfo?.runeName
-                          }`}
-                        </Button>
-                        {target === true ? (
-                          <Input
-                            type="text"
-                            label="Rune Amount"
-                            color="warning"
-                            classNames={{
-                              input: [
-                                "bg-bgColor-dark",
-                                "hover:border-warning",
-                                "!placeholder:text-placeHolder",
-                              ],
-                              inputWrapper: [
-                                "!bg-bgColor-dark",
-                                "!hover:bg-bgColor-stroke",
-                                "border-2",
-                                "border-bgColor-stroke",
-                                "hover:border-bgColor-stroke",
-                              ],
-                              innerWrapper: ["flex", "!items-center"],
-                            }}
-                            value={buyRuneAmount}
-                            disabled={loading}
-                            onChange={(e) => {
-                              setBuyFlag(false);
-                              setBuyRuneAmount(e.target.value);
-                            }}
-                            endContent={
-                              <div className="flex justify-center items-center">
-                                <Button
-                                  color="warning"
-                                  variant="flat"
-                                  onClick={() => handleMaxAmount(target)}
-                                >
-                                  Max
-                                </Button>
-                              </div>
-                            }
-                          />
-                        ) : (
-                          <Input
-                            type="text"
-                            label="BTC Amount"
-                            color="warning"
-                            classNames={InputStyles}
-                            value={btcAmount}
-                            disabled={loading}
-                            onChange={(e) => {
-                              setBuyFlag(false);
-                              setBtcAmount(e.target.value);
-                            }}
-                            // endContent={
-                            //   <Button
-                            //     color="primary"
-                            //     onClick={() => handleMaxAmount(target)}
-                            //   >
-                            //     Max
-                            //   </Button>
-                            // }
-                          />
-                        )}
-
-                        <Input
-                          type="number"
-                          label="Slippage (%)"
-                          value={`${slippage}`}
-                          disabled={loading}
-                          color="warning"
-                          classNames={InputStyles}
-                          min={0}
-                          onChange={(e) => {
-                            setBuyFlag(false);
-                            setSlippage(e.target.value);
-                          }}
-                        />
-                        {buyFlag ? (
-                          <div className="flex flex-col items-center gap-3">
-                            <div>
-                              {target === false
-                                ? `You would get ${estimatePrice} ${runeInfo.runeName}`
-                                : `You should pay ${
-                                    estimatePrice / 10 ** 8
-                                  } btc`}
-                            </div>
-                            <Button
-                              color="warning"
-                              variant="flat"
-                              onClick={() => handleBuy()}
-                              isLoading={loading}
-                            >
-                              Confirm
-                            </Button>
-                          </div>
-                        ) : (
-                          <Button
-                            color="warning"
-                            variant="flat"
-                            onClick={() => handlePreBuy()}
-                            isLoading={loading}
-                            // disabled={runeInfo.poolstate === 1}
-                          >
-                            Buy
-                          </Button>
-                        )}
-                      </div>
-                    </div>
-                  </CardBody>
-                </Card>
-              </Tab>
-              <Tab key="sell" title="Sell">
-                <Card className="border-2 bg-bgColor-ghost border-bgColor-stroke text-white">
-                  <CardBody className="flex gap-3">
-                    <div className="flex justify-around">
-                      <div>Your balance</div>
-                      <div>{runeBalance}</div>
-                    </div>
-                    {/* Sell */}
-                    <div className="flex flex-col gap-3">
-                      <div className="text-center">Sell</div>
-                      <div className="flex flex-col gap-3">
-                        {/* <Input
-                          type="text"
-                          label="Rune ID"
-                          value={runeId}
-                          onChange={(e) => {
-                            setSellFlag(false);
-                            setRuneId(e.target.value);
-                          }}
-                        /> */}
-                        <Input
-                          type="text"
-                          label="Sell Rune Amount"
-                          color="warning"
-                          classNames={InputStyles}
-                          value={sellRuneAmount}
-                          disabled={loading}
-                          onChange={(e) => {
-                            setSellFlag(false);
-                            setSellRuneAmount(e.target.value);
-                          }}
-                        />
-                        <Input
-                          type="number"
-                          label="Slippage (%)"
-                          color="warning"
-                          classNames={InputStyles}
-                          value={`${slippage}`}
-                          disabled={loading}
-                          min={0}
-                          onChange={(e) => {
-                            setSellFlag(false);
-                            setSlippage(e.target.value);
-                          }}
-                        />
-                        {sellFlag ? (
-                          <div className="flex flex-col items-center gap-3">
-                            <div>{`You would get ${
-                              estimatePrice / SATS_MULTIPLE
-                            } btc`}</div>
-                            <Button
-                              color="warning"
-                              variant="flat"
-                              onClick={() => handleSell()}
-                              isLoading={loading}
-                            >
-                              Confirm
-                            </Button>
-                          </div>
-                        ) : (
-                          <Button
-                            color="warning"
-                            variant="flat"
-                            onClick={() => handlePreSell()}
-                            isLoading={loading}
-                            // disabled={runeInfo.poolstate === 1}
-                          >
-                            Sell
-                          </Button>
-                        )}
-                      </div>
-                    </div>
-                  </CardBody>
-                </Card>
-              </Tab>
-              <Tab key="burn" title="Burn">
-                <Card className="border-2 bg-bgColor-ghost border-bgColor-stroke text-white">
-                  <CardBody className="flex gap-3">
-                    <div className="flex justify-around">
-                      <div>Available Burn Balance</div>
-                      <div>{availableBurn}</div>
-                    </div>
-                    {/* Sell */}
-                    <div className="flex flex-col gap-3">
-                      <div className="text-center">Burn</div>
-                      <div className="flex flex-col gap-3">
-                        <Input
-                          type="text"
-                          label="Burn Rune Amount"
-                          color="warning"
-                          classNames={InputStyles}
-                          value={burnRuneAmount}
-                          disabled={loading}
-                          onChange={(e) => setBurnRuneAmount(e.target.value)}
-                        />
-                        {estimateRuneAmount && (
-                          <div className="flex items-center gap-1 pl-2">
-                            <div>You will get</div>
-                            <div>{`${estimateRuneAmount} runes`}</div>
-                          </div>
-                        )}
-                        <Button
-                          color="warning"
-                          variant="flat"
-                          onClick={() => handleBurn()}
-                          isLoading={loading}
-                        >
-                          Burn
-                        </Button>
-                      </div>
-                    </div>
-                  </CardBody>
-                </Card>
-              </Tab>
+            <BuySell />
+            <RuneTokenInfo />
+          </div>
+        </div>
+        <div className="md:hidden">
+          {stage === "info" && (
+            <div className="w-full">
+              <RuneTokenInfo />
+            </div>
+          )}
+          {stage === "chart" && <RuneChart />}
+          {stage === "buysell" && (
+            <div>
+              <BuySell />
+              <TransactionHistory />
+            </div>
+          )}
+          <div className="fixed bottom-0 left-0 bg-bgColor-dark border-2 border-bgColor-stroke w-full rounded-t-md flex justify-center">
+            <Tabs
+              aria-label="Options"
+              color="warning"
+              variant="underlined"
+              onSelectionChange={(key) => setStage(key as string)}
+            >
+              <Tab key="info" title="Info"></Tab>
+              <Tab key="chart" title="Chart"></Tab>
+              <Tab key="buysell" title="Buy/Sell"></Tab>
             </Tabs>
-            <div>
-              {runeInfo?.image && (
-                <ImageDisplay
-                  src={`${runeInfo?.image[0]?.imageString || ""}`}
-                ></ImageDisplay>
-              )}
-            </div>
-            <div className="flex justify-start gap-5">
-              {runeInfo?.twitter ? (
-                <Link href={runeInfo?.twitter} target="_blank">
-                  {`[twitter]`}
-                </Link>
-              ) : (
-                <></>
-              )}
-              {runeInfo?.telegram ? (
-                <Link href={runeInfo?.telegram} target="_blank">
-                  {`[telegram]`}
-                </Link>
-              ) : (
-                <></>
-              )}
-              {runeInfo?.website ? (
-                <Link href={runeInfo?.website} target="_blank">
-                  {`[website]`}
-                </Link>
-              ) : (
-                <></>
-              )}
-            </div>
-            <div className="flex flex-col gap-2">
-              <div className="flex justify-between items-center gap-2">
-                <span>Stage</span>
-                <span>{runeInfo?.stage + 1}</span>
-              </div>
-              <div className="flex justify-between items-center gap-2">
-                <span>Rune ID</span>
-                <span>{runeInfo?.runeId}</span>
-              </div>
-              <div className="flex justify-between items-center gap-2">
-                <span>Rune Symbol</span>
-                <span>{runeInfo?.runeSymbol}</span>
-              </div>
-              <div className="flex justify-between items-center gap-2">
-                <span>Rune Name</span>
-                <span>{runeInfo?.runeName}</span>
-              </div>
-              <div className="flex justify-between items-center gap-2">
-                <span>Rune Description</span>
-                <span>{runeInfo?.runeDescription}</span>
-              </div>
-              <div className="flex justify-between items-center gap-2">
-                <span>Remain Amount</span>
-                <span>{runeInfo?.remainAmount}</span>
-              </div>
-              <div className="flex justify-between items-center gap-2">
-                <span>Price</span>
-                <span>{`${runeInfo?.pool / runeInfo?.remainAmount} sats`}</span>
-              </div>
-              <div className="flex justify-between items-center gap-2">
-                <span>Marketcap</span>
-                <span>{`${displayBtc(
-                  runeInfo.runeAmount * (runeInfo.pool / runeInfo.remainAmount)
-                )} BTC`}</span>
-              </div>
-              <div className="flex justify-between items-center gap-2">
-                <span>BTC collected</span>
-                <span>{`${displayBtc(runeInfo.pool - DEFAULT_POOL)} BTC`}</span>
-              </div>
-              <div className="flex flex-col items-start gap-2">
-                <span>{`bonding curve progress: ${process}%`}</span>
-                <Progress size="md" aria-label="Loading..." value={process} />
-              </div>
-            </div>
-            <div>
-              <div className="flex justify-between items-center font-bold text-xl">
-                <div>Holder distribution</div>
-                <div>{userList.length}</div>
-              </div>
-              <div>
-                <div className="flex justify-between">
-                  <div>Bonding Curve</div>
-                  <div>
-                    {`${displayPercentage(
-                      runeInfo.remainAmount,
-                      runeInfo.runeAmount,
-                      runeInfo.poolstate
-                    )}%`}
-                  </div>
-                </div>
-                {userList.map((item: any, index: number) => (
-                  <div key={index} className="flex justify-between">
-                    <Link
-                      className="font-bold underline"
-                      target="_blink"
-                      href={`https://mempool.space${
-                        testVersion ? "/testnet" : ""
-                      }/address/${item.multisig}`}
-                    >
-                      {`${displayAddress(item.multisig)} ${
-                        item.ordinalAddress == runeInfo.creatorAddress
-                          ? "Owner "
-                          : ""
-                      } ${
-                        item.ordinalAddress == userInfo.ordinalAddress
-                          ? "You"
-                          : ""
-                      }`}
-                    </Link>
-                    <div>
-                      {`${displayPercentage(
-                        item.balance,
-                        runeInfo.runeAmount,
-                        runeInfo.poolstate
-                      )}%`}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
           </div>
         </div>
       </div>

@@ -175,7 +175,7 @@ export default function Page() {
   return (
     <div className="flex flex-col gap-2 p-3 md:pt-20">
       <div className="flex justify-center">
-        <div className="flex flex-col gap-3 border-2 bg-bgColor-ghost py-10 p-3 border-bgColor-stroke rounded-xl w-1/2">
+        <div className="flex flex-col gap-3 border-2 bg-bgColor-ghost py-10 p-3 border-bgColor-stroke rounded-xl w-full sm:w-4/5 md:w-1/2">
           <div className="py-3 font-bold text-2xl text-center">
             Add Liquidity
           </div>
@@ -269,7 +269,7 @@ export default function Page() {
           </div>
         </div>
       </div>
-      <div className="gap-2 grid grid-cols-2 px-5 md:pt-10">
+      <div className="gap-2 grid grid-cols-1 sm:grid-cols-2 md:pt-10">
         <div className="border-2 bg-bgColor-ghost p-2 border-bgColor-stroke rounded-xl">
           <div className="py-3 font-bold text-center text-lg">My Pools</div>
           <div>

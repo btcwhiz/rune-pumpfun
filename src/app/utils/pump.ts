@@ -14,7 +14,6 @@ export const unisatSignPsbt = async (unsignedPsbt: string) => {
   const tempPsbt = Psbt.fromHex(ppsbt);
   const inputCount = tempPsbt.inputCount;
   const inputArray = Array.from({ length: inputCount }, (_, i) => i);
-  console.log("inputArray ==> ", inputArray);
   const toSignInputs: { index: number; publicKey: string }[] = [];
   inputArray.map((value: number) =>
     toSignInputs.push({
@@ -22,7 +21,6 @@ export const unisatSignPsbt = async (unsignedPsbt: string) => {
       publicKey: paymentPublicKey,
     })
   );
-  console.log("toSignInputs ==> ", toSignInputs);
   const signedPsbt = await (window as any).unisat.signPsbt(ppsbt, {
     autoFinalized: false,
     toSignInputs,

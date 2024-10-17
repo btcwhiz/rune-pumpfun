@@ -129,7 +129,7 @@ export default function CreateRune() {
   return (
     <div className="flex flex-col gap-3 p-3 min-h-screen">
       <div className="flex flex-col justify-center gap-3 p-3">
-        <div className="justify-between gap-3 grid grid-cols-2">
+        <div className="justify-between gap-3 grid grid-cols-1 sm:grid-cols-2">
           {/* Deposit */}
           <div className="flex flex-col gap-3 border-2 bg-bgColor-ghost p-2 border-bgColor-stroke rounded-xl">
             <div className="py-3 font-bold text-center text-lg">Deposit</div>
@@ -188,17 +188,17 @@ export default function CreateRune() {
         </div>
 
         {/* Payment History */}
-        <div className="border-2 bg-bgColor-ghost p-10 border-bgColor-stroke rounded-xl">
+        <div className="border-2 bg-bgColor-ghost p-2 sm:p-8 border-bgColor-stroke rounded-xl">
           <div className="py-3 font-bold text-center text-lg">
             Payment History
           </div>
           <div className="gap-3 grid grid-cols-6">
-            <div>No</div>
-            <div>Action</div>
-            <div>Type</div>
-            <div>RuneID</div>
-            <div>Amount</div>
-            <div>TxId</div>
+            <div className="text-center">No</div>
+            <div className="text-center">Action</div>
+            <div className="text-center">Type</div>
+            <div className="text-center">RuneID</div>
+            <div className="text-center">Amount</div>
+            <div className="text-center">TxId</div>
           </div>
 
           {allTransactions.map((item, index) => (
