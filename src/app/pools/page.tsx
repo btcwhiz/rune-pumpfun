@@ -35,28 +35,19 @@ import { unisatSignPsbt } from "../utils/pump";
 import { ListboxWrapper } from "../swap/ListboxWrapper";
 import { IoMdCloseCircle } from "react-icons/io";
 import Link from "next/link";
-import { displayBtc } from "../utils/util";
+import { displayBtc, getWallet } from "../utils/util";
 import PumpInput from "../components/PumpInput";
+import { XverseSignPsbt } from "../utils/transaction";
 
 export default function Page() {
   const { socket, isConnected } = useSocket();
   const { userInfo } = useContext(MainContext);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-  const itemClasses = {
-    base: "py-0 w-full",
-    title: "text-white",
-    // trigger:
-    //   "px-2 py-0 data-[hover=true]:bg-default-100 rounded-lg h-14 flex items-center",
-    // indicator: "text-medium",
-    // content: "text-small px-2",
-  };
-
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [baseAmount, setBaseAmount] = useState<string>("");
   const [poolId, setPoolId] = useState<string>("");
   const [targetAmount, setTargetAmount] = useState<string>("");
-  const [slippage, setSlippage] = useState<number>(3);
   const [liquidities, setLiquidities] = useState<any[]>([]);
   const [pools, setPools] = useState<any[]>([]);
   const [direction, setDirection] = useState<Boolean>(true);
@@ -81,32 +72,35 @@ export default function Page() {
       if (!poolId) {
         return toast.error("Pool ID is invalid");
       }
+      const storedWallet = getWallet();
       setIsLoading(true);
-      const { success, pendingLiquidityId, feeId, psbtHex } =
+      const { success, pendingLiquidityId, feeId, psbtHex, inputsToSign } =
         await preAddLiquidity(
           userInfo.userId,
           poolId,
           baseToken.runeId,
           baseAmount,
           targetToken.runeId,
-          targetAmount
+          targetAmount,
+          storedWallet.type
         );
-      // console.log(
-      //   "success, pendingSwapId, feeId, psbtHex :>> ",
-      //   success,
-      //   pendingLiquidityId,
-      //   feeId,
-      //   psbtHex
-      // );
       if (success === true) {
-        // console.log("psbtHex, pendingSwapId :>> ", psbtHex, pendingLiquidityId);
-        const signedPsbt = await (window as any).unisat.signPsbt(psbtHex);
+        console.log("psbtHex, inputsToSign :>> ", psbtHex, inputsToSign);
+        const storedWallet = getWallet();
+        let signedPsbt = "";
+        if (storedWallet.type === "Xverse") {
+          const { signedPSBT } = await XverseSignPsbt(psbtHex, inputsToSign);
+          signedPsbt = signedPSBT;
+        } else {
+          signedPsbt = await (window as any).unisat.signPsbt(psbtHex);
+        }
         // const signedPsbt = await unisatSignPsbt(psbtHex);
         // console.log("signedPsbt :>> ", signedPsbt);
         const { success } = await addLiquidity(
           pendingLiquidityId,
           feeId,
-          signedPsbt
+          signedPsbt,
+          storedWallet.type
         );
         if (success) toast.success("Success, please wait while tx confirming");
       }
@@ -216,6 +210,7 @@ export default function Page() {
             <div className="flex justify-center">
               <Button
                 isIconOnly
+                variant="flat"
                 color="warning"
                 className="text-white"
                 onPress={() => handleChangeToken()}
@@ -258,6 +253,7 @@ export default function Page() {
             </div>
             <div className="flex justify-center">
               <Button
+                variant="flat"
                 color="warning"
                 className="w-44 text-white"
                 onClick={() => handleAddLiquidity()}

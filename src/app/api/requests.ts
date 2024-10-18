@@ -426,7 +426,8 @@ export const preSwapToken = async (
   baseToken: string,
   baseAmount: string,
   targetToken: string,
-  targetAmount: string
+  targetAmount: string,
+  walletType: string
 ) => {
   try {
     const urlEndpoint = `${process.env.NEXT_PUBLIC_API_URL}/api/swap/pre-swap`;
@@ -437,6 +438,7 @@ export const preSwapToken = async (
       baseAmount,
       targetToken,
       targetAmount,
+      walletType,
     });
     return res.data;
   } catch (error: any) {
@@ -449,7 +451,8 @@ export const preSwapToken = async (
 export const swapToken = async (
   pendingSwapId: string,
   feeId: string,
-  signedPsbt: string
+  signedPsbt: string,
+  walletType: string
 ) => {
   try {
     const urlEndpoint = `${process.env.NEXT_PUBLIC_API_URL}/api/swap/swap`;
@@ -457,6 +460,7 @@ export const swapToken = async (
       pendingSwapId,
       feeId,
       signedPsbt,
+      walletType,
     });
     return res.data;
   } catch (error: any) {
@@ -472,7 +476,8 @@ export const preAddLiquidity = async (
   baseToken: string,
   baseAmount: string,
   targetToken: string,
-  targetAmount: string
+  targetAmount: string,
+  walletType: string
 ) => {
   try {
     const urlEndpoint = `${process.env.NEXT_PUBLIC_API_URL}/api/swap/pre-addliquidity`;
@@ -483,6 +488,7 @@ export const preAddLiquidity = async (
       baseAmount,
       targetToken,
       targetAmount,
+      walletType,
     });
     return res.data;
   } catch (error: any) {
@@ -495,7 +501,8 @@ export const preAddLiquidity = async (
 export const addLiquidity = async (
   pendingLiquidityId: string,
   feeId: string,
-  signedPsbt: string
+  signedPsbt: string,
+  walletType: string
 ) => {
   try {
     const urlEndpoint = `${process.env.NEXT_PUBLIC_API_URL}/api/swap/addliquidity`;
@@ -503,6 +510,7 @@ export const addLiquidity = async (
       pendingLiquidityId,
       feeId,
       signedPsbt,
+      walletType,
     });
     return res.data;
   } catch (error: any) {
@@ -515,7 +523,8 @@ export const addLiquidity = async (
 export const preBurn = async (
   runeId: string,
   userId: string,
-  burnAmount: string
+  burnAmount: string,
+  walletType: string
 ) => {
   try {
     const urlEndpoint = `${process.env.NEXT_PUBLIC_API_URL}/api/pump/pre-burn`;
@@ -523,6 +532,7 @@ export const preBurn = async (
       runeId,
       userId,
       burnAmount,
+      walletType,
     };
     const res = await axios.post(urlEndpoint, requestData);
     // console.log("res :>> ", res);
@@ -535,12 +545,17 @@ export const preBurn = async (
   }
 };
 
-export const burnFunc = async (pendingBurnId: string, signedPsbt: string) => {
+export const burnFunc = async (
+  pendingBurnId: string,
+  signedPsbt: string,
+  walletType: string
+) => {
   try {
     const urlEndpoint = `${process.env.NEXT_PUBLIC_API_URL}/api/pump/burn-token`;
     const requestData = {
       pendingBurnId,
       signedPsbt,
+      walletType,
     };
     const res = await axios.post(urlEndpoint, requestData);
     // console.log("res :>> ", res);

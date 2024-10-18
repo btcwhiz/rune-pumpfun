@@ -57,8 +57,8 @@ export default function CreateRune() {
         } else if (walletType === "Xverse") {
           if (currentWindow?.XverseProviders) {
             const { signedPSBT } = await XverseSignPsbt(
-              userInfo.paymentAddress,
-              res.psbtHex
+              res.psbtHex,
+              res.inputsToSign
             );
             signedPsbt = signedPSBT;
           }
@@ -101,18 +101,6 @@ export default function CreateRune() {
           runeId,
           withdrawAmount
         );
-        // const signInputs = [];
-        const signInputsXverse = [];
-        // let signedPSBT = "";
-        // let txId = "";
-        for (let i = 0; i < preWithdrawRes.inputCount; i++) {
-          // signInputs.push({
-          //   index: i,
-          //   publicKey: userInfo.paymentAddress,
-          //   // disableTweakSigner: true
-          // });
-          signInputsXverse.push(i);
-        }
         if (preWithdrawRes !== null) {
           if (runeId === "btc") {
             let signedPsbt = "";
@@ -120,8 +108,8 @@ export default function CreateRune() {
               signedPsbt = await unisatSignPsbt(preWithdrawRes?.psbt);
             } else if (storedWallet.type === "Xverse") {
               const { signedPSBT } = await XverseSignPsbt(
-                userInfo.paymentAddress,
-                preWithdrawRes.psbt
+                preWithdrawRes.psbt,
+                preWithdrawRes.inputsToSign
               );
               signedPsbt = signedPSBT;
             } else {

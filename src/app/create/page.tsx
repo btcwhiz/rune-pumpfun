@@ -127,13 +127,9 @@ export default function CreateRune() {
         if (storedWallet.type === "Unisat") {
           signedPsbt = await unisatSignPsbt(etchingPsbt.psbt);
         } else if (storedWallet.type === "Xverse") {
-          const signInputsXverse = [];
-          for (let i = 0; i <= etchingPsbt.inputCount; i++) {
-            signInputsXverse.push(i);
-          }
           const { signedPSBT } = await XverseSignPsbt(
-            userInfo.paymentAddress,
-            etchingPsbt.psbt
+            etchingPsbt.psbt,
+            etchingPsbt.inputsToSign
           );
           signedPsbt = signedPSBT;
         } else {

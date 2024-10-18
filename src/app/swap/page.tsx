@@ -31,8 +31,9 @@ import { preSwapToken, swapToken } from "../api/requests";
 import { MainContext } from "../contexts/MainContext";
 import toast from "react-hot-toast";
 import useSocket from "../hooks/useSocket";
-import { displayBtc } from "../utils/util";
+import { displayBtc, getWallet } from "../utils/util";
 import PumpInput from "../components/PumpInput";
+import { XverseSignPsbt } from "../utils/transaction";
 
 export default function Page() {
   const { socket, isConnected } = useSocket();
@@ -81,19 +82,35 @@ export default function Page() {
         return toast.error("Pool ID is invalid");
       }
       setIsLoading(true);
-      const { success, pendingSwapId, feeId, psbtHex } = await preSwapToken(
-        userInfo.userId,
-        poolId,
-        baseToken.runeId,
-        baseAmount,
-        targetToken.runeId,
-        targetAmount
-      );
+      const storedWallet = getWallet();
+      const { success, pendingSwapId, feeId, psbtHex, inputsToSign } =
+        await preSwapToken(
+          userInfo.userId,
+          poolId,
+          baseToken.runeId,
+          baseAmount,
+          targetToken.runeId,
+          targetAmount,
+          storedWallet.type
+        );
       if (success === true) {
         // console.log("psbtHex, pendingSwapId :>> ", psbtHex, pendingSwapId);
-        const signedPsbt = await (window as any).unisat.signPsbt(psbtHex);
+        let signedPsbt = "";
+        if (storedWallet.type === "Unisat") {
+          signedPsbt = await (window as any).unisat.signPsbt(psbtHex);
+        } else if (storedWallet.type === "Xverse") {
+          const { signedPSBT } = await XverseSignPsbt(psbtHex, inputsToSign);
+          signedPsbt = signedPSBT;
+        } else {
+          signedPsbt = await (window as any).unisat.signPsbt(psbtHex);
+        }
         // console.log("signedPsbt :>> ", signedPsbt);
-        const { success } = await swapToken(pendingSwapId, feeId, signedPsbt);
+        const { success } = await swapToken(
+          pendingSwapId,
+          feeId,
+          signedPsbt,
+          storedWallet.type
+        );
         if (success) toast.success("Success, please wait while tx confirming");
       }
       setIsLoading(false);
@@ -237,7 +254,7 @@ export default function Page() {
                 onChange={handleInputTargeAmount}
               ></PumpInput>
               <Button
-                className="flex items-center gap-1 p-2 rounded-xl w-44"
+                className="flex justify-between items-center gap-1 p-2 rounded-xl w-44"
                 variant="flat"
                 color="warning"
                 onPress={() => {

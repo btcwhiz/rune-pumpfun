@@ -120,7 +120,7 @@ export default function Profile() {
           (item: any) => item.creatorAddress === userInfo.paymentAddress
         )
       );
-    } catch (error) { }
+    } catch (error) {}
   };
 
   useEffect(() => {
@@ -182,7 +182,8 @@ export default function Profile() {
                         isIconOnly
                       >
                         <IoMdCloseCircle />
-                      </Button>)}
+                      </Button>
+                    )}
                   </div>
                 </div>
               }
@@ -238,10 +239,11 @@ export default function Profile() {
                         <div key={index}>
                           <div className="flex justify-between items-center gap-2">
                             <Link
-                              href={`${rune.runeId
-                                ? `/rune/${encodeURIComponent(rune.runeId)}`
-                                : `#`
-                                }`}
+                              href={`${
+                                rune.runeId
+                                  ? `/rune/${encodeURIComponent(rune.runeId)}`
+                                  : `#`
+                              }`}
                               className="w-full"
                             >
                               <div className="flex flex-col gap-1 py-2">
@@ -286,10 +288,12 @@ export default function Profile() {
                         <div key={index}>
                           <div className="flex justify-between items-center gap-2">
                             <Link
-                              href={`${rune.runeId
-                                ? `/rune/${encodeURIComponent(rune.runeId)}`
-                                : `#`
-                                }`}
+                              href={`${
+                                rune.runeId
+                                  ? `/rune/${encodeURIComponent(rune.runeId)}`
+                                  : `#`
+                              }`}
+                              className="w-full"
                             >
                               <div className="flex flex-col gap-1 hover:bg-foreground-300 p-2">
                                 <div className="flex justify-between items-center gap-2">

@@ -7,15 +7,10 @@ import { TEST_MODE } from "../config";
 import { Psbt } from "bitcoinjs-lib";
 import toast from "react-hot-toast";
 
-export const XverseSignPsbt = async (
-  paymentAddress: string,
-  psbtHex: string
-) => {
+export const XverseSignPsbt = async (psbtHex: string, inputsToSign: any) => {
   const psbt = Psbt.fromHex(psbtHex);
-  let signingIndexes: number[] = [];
-  for (let i = 0; i < psbt.inputCount; i++) {
-    signingIndexes.push(i);
-  }
+  // console.log("psbt :>> ", psbt);
+  // console.log("inputsToSign :>> ", inputsToSign);
   let signedPSBT = "";
   let txId = "";
   const signPsbtOptions: SignTransactionOptions = {
@@ -28,12 +23,7 @@ export const XverseSignPsbt = async (
       message: "Sign Transaction",
       psbtBase64: psbt.toBase64(),
       broadcast: false,
-      inputsToSign: [
-        {
-          address: paymentAddress,
-          signingIndexes,
-        },
-      ],
+      inputsToSign,
     },
     onFinish: (response: any) => {
       const psbt = Psbt.fromBase64(response.psbtBase64);
