@@ -229,22 +229,27 @@ export default function CreateRune() {
           <div className="py-3 font-bold text-center text-lg">
             Payment History
           </div>
-          <div className="gap-3 grid grid-cols-6">
-            <div>No</div>
+          <div className="gap-3 grid grid-cols-4 sm:grid-cols-6">
+            <div className="hidden sm:flex">No</div>
             <div>Action</div>
-            <div>Type</div>
+            <div className="hidden sm:flex">Type</div>
             <div>RuneID</div>
             <div>Amount</div>
             <div>TxId</div>
           </div>
 
           {allTransactions.map((item, index) => (
-            <div key={index} className="gap-3 grid grid-cols-6">
-              <div>{index + 1}</div>
+            <div key={index} className="gap-3 grid grid-cols-4 sm:grid-cols-6">
+              <div className="hidden sm:flex">{index + 1}</div>
               <div className="uppercase">
-                {item.type === 0 ? "deposit" : "withdraw"}
+                <span className="hidden sm:flex">
+                  {item.type === 0 ? "deposit" : "withdraw"}
+                </span>
+                <span className="flex sm:hidden">
+                  {item.type === 0 ? "d" : "w"}
+                </span>
               </div>
-              <div className="uppercase">
+              <div className="uppercase hidden sm:flex">
                 {item.withdrawType === 0 ? "btc" : "rune"}
               </div>
               <div>{item.runeId}</div>
@@ -259,9 +264,12 @@ export default function CreateRune() {
                 }/tx/${item.txId}`}
               >
                 <div className="flex items-center gap-2">
-                  <span>
-                    {`${item.txId.slice(0, 8)}...${item.txId.slice(
-                      item.txId.length - 8,
+                  <span className="flex sm:hidden">
+                    {`${item.txId.slice(0, 4)}...`}
+                  </span>
+                  <span className="hidden sm:flex">
+                    {`${item.txId.slice(0, 4)}...${item.txId.slice(
+                      item.txId.length - 4,
                       item.txId.length - 1
                     )}`}
                   </span>
