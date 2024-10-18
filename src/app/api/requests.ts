@@ -51,7 +51,6 @@ export const preDepositFunc = async (
       userId,
       depositAmount,
     };
-    console.log("requestData :>> ", requestData);
     const res = await axios.post(urlEndpoint, requestData);
     // console.log("res :>> ", res);
     return res.data;
@@ -65,7 +64,8 @@ export const preDepositFunc = async (
 export const depositFunc = async (
   userId: string,
   depositId: string,
-  signedPsbt: string
+  signedPsbt: string,
+  walletType: string
 ) => {
   try {
     const urlEndpoint = `${process.env.NEXT_PUBLIC_API_URL}/api/payment/deposit`;
@@ -73,8 +73,8 @@ export const depositFunc = async (
       userId,
       depositId,
       signedPsbt,
+      walletType,
     };
-    console.log("requestData :>> ", requestData);
     const res = await axios.post(urlEndpoint, requestData);
     // console.log("res :>> ", res);
     return res.data;
@@ -103,7 +103,6 @@ export const pumpPreBuyFunc = async (
       target,
       slippage,
     };
-    console.log("requestData :>> ", requestData);
     const res = await axios.post(urlEndpoint, requestData);
     // console.log("res :>> ", res);
     return res.data;
@@ -164,7 +163,6 @@ export const pumpPreSellFunc = async (
       runeAmount,
       slippage,
     };
-    console.log("requestData :>> ", requestData);
     const res = await axios.post(urlEndpoint, requestData);
     // console.log("res :>> ", res);
     return res.data;
@@ -526,7 +524,6 @@ export const preBurn = async (
       userId,
       burnAmount,
     };
-    console.log("requestData :>> ", requestData);
     const res = await axios.post(urlEndpoint, requestData);
     // console.log("res :>> ", res);
     return res.data;
@@ -545,7 +542,6 @@ export const burnFunc = async (pendingBurnId: string, signedPsbt: string) => {
       pendingBurnId,
       signedPsbt,
     };
-    console.log("requestData :>> ", requestData);
     const res = await axios.post(urlEndpoint, requestData);
     // console.log("res :>> ", res);
     return res.data;

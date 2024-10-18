@@ -8,23 +8,9 @@ import { LuUpload } from "react-icons/lu";
 import { etchingRuneFunc, preEtchingRuneFunc } from "../api/requests";
 import { MainContext } from "../contexts/MainContext";
 import { unisatSignPsbt } from "../utils/pump";
-import PumpInput, { InputStyles } from "../components/PumpInput";
-import { displayBtc } from "../utils/util";
-
-const styles = {
-  input: [
-    "bg-bgColor-dark",
-    "hover:border-warning",
-    "!placeholder:text-placeHolder",
-  ],
-  inputWrapper: [
-    "!bg-bgColor-dark",
-    "!hover:bg-bgColor-stroke",
-    "border-2",
-    "border-bgColor-stroke",
-    "hover:border-bgColor-stroke",
-  ],
-};
+import PumpInput from "../components/PumpInput";
+import { displayBtc, getWallet } from "../utils/util";
+import { XverseSignPsbt } from "../utils/transaction";
 
 export default function CreateRune() {
   const itemClasses = {
@@ -136,8 +122,23 @@ export default function CreateRune() {
         await preEtchingRuneFunc(userInfo.userId, imageContent, saveData);
       if (status) {
         setEtchingFeeRate(etchingFee);
-
-        const signedPsbt = await unisatSignPsbt(etchingPsbt.psbt);
+        const storedWallet = getWallet();
+        let signedPsbt = "";
+        if (storedWallet.type === "Unisat") {
+          signedPsbt = await unisatSignPsbt(etchingPsbt.psbt);
+        } else if (storedWallet.type === "Xverse") {
+          const signInputsXverse = [];
+          for (let i = 0; i <= etchingPsbt.inputCount; i++) {
+            signInputsXverse.push(i);
+          }
+          const { signedPSBT } = await XverseSignPsbt(
+            userInfo.paymentAddress,
+            etchingPsbt.psbt
+          );
+          signedPsbt = signedPSBT;
+        } else {
+          signedPsbt = await unisatSignPsbt(etchingPsbt.psbt);
+        }
         const { status, msg } = await etchingRuneFunc(
           userInfo.userId,
           signedPsbt,

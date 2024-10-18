@@ -1,7 +1,15 @@
 "use client";
 
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { Button } from "@nextui-org/react";
+import {
+  Button,
+  Chip,
+  Divider,
+  Modal,
+  ModalBody,
+  ModalContent,
+  useDisclosure,
+} from "@nextui-org/react";
 import toast from "react-hot-toast";
 import { FaHome, FaPlus, FaUser } from "react-icons/fa";
 import { IoIosLogOut } from "react-icons/io";
@@ -13,8 +21,19 @@ import { GiMoneyStack } from "react-icons/gi";
 import { AiOutlineSwap } from "react-icons/ai";
 import { GrMoney } from "react-icons/gr";
 
+import {
+  AddressPurpose,
+  BitcoinNetworkType,
+  getAddress,
+  signMessage,
+} from "sats-connect";
+
 import { MainContext } from "../contexts/MainContext";
 import { authUser } from "../api/requests";
+import Image from "next/image";
+import { CheckIcon } from "./icons/CheckIcon";
+import { SIGN_MESSAGE, TEST_MODE } from "../config";
+import { displayBtc, getWallet } from "../utils/util";
 
 const links = [
   {
@@ -42,6 +61,7 @@ const links = [
 export default function Header() {
   const path = usePathname();
   const loadingRef = useRef(false);
+  const [isLoading, setIsLoading] = useState(false);
   const {
     paymentAddress,
     setPaymentAddress,
@@ -52,41 +72,7 @@ export default function Header() {
     setUserInfo,
   } = useContext(MainContext);
 
-  const walletConnectProcess = async () => {
-    const currentWindow: any = window;
-    const unisat: any = currentWindow.unisat;
-    const accounts = await unisat.requestAccounts();
-    const address = accounts[0];
-    const pubKey = await unisat.getPublicKey();
-    const uInfo: any = await authUser(address, pubKey, address, pubKey);
-    localStorage.setItem(
-      "wallet",
-      JSON.stringify({
-        type: "Unisat",
-        paymentAddress: address,
-        paymentPubkey: pubKey,
-        ordinalAddress: address,
-        ordinalPubkey: pubKey,
-        session: moment.now() + 60 * 60 * 1000,
-      })
-    );
-    setUserInfo(uInfo);
-    setPaymentAddress(address);
-    setPaymentPubkey(pubKey);
-    setOrdinalAddress(address);
-    setOrdinalPubkey(pubKey);
-  };
-
-  const handleConnectWallet = async () => {
-    const currentWindow: any = window;
-    if (currentWindow?.unisat) {
-      if (!paymentAddress) {
-        walletConnectProcess();
-      }
-    } else {
-      toast.error("Plz install unisat wallet");
-    }
-  };
+  const walletModal = useDisclosure();
 
   const handleDisConnectWallet = async () => {
     setUserInfo({});
@@ -96,21 +82,261 @@ export default function Header() {
     setOrdinalPubkey("");
   };
 
-  useEffect(() => {
-    const autoConnect = async () => {
-      const storedWallet = localStorage.getItem("wallet");
-      if (storedWallet) {
-        const { session } = JSON.parse(storedWallet);
-        if (session > moment.now() && !loadingRef.current) {
-          loadingRef.current = true;
-          await handleConnectWallet();
-          loadingRef.current = false;
+  const storeLocalStorage = (
+    type: string,
+    paymentAddress: string,
+    paymentPubkey: string,
+    ordinalAddress: string,
+    ordinalPubkey: string
+  ) => {
+    localStorage.setItem(
+      "wallet",
+      JSON.stringify({
+        type,
+        paymentAddress,
+        paymentPubkey,
+        ordinalAddress,
+        ordinalPubkey,
+        session: moment.now() + 60 * 60 * 1000,
+      })
+    );
+  };
+
+  const refreshBalance = async () => {
+    const uInfo: any = await authUser(
+      userInfo.paymentAddress,
+      userInfo.paymentPublicKey,
+      userInfo.ordinalAddress,
+      userInfo.ordinalPublicKey
+    );
+    setUserInfo(uInfo);
+  };
+
+  // Unisat Connect
+  const unisatConnectWallet = async () => {
+    try {
+      const currentWindow: any = window;
+      if (typeof currentWindow?.unisat !== "undefined") {
+        const unisat: any = currentWindow?.unisat;
+        try {
+          const network = await unisat.getNetwork();
+          if (network != (TEST_MODE ? "testnet" : "livenet")) {
+            await unisat.switchNetwork(TEST_MODE ? "testnet" : "livenet");
+          }
+          setIsLoading(true);
+          const accounts = await unisat.requestAccounts();
+          const address = accounts[0];
+          const pubKey = await unisat.getPublicKey();
+          let res = await unisat.signMessage(SIGN_MESSAGE);
+          console.log("res :>> ", res);
+          const uInfo: any = await authUser(address, pubKey, address, pubKey);
+          storeLocalStorage("Unisat", address, pubKey, address, pubKey);
+          setUserInfo(uInfo);
+          setPaymentAddress(address);
+          setPaymentPubkey(pubKey);
+          setOrdinalAddress(address);
+          setOrdinalPubkey(pubKey);
+          walletModal.onClose();
+          setIsLoading(false);
+        } catch (e) {
+          setIsLoading(false);
+          toast.error("Connect failed!");
         }
       }
-    };
+    } catch (error) {
+      toast.error("Please install Unisat Wallet!");
+    }
+  };
 
-    autoConnect();
-  }, []);
+  // Xverse Connect
+  const xverseConnectWallet = async () => {
+    try {
+      setIsLoading(true);
+      await getAddress({
+        payload: {
+          purposes: [
+            AddressPurpose.Ordinals,
+            AddressPurpose.Payment,
+            AddressPurpose.Stacks,
+          ],
+          message: SIGN_MESSAGE,
+          network: {
+            type: TEST_MODE
+              ? BitcoinNetworkType.Testnet
+              : BitcoinNetworkType.Mainnet,
+          },
+        },
+        onFinish: async (response) => {
+          const paymentAddressItem = response.addresses.find(
+            (address) => address.purpose === AddressPurpose.Payment
+          );
+          const ordinalsAddressItem = response.addresses.find(
+            (address) => address.purpose === AddressPurpose.Ordinals
+          );
+          let res = "";
+          await signMessage({
+            payload: {
+              network: {
+                type: TEST_MODE
+                  ? BitcoinNetworkType.Testnet
+                  : BitcoinNetworkType.Mainnet,
+              },
+              address: paymentAddressItem?.address as string,
+              message: SIGN_MESSAGE,
+            },
+            onFinish: (response: any) => {
+              // signature
+              res = response;
+              return response;
+            },
+            onCancel: () => toast.error("Canceled"),
+          });
+          const paymentAddress = paymentAddressItem?.address as string;
+          const paymentPubkey = paymentAddressItem?.publicKey as string;
+          const ordinalAddress = ordinalsAddressItem?.address as string;
+          const ordinalPubkey = ordinalsAddressItem?.publicKey as string;
+
+          const uInfo: any = await authUser(
+            paymentAddress,
+            paymentPubkey,
+            ordinalAddress,
+            ordinalPubkey
+          );
+          storeLocalStorage(
+            "Xverse",
+            paymentAddress,
+            paymentPubkey,
+            ordinalAddress,
+            ordinalPubkey
+          );
+          setUserInfo(uInfo);
+          setPaymentAddress(paymentAddress);
+          setPaymentPubkey(paymentPubkey);
+          setOrdinalAddress(ordinalAddress);
+          setOrdinalPubkey(ordinalPubkey);
+          walletModal.onClose();
+          setIsLoading(false);
+        },
+        onCancel: () => toast.error("You canceled the wallet connect"),
+      });
+    } catch (error) {
+      setIsLoading(false);
+      console.log("xverseConnectWallet error ==> ", error);
+      toast.error("Xverse Connect Wallet Error");
+    }
+  };
+
+  // Leader Connect
+  const leaderConnectWallet = async () => {
+    // try {
+    //   const currentWindow: any = window;
+    //   const addressesRes = await currentWindow.btc?.request("getAddresses", {});
+    //   const { address, publicKey } = (
+    //     addressesRes as any
+    //   ).result.addresses.find((address: BtcAddress) => address.type === "p2tr");
+    //   const { address: paymentAddress, publicKey: paymentPublickey } = (
+    //     addressesRes as any
+    //   ).result.addresses.find(
+    //     (address: BtcAddress) => address.type === "p2wpkh"
+    //   );
+    //   const vaultType = paymentAddress.slice(0, 2);
+    //   if (vaultType == (TEST_MODE ? "bc" : "tb")) {
+    //     Notiflix.Notify.failure("You need to switch your network.");
+    //     return;
+    //   }
+    //   setWalletType(WalletTypes.HIRO);
+    //   setPaymentAddress(paymentAddress);
+    //   setPaymentPublicKey(paymentPublickey);
+    //   setOrdinalAddress(address);
+    //   setOrdinalPublicKey(publicKey);
+    //   storeLocalStorage(
+    //     address,
+    //     publicKey,
+    //     paymentAddress,
+    //     paymentPublickey,
+    //     WalletTypes.HIRO
+    //   );
+    //   Notiflix.Notify.success("Connected Successfully.");
+    //   // Register Modal Part
+    //   try {
+    //     const paymentAddress: string = localStorage.getItem(
+    //       "paymentAddress"
+    //     ) as string;
+    //     const exist = await axios.post(`${baseUrl}/check_user`, {
+    //       paymentAddress,
+    //     });
+    //     console.log("exist :>> ", exist);
+    //     if (exist?.data.success && paymentAddress != ADMIN_PAYMENT_ADDRESS) {
+    //       registerModal.onOpen();
+    //     }
+    //   } catch (error) {
+    //     console.log("error :>> ", error);
+    //   }
+    // } catch (err) {
+    //   Notiflix.Notify.failure("Connection Canceled");
+    // }
+  };
+
+  // useEffect(() => {
+  //   const autoConnect = async () => {
+  //     const storedWallet = localStorage.getItem("wallet");
+  //     if (storedWallet) {
+  //       const { session } = JSON.parse(storedWallet);
+  //       if (session > moment.now() && !loadingRef.current) {
+  //         loadingRef.current = true;
+  //         await handleConnectWallet();
+  //         loadingRef.current = false;
+  //       }
+  //     }
+  //   };
+
+  //   autoConnect();
+  // }, []);
+
+  const walletProviders = [
+    {
+      onClickFunc: unisatConnectWallet,
+      img: "/img/wallet/unisat.png",
+      label: "Unisat",
+      extensionCheck: () => {
+        let flag = false;
+        try {
+          flag = (window as any).unisat;
+        } catch (error) {}
+        return flag;
+      },
+      extensionLink:
+        "https://chromewebstore.google.com/detail/unisat-wallet/ppbibelpcjmhbdihakflkdcoccbgbkpo",
+    },
+    {
+      onClickFunc: xverseConnectWallet,
+      img: "/img/wallet/xverse.png",
+      label: "Xverse",
+      extensionCheck: () => {
+        let flag = false;
+        try {
+          flag = (window as any).XverseProviders;
+        } catch (error) {}
+        return flag;
+      },
+      extensionLink:
+        "https://chromewebstore.google.com/detail/xverse-wallet/idnnbdplmphpflfnlkomgpfbpcgelopg",
+    },
+    {
+      onClickFunc: leaderConnectWallet,
+      img: "/img/wallet/leather.png",
+      label: "Leather",
+      extensionCheck: () => {
+        let flag = false;
+        try {
+          flag = (window as any).LeatherProvider;
+        } catch (error) {}
+        return flag;
+      },
+      extensionLink:
+        "https://chromewebstore.google.com/detail/leather/ldinpeekobnhjjdofggfgjlcehhmanlj",
+    },
+  ];
 
   return (
     <div className="z-10 bg-bgColor-ghost px-2 sm:px-12 border-b-2 border-bgColor-stroke w-full font-mono text-sm">
@@ -164,12 +390,12 @@ export default function Header() {
                 </Button>
               )}
               <div className="flex gap-1 items-center bg-bgColor-dark border-2 border-bgColor-stroke rounded-lg p-2">
-                {`${userInfo.btcBalance / 10 ** 8}`}
+                {`${displayBtc(userInfo.btcBalance)}`}
                 <span className="text-orange font-bold">BTC</span>
               </div>
               <Button
                 color="warning"
-                onClick={() => walletConnectProcess()}
+                onClick={refreshBalance}
                 className="rounded-full"
                 isIconOnly
                 variant="flat"
@@ -229,7 +455,10 @@ export default function Header() {
           ) : (
             <Button
               color="warning"
-              onClick={() => handleConnectWallet()}
+              // onClick={() => handleConnectWallet()}
+              onClick={() => {
+                walletModal.onOpen();
+              }}
               className="rounded-md text-white"
               variant="flat"
             >
@@ -238,6 +467,90 @@ export default function Header() {
           )}
         </div>
       </div>
+
+      <Modal
+        backdrop="blur"
+        isOpen={walletModal.isOpen}
+        onClose={walletModal.onClose}
+        motionProps={{
+          variants: {
+            enter: {
+              y: 0,
+              opacity: 1,
+              transition: {
+                duration: 0.3,
+                ease: "easeOut",
+              },
+            },
+            exit: {
+              y: -20,
+              opacity: 0,
+              transition: {
+                duration: 0.2,
+                ease: "easeIn",
+              },
+            },
+          },
+        }}
+      >
+        <ModalContent className="w-[90%] sm:w-full bg-bgColor-dark border-2 border-bgColor-stroke p-3">
+          {(onClose) => (
+            <>
+              <ModalBody>
+                <div className="w-full h-full flex flex-col gap-3 items-center rounded-xl">
+                  <div className="flex flex-col text-black text-[26px]">
+                    <p className="text-center font-bold">Connect Wallet</p>
+                  </div>
+                  <Divider className="bg-warning" />
+                  {walletProviders.map((walletProvider, index) => (
+                    <Button
+                      key={index}
+                      className={`flex-row justify-between rounded-2xl w-full p-3 py-7 bg-bgColor-dark hover:brightness-125 duration-300 border-2 border-bgColor-stroke items-center ${
+                        walletProvider.label === "Xverse"
+                          ? "flex"
+                          : "hidden sm:flex"
+                      }`}
+                      onClick={walletProvider.onClickFunc}
+                      isLoading={isLoading}
+                    >
+                      <div className="flex items-center w-full justify-between">
+                        <div className="flex flex-row gap-2 p-2 items-center">
+                          <Image
+                            src={walletProvider.img}
+                            width={20}
+                            height={20}
+                            alt=""
+                          ></Image>
+                          <p className="text-white text-[20px]">
+                            {walletProvider.label}
+                          </p>
+                        </div>
+                        {walletProvider.extensionCheck() ? (
+                          <Chip
+                            startContent={<CheckIcon size={18} />}
+                            variant="bordered"
+                            color="warning"
+                          >
+                            Installed
+                          </Chip>
+                        ) : (
+                          <a
+                            className="py-2 px-4 bg-bgColor-light text-white border-2 border-bgColor-stroke rounded-xl text-center"
+                            href={walletProvider.extensionLink}
+                            target="_blank"
+                          >
+                            Install
+                          </a>
+                        )}
+                      </div>
+                    </Button>
+                  ))}
+                </div>
+              </ModalBody>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
     </div>
   );
 }

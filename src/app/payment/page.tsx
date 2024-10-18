@@ -17,6 +17,8 @@ import { unisatSignPsbt } from "../utils/pump";
 import { SATS_MULTIPLE, testVersion } from "../config/config";
 import useSocket from "../hooks/useSocket";
 import PumpInput from "../components/PumpInput";
+import { getWallet } from "../utils/util";
+import { XverseSignPsbt } from "../utils/transaction";
 
 export default function CreateRune() {
   const { socket, isConnected } = useSocket();
@@ -38,37 +40,49 @@ export default function CreateRune() {
   const handleDeposit = async () => {
     const currentWindow: any = window;
     try {
-      if (currentWindow?.unisat) {
-        if (userInfo.userId && depositAmount) {
-          setLoading(true);
-          const walletType = "Unisat";
-          const res = await preDepositFunc(
-            walletType,
-            userInfo.userId,
-            depositAmount
-          );
+      if (userInfo.userId && depositAmount) {
+        setLoading(true);
+        const storedWallet = getWallet();
+        const walletType = storedWallet.type;
+        const res = await preDepositFunc(
+          walletType,
+          userInfo.userId,
+          depositAmount
+        );
+        let signedPsbt = "";
+        if (walletType === "Unisat") {
           if (currentWindow?.unisat) {
-            const signedPsbt = await currentWindow?.unisat.signPsbt(
+            signedPsbt = await currentWindow?.unisat.signPsbt(res.psbtHex);
+          }
+        } else if (walletType === "Xverse") {
+          if (currentWindow?.XverseProviders) {
+            const { signedPSBT } = await XverseSignPsbt(
+              userInfo.paymentAddress,
               res.psbtHex
             );
-
-            const depositRes = await depositFunc(
-              userInfo.userId,
-              res.depositId,
-              signedPsbt
-            );
-            getTxs();
-            toast.success(depositRes.msg);
-            if (socket && isConnected) {
-              socket.emit("update-user", { userId: userInfo.userId });
-            }
+            signedPsbt = signedPSBT;
           }
-          setLoading(false);
         } else {
-          return toast.error("Please connect wallet");
+          if (currentWindow?.unisat) {
+            signedPsbt = await currentWindow?.unisat.signPsbt(res.psbtHex);
+          }
         }
+        if (signedPsbt) {
+          const depositRes = await depositFunc(
+            userInfo.userId,
+            res.depositId,
+            signedPsbt,
+            walletType
+          );
+          getTxs();
+          toast.success(depositRes.msg);
+          if (socket && isConnected) {
+            socket.emit("update-user", { userId: userInfo.userId });
+          }
+        }
+        setLoading(false);
       } else {
-        toast.error("Please install unisat");
+        return toast.error("Please connect wallet");
       }
     } catch (error) {
       setLoading(false);
@@ -79,6 +93,7 @@ export default function CreateRune() {
 
   const handleWithdraw = async () => {
     try {
+      const storedWallet = getWallet();
       if (userInfo.userId && runeId && withdrawAmount) {
         setLoading(true);
         const preWithdrawRes = await preWithdrawFunc(
@@ -86,9 +101,33 @@ export default function CreateRune() {
           runeId,
           withdrawAmount
         );
+        // const signInputs = [];
+        const signInputsXverse = [];
+        // let signedPSBT = "";
+        // let txId = "";
+        for (let i = 0; i < preWithdrawRes.inputCount; i++) {
+          // signInputs.push({
+          //   index: i,
+          //   publicKey: userInfo.paymentAddress,
+          //   // disableTweakSigner: true
+          // });
+          signInputsXverse.push(i);
+        }
         if (preWithdrawRes !== null) {
           if (runeId === "btc") {
-            const signedPsbt = await unisatSignPsbt(preWithdrawRes?.psbt);
+            let signedPsbt = "";
+            if (storedWallet.type === "Unisat") {
+              signedPsbt = await unisatSignPsbt(preWithdrawRes?.psbt);
+            } else if (storedWallet.type === "Xverse") {
+              const { signedPSBT } = await XverseSignPsbt(
+                userInfo.paymentAddress,
+                preWithdrawRes.psbt
+              );
+              signedPsbt = signedPSBT;
+            } else {
+              signedPsbt = await unisatSignPsbt(preWithdrawRes?.psbt);
+            }
+
             const withdrawRes = await withdrawFunc(
               userInfo.userId,
               runeId,
@@ -96,7 +135,6 @@ export default function CreateRune() {
               preWithdrawRes.requestId,
               signedPsbt
             );
-            console.log("withdrawRes :>> ", withdrawRes);
             toast.success(withdrawRes.msg);
           } else {
             const withdrawRes = await withdrawFunc(
@@ -106,7 +144,6 @@ export default function CreateRune() {
               preWithdrawRes.requestId,
               ""
             );
-            console.log("withdrawRes :>> ", withdrawRes);
             toast.success(withdrawRes.msg);
           }
           getTxs();
@@ -193,12 +230,12 @@ export default function CreateRune() {
             Payment History
           </div>
           <div className="gap-3 grid grid-cols-6">
-            <div className="text-center">No</div>
-            <div className="text-center">Action</div>
-            <div className="text-center">Type</div>
-            <div className="text-center">RuneID</div>
-            <div className="text-center">Amount</div>
-            <div className="text-center">TxId</div>
+            <div>No</div>
+            <div>Action</div>
+            <div>Type</div>
+            <div>RuneID</div>
+            <div>Amount</div>
+            <div>TxId</div>
           </div>
 
           {allTransactions.map((item, index) => (

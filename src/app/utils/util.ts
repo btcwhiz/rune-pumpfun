@@ -58,3 +58,7 @@ export const calcAvailableRune = (
 export const displayBtc = (btcAmount: number) => {
   return Number((btcAmount / SATS_MULTIPLE).toFixed(8));
 };
+
+export const getWallet = () => {
+  return JSON.parse(localStorage.getItem("wallet") as string);
+};
