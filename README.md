@@ -18,6 +18,7 @@ Bitcoin Rune Pumpfun is a decentralized exchange (DEX) built on Bitcoin’s Laye
 ### Prerequisites
 
 - Node.js (>=v20.12.0)
+- Next.js (14.2.4)
 - yarn
 
 ### Installation
