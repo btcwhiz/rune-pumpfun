@@ -1,6 +1,6 @@
 "use client";
 
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { PeriodParamsInfo } from "../../utils/types";
 import {
   chartOverrides,
@@ -54,7 +54,13 @@ export const TVChartContainer = ({
       const widgetOptions: ChartingLibraryWidgetOptions = {
         symbol: name,
         debug: false,
-        datafeed: getDataFeed({ pairIndex, name, token, customPeriodParams, runeId }),
+        datafeed: getDataFeed({
+          pairIndex,
+          name,
+          token,
+          customPeriodParams,
+          runeId,
+        }),
         theme: "dark",
         locale: "en",
         container: elem,
@@ -87,6 +93,7 @@ export const TVChartContainer = ({
         }
       };
     }
+    // eslint-disable-next-line
   }, [name, pairIndex]);
 
   return (

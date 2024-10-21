@@ -10,34 +10,27 @@ import {
   ModalFooter,
   Button,
   useDisclosure,
-  RadioGroup,
-  Radio,
-  Image,
-  Accordion,
-  AccordionItem,
   Listbox,
-  Avatar,
   ListboxItem,
 } from "@nextui-org/react";
 import toast from "react-hot-toast";
 import { FaChevronDown } from "react-icons/fa";
-import { FaPlus } from "react-icons/fa6";
 import { IoSwapVerticalSharp } from "react-icons/io5";
 
 import ImageDisplay from "../components/ImageDIsplay";
-import { BTCImg, ImgStr, testVersion } from "../config/config";
+import { testVersion } from "../config/config";
 import { getAllPools, getLiquidity } from "../api/swap";
 import AvatarDisplay from "../components/AvatarDisplay";
 import { preAddLiquidity, addLiquidity } from "../api/requests";
 import { MainContext } from "../contexts/MainContext";
 import useSocket from "../hooks/useSocket";
-import { unisatSignPsbt } from "../utils/pump";
 import { ListboxWrapper } from "../swap/ListboxWrapper";
 import { IoMdCloseCircle } from "react-icons/io";
 import Link from "next/link";
 import { displayBtc, getWallet } from "../utils/util";
 import PumpInput from "../components/PumpInput";
 import { XverseSignPsbt } from "../utils/transaction";
+import { BTCImg, ImgStr } from "../config/imageStrings";
 
 export default function Page() {
   const { socket, isConnected } = useSocket();
@@ -144,6 +137,7 @@ export default function Page() {
 
   useEffect(() => {
     getData();
+    // eslint-disable-next-line
   }, []);
 
   const getLiquidityData = async () => {
@@ -153,6 +147,7 @@ export default function Page() {
 
   useEffect(() => {
     userInfo.userId && getLiquidityData();
+    // eslint-disable-next-line
   }, [userInfo]);
 
   useEffect(() => {

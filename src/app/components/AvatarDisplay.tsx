@@ -28,6 +28,7 @@ const AvatarDisplay = ({
 
   useEffect(() => {
     src && initImage();
+    // eslint-disable-next-line
   }, [src]);
 
   return (

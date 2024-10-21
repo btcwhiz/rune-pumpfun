@@ -2,7 +2,6 @@
 
 import React, { useContext, useEffect, useState } from "react";
 import {
-  Input,
   Modal,
   ModalContent,
   ModalHeader,
@@ -10,20 +9,15 @@ import {
   ModalFooter,
   Button,
   useDisclosure,
-  RadioGroup,
-  Radio,
-  Image,
   Accordion,
   AccordionItem,
   Listbox,
-  Avatar,
   ListboxItem,
 } from "@nextui-org/react";
 import { IoSwapVerticalSharp } from "react-icons/io5";
 import { FaChevronDown } from "react-icons/fa";
 
 import ImageDisplay from "../components/ImageDIsplay";
-import { BTCImg, ImgStr } from "../config/config";
 import { getAllPools } from "../api/swap";
 import { ListboxWrapper } from "./ListboxWrapper";
 import AvatarDisplay from "../components/AvatarDisplay";
@@ -34,6 +28,7 @@ import useSocket from "../hooks/useSocket";
 import { displayBtc, getWallet } from "../utils/util";
 import PumpInput from "../components/PumpInput";
 import { XverseSignPsbt } from "../utils/transaction";
+import { BTCImg, ImgStr } from "../config/imageStrings";
 
 export default function Page() {
   const { socket, isConnected } = useSocket();
@@ -165,6 +160,7 @@ export default function Page() {
 
   useEffect(() => {
     getData();
+    // eslint-disable-next-line
   }, []);
 
   useEffect(() => {

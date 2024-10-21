@@ -30,6 +30,7 @@ const useSocket = () => {
       socket.current.off("update-user-info");
       socket.current.disconnect();
     };
+    // eslint-disable-next-line
   }, [serverPath]);
 
   return { socket: socket.current, isConnected };

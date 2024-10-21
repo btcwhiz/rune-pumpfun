@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Input } from "@nextui-org/react";
+import { Button } from "@nextui-org/react";
 import Link from "next/link";
 import { useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -149,6 +149,7 @@ export default function CreateRune() {
 
   useEffect(() => {
     userInfo.userId && getTxs();
+    // eslint-disable-next-line
   }, [userInfo.userId]);
 
   return (
