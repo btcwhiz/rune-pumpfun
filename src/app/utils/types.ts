@@ -95,3 +95,11 @@ export interface PeriodParamsInfo {
   countBack: number;
   firstDataRequest: boolean;
 }
+
+export enum WalletTypes {
+  UNISAT = "Unisat",
+  XVERSE = "Xverse",
+  HIRO = "Hiro",
+  OKX = "Okx",
+  LEATHER = "Leather",
+}
