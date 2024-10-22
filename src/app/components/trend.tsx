@@ -56,7 +56,7 @@ export default function Trend() {
   }, [socket, isConnected]);
 
   return (
-    <div className="z-10 bg-bgColor-ghost p-2 border-b-2 border-bgColor-stroke w-full font-mono text-sm flex gap-1 flex-wrap">
+    <div className="z-10 bg-bgColor-ghost p-2 border-b-2 border-bgColor-stroke w-full font-mono text-sm flex gap-1 flex-wrap justify-center">
       {newTrade?.profileId && (
         <Bounce key={newTrade.key} delay={500} triggerOnce={true}>
           <div className="flex justify-start">

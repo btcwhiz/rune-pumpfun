@@ -13,6 +13,7 @@ import { SearchIcon } from "./components/icons/SearchIcon";
 
 export default function Home() {
   const [runes, setRunes] = useState<any[]>([]);
+  const [waitingRunes, setWaitingRunes] = useState<any[]>([]);
   const [pendingRunes, setPendingRunes] = useState<any[]>([]);
   const [filteredRunes, setFilteredRunes] = useState<any[]>([]);
   const [searchKey, setSearchKey] = useState<string>("");
@@ -21,14 +22,18 @@ export default function Home() {
   const getRunes = async () => {
     let runeRes: any = await getRuneFunc();
     if (runeRes) {
+      console.log("runeRes :>> ", runeRes);
       setSearchKey("");
       setRunes(runeRes.runes);
+      setWaitingRunes(runeRes.waitingRunes);
+      setPendingRunes(runeRes.pendingRunes);
       if (selected === "pending") {
+        setFilteredRunes(runeRes.pendingRunes);
+      } else if (selected === "waiting") {
         setFilteredRunes(runeRes.waitingRunes);
       } else {
         setFilteredRunes(runeRes.runes);
       }
-      setPendingRunes(runeRes.waitingRunes);
     }
   };
 
@@ -66,6 +71,20 @@ export default function Home() {
     });
   };
 
+  const searchWaitingRune = (key: string) => {
+    key = key.toLowerCase();
+    return waitingRunes.filter((item: any) => {
+      if (
+        item.address.toLowerCase().indexOf(key) !== -1 ||
+        item.runeDescription.toLowerCase().indexOf(key) !== -1 ||
+        item.runeName.toLowerCase().indexOf(key) !== -1 ||
+        item.runeSymbol.toLowerCase().indexOf(key) !== -1
+      ) {
+        return item;
+      }
+    });
+  };
+
   const handleSearchKeyChange = (key: string) => {
     setSearchKey(key);
     if (selected === "pending") {
@@ -73,6 +92,12 @@ export default function Home() {
         setFilteredRunes(pendingRunes);
       } else {
         setFilteredRunes(searchPendingRune(key));
+      }
+    } else if (selected === "waiting") {
+      if (key === "") {
+        setFilteredRunes(waitingRunes);
+      } else {
+        setFilteredRunes(searchWaitingRune(key));
       }
     } else {
       if (key === "") {
@@ -91,6 +116,12 @@ export default function Home() {
       } else {
         setFilteredRunes(searchPendingRune(searchKey));
       }
+    } else if (tab == "waiting") {
+      if (searchKey === "") {
+        setFilteredRunes(waitingRunes);
+      } else {
+        setFilteredRunes(searchWaitingRune(searchKey));
+      }
     } else {
       if (searchKey === "") {
         setFilteredRunes(runes);
@@ -105,8 +136,8 @@ export default function Home() {
       <div className="flex flex-col gap-3">
         {/* --- Rune List --- */}
         <div className="flex flex-col gap-3 md:px-10 p-2">
-          <div className="flex justify-between items-center flex-col gap-2 sm:flex-row">
-            <div className="flex items-center gap-3">
+          <div className="flex justify-center md:justify-between items-center flex-col gap-2 sm:flex-row">
+            <div className="flex items-center flex-wrap gap-3 justify-center sm:justify-normal">
               <Tabs
                 aria-label="Options"
                 color="warning"
@@ -115,7 +146,8 @@ export default function Home() {
                 onSelectionChange={(tab) => handleTabChange(tab as string)}
               >
                 <Tab key="all" title="Runes"></Tab>
-                <Tab key="pending" title="Pending Runes"></Tab>
+                <Tab key="pending" title="Pending"></Tab>
+                <Tab key="waiting" title="Waiting"></Tab>
               </Tabs>
               <Button
                 color="warning"
@@ -156,6 +188,13 @@ export default function Home() {
                 <SearchIcon className="text-black/50 mb-0.5 dark:text-white/90 text-slate-400 pointer-events-none flex-shrink-0" />
               }
             />
+          </div>
+          <div>
+            {selected === "all" && <div>Etched Runes</div>}
+            {selected === "pending" && <div>Pending Runes</div>}
+            {selected === "waiting" && (
+              <div>Waiting Runes To Transfer BTC For Etching Runes</div>
+            )}
           </div>
           <div className="gap-3 grid grid-cols-1 md:grid-cols-3">
             {filteredRunes.map((item, index) => {
