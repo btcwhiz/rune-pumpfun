@@ -12,7 +12,7 @@ import {
 } from "@nextui-org/react";
 import toast from "react-hot-toast";
 import { FaHome, FaPlus, FaUser } from "react-icons/fa";
-import { IoIosLogOut } from "react-icons/io";
+import { IoIosLink, IoIosLogOut } from "react-icons/io";
 import { TfiReload } from "react-icons/tfi";
 import Link from "next/link";
 import moment from "moment-timezone";
@@ -32,7 +32,7 @@ import { MainContext } from "../contexts/MainContext";
 import { authUser } from "../api/requests";
 import Image from "next/image";
 import { CheckIcon } from "./icons/CheckIcon";
-import { SIGN_MESSAGE, TEST_MODE } from "../config";
+import { BETA_URL, SIGN_MESSAGE, TEST_MODE, TEST_URL } from "../config";
 import { displayBtc, getWallet } from "../utils/util";
 
 const links = [
@@ -375,96 +375,108 @@ export default function Header() {
             </div>
           ))}
         </div>
-        <div className="py-3 flex justify-center items-center">
-          {userInfo?.userId ? (
-            <div className="flex flex-wrap justify-center items-center gap-3">
-              {userInfo.role === 1 && (
+        <div className="flex items-center gap-2">
+          <div className="py-3 flex justify-center items-center">
+            {userInfo?.userId ? (
+              <div className="flex flex-wrap justify-center items-center gap-3">
+                {userInfo.role === 1 && (
+                  <Button
+                    color="warning"
+                    href={`/pump-admin`}
+                    as={Link}
+                    className="flex items-center gap-2 text-white"
+                    variant="flat"
+                  >
+                    <div>Admin</div>
+                  </Button>
+                )}
+                <div className="flex gap-1 items-center bg-bgColor-dark border-2 border-bgColor-stroke rounded-lg p-2">
+                  {`${displayBtc(userInfo.btcBalance)}`}
+                  <span className="text-orange font-bold">BTC</span>
+                </div>
                 <Button
                   color="warning"
-                  href={`/pump-admin`}
-                  as={Link}
-                  className="flex items-center gap-2 text-white"
+                  onClick={refreshBalance}
+                  className="rounded-full"
+                  isIconOnly
                   variant="flat"
                 >
-                  <div>Admin</div>
+                  <TfiReload className="text-white" />
                 </Button>
-              )}
-              <div className="flex gap-1 items-center bg-bgColor-dark border-2 border-bgColor-stroke rounded-lg p-2">
-                {`${displayBtc(userInfo.btcBalance)}`}
-                <span className="text-orange font-bold">BTC</span>
+                <Button
+                  color="warning"
+                  href={`/payment`}
+                  as={Link}
+                  className="hidden sm:flex items-center gap-2 text-white"
+                  variant="flat"
+                >
+                  <div>Payment</div>
+                  <GiMoneyStack />
+                </Button>
+                <Button
+                  color="warning"
+                  href={`/payment`}
+                  as={Link}
+                  className="flex sm:hidden items-center gap-2 text-white rounded-full"
+                  variant="flat"
+                  isIconOnly
+                >
+                  <GiMoneyStack />
+                </Button>
+                <Button
+                  as={Link}
+                  color="warning"
+                  href={`/profile/${encodeURIComponent(userInfo?.profileId)}`}
+                  className="hidden sm:flex items-center gap-2 text-white"
+                  variant="flat"
+                >
+                  <div>Profile</div>
+                  <FaUser />
+                </Button>
+                <Button
+                  as={Link}
+                  color="warning"
+                  href={`/profile/${encodeURIComponent(userInfo?.profileId)}`}
+                  className="flex sm:hidden items-center gap-2 text-white rounded-full"
+                  variant="flat"
+                  isIconOnly
+                >
+                  <FaUser />
+                </Button>
+                <Button
+                  color="warning"
+                  onClick={() => handleDisConnectWallet()}
+                  className="rounded-full"
+                  isIconOnly
+                  variant="flat"
+                >
+                  <IoIosLogOut className="text-white text-xl" />
+                </Button>
               </div>
+            ) : (
               <Button
                 color="warning"
-                onClick={refreshBalance}
-                className="rounded-full"
-                isIconOnly
+                // onClick={() => handleConnectWallet()}
+                onClick={() => {
+                  walletModal.onOpen();
+                }}
+                className="rounded-md text-white"
                 variant="flat"
               >
-                <TfiReload className="text-white" />
+                Connect Wallet
               </Button>
-              <Button
-                color="warning"
-                href={`/payment`}
-                as={Link}
-                className="hidden sm:flex items-center gap-2 text-white"
-                variant="flat"
-              >
-                <div>Payment</div>
-                <GiMoneyStack />
-              </Button>
-              <Button
-                color="warning"
-                href={`/payment`}
-                as={Link}
-                className="flex sm:hidden items-center gap-2 text-white rounded-full"
-                variant="flat"
-                isIconOnly
-              >
-                <GiMoneyStack />
-              </Button>
-              <Button
-                as={Link}
-                color="warning"
-                href={`/profile/${encodeURIComponent(userInfo?.profileId)}`}
-                className="hidden sm:flex items-center gap-2 text-white"
-                variant="flat"
-              >
-                <div>Profile</div>
-                <FaUser />
-              </Button>
-              <Button
-                as={Link}
-                color="warning"
-                href={`/profile/${encodeURIComponent(userInfo?.profileId)}`}
-                className="flex sm:hidden items-center gap-2 text-white rounded-full"
-                variant="flat"
-                isIconOnly
-              >
-                <FaUser />
-              </Button>
-              <Button
-                color="warning"
-                onClick={() => handleDisConnectWallet()}
-                className="rounded-full"
-                isIconOnly
-                variant="flat"
-              >
-                <IoIosLogOut className="text-white text-xl" />
-              </Button>
-            </div>
-          ) : (
-            <Button
-              color="warning"
-              // onClick={() => handleConnectWallet()}
-              onClick={() => {
-                walletModal.onOpen();
-              }}
-              className="rounded-md text-white"
-              variant="flat"
-            >
-              Connect Wallet
-            </Button>
-          )}
+            )}
+          </div>
+          <Button
+            href={TEST_MODE ? BETA_URL : TEST_URL}
+            as={Link}
+            color="warning"
+            className="rounded-md text-white"
+            variant="ghost"
+            endContent={<IoIosLink />}
+          >
+            {TEST_MODE ? "Mainnet": "Testnet"}
+          </Button>
         </div>
       </div>
 
