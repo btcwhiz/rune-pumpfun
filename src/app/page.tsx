@@ -156,6 +156,7 @@ export default function Home() {
       if (resp.status) {
         const runeBlock = resp.txDetails?.block_height;
         const currentBlock = latestBlock.blockHeight;
+        console.log("runeBlock, currentBlock :>> ", runeBlock, currentBlock);
 
         setLeftBlocks(
           runeBlock + 6 - currentBlock > 0 ? runeBlock + 6 - currentBlock : 0
