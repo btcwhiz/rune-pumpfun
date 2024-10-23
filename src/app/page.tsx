@@ -251,7 +251,11 @@ export default function Home() {
                             {!item.runeId && (
                               <div className="top-1/2 left-1/2 absolute font-Hadenut text-4xl text-danger -translate-x-1/2 -translate-y-1/2 -rotate-[17deg]">
                                 <div className="flex justify-center font-bold gap-2">
-                                  <span>Pending</span>{" "}
+                                  <span>
+                                    {selected === "waiting"
+                                      ? "Waiting"
+                                      : "Pending"}
+                                  </span>{" "}
                                   <Spinner color="danger"></Spinner>
                                 </div>
                               </div>
