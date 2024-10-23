@@ -166,6 +166,7 @@ export default function Home() {
 
     useEffect(() => {
       getTxDetailsFunc();
+      // eslint-disable-next-line
     }, []);
 
     return (
