@@ -567,3 +567,27 @@ export const burnFunc = async (
     return { success: false };
   }
 };
+
+export const getTxDetails = async (txId: string) => {
+  try {
+    const urlEndpoint = `/api/mempool/get-tx-details?txId=${txId}`;
+    const res = await fetch(urlEndpoint, { method: "POST" });
+    const detailsData: any = await res.json();
+    return detailsData;
+  } catch (error) {
+    console.log("error :>> ", error);
+    return { success: false };
+  }
+};
+
+export const getCurrentBlock = async () => {
+  try {
+    const urlEndpoint = `/api/mempool/get-current-block`;
+    const res = await fetch(urlEndpoint);
+    const currentBlock: any = await res.json();
+    return currentBlock;
+  } catch (error) {
+    console.log("error :>> ", error);
+    return { success: false };
+  }
+};

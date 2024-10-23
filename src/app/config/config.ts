@@ -4,3 +4,7 @@ export const NEXT_POOL_AMOUNT = 2 * 10 ** 5;
 
 export const testVersion =
   process.env.NEXT_PUBLIC_TEST_VERSION === "true" ? true : false;
+
+export const MEMPOOL_URL = testVersion
+  ? "https://mempool.space/testnet/api"
+  : "https://mempool.space/api";
