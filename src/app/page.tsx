@@ -153,6 +153,13 @@ export default function Home() {
     const getTxDetailsFunc = async () => {
       const resp = await getTxDetails(item.txId);
       const latestBlock = await getCurrentBlock();
+      console.log(
+        "latestBlock :>> ",
+        item.txId,
+        item.runeName,
+        resp.txDetails.block_height,
+        latestBlock
+      );
       if (resp.status) {
         const runeBlock = resp.txDetails?.block_height;
         const currentBlock = latestBlock.blockHeight;
