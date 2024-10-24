@@ -17,10 +17,13 @@ export default function Home() {
   const [pendingRunes, setPendingRunes] = useState<any[]>([]);
   const [filteredRunes, setFilteredRunes] = useState<any[]>([]);
   const [searchKey, setSearchKey] = useState<string>("");
+  const [recentBlockHeight, setRecentBlockHeight] = useState<number>(0);
   const [selected, setSelected] = useState<string>("all");
 
   const getRunes = async () => {
     try {
+      const latestBlock = await getCurrentBlock();
+      setRecentBlockHeight(latestBlock.blockHeight);
       let runeRes: any = await getRuneFunc();
       if (runeRes) {
         setSearchKey("");
@@ -140,7 +143,7 @@ export default function Home() {
     }
   };
 
-  const RuneCard = ({ item }: { item: any }) => {
+  const RuneCard = ({ item, selected }: { item: any; selected: string }) => {
     const [runeProcess, setRuneProcess] = useState<number>(0);
     const [leftBlocks, setLeftBlocks] = useState<number>(0);
     // let runeAmount = Math.round(item.runeAmount * 0.8);
@@ -152,30 +155,19 @@ export default function Home() {
 
     const getTxDetailsFunc = async () => {
       const resp = await getTxDetails(item.txId);
-      const latestBlock = await getCurrentBlock();
-      console.log(
-        "latestBlock :>> ",
-        item.txId,
-        item.runeName,
-        resp.txDetails.block_height,
-        latestBlock
-      );
       if (resp.status) {
-        const runeBlock = resp.txDetails?.block_height;
-        const currentBlock = latestBlock.blockHeight;
-        console.log("runeBlock, currentBlock :>> ", runeBlock, currentBlock);
-
-        setLeftBlocks(
-          runeBlock + 6 - currentBlock > 0 ? runeBlock + 6 - currentBlock : 0
-        );
-        setRuneProcess((runeBlock + 6 - currentBlock || 0) / 6);
+        const block_height = resp.block_height;
+        let leftBlock = block_height + 5 - recentBlockHeight;
+        leftBlock = leftBlock > 0 ? leftBlock : 0;
+        setLeftBlocks(leftBlock);
+        setRuneProcess(((5 - leftBlock) * 100) / 5);
       }
     };
 
     useEffect(() => {
-      getTxDetailsFunc();
+      if (selected === "pending" && item.txId) getTxDetailsFunc();
       // eslint-disable-next-line
-    }, []);
+    }, [item, selected]);
 
     return (
       <Card className="relative bg-bgColor-ghost border border-bgColor-stroke text-primary-50">
@@ -187,7 +179,7 @@ export default function Home() {
           {selected === "pending" && (
             <div className="flex justify-between items-center gap-2 text-small">
               <span className="pl-2 flex gap-1">
-                <span>{leftBlocks || 0}</span>
+                <span>{leftBlocks}</span>
                 <span>blocks</span>
                 <span>left</span>
               </span>
@@ -359,7 +351,13 @@ export default function Home() {
           </div>
           <div className="gap-3 grid grid-cols-1 md:grid-cols-3">
             {filteredRunes.map((item, index) => {
-              return <RuneCard key={index} item={item}></RuneCard>;
+              return (
+                <RuneCard
+                  key={index}
+                  item={item}
+                  selected={selected}
+                ></RuneCard>
+              );
             })}
           </div>
         </div>

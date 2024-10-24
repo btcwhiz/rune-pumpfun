@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import mempoolJS from "@mempool/mempool.js";
-import { testVersion } from "@/app/app/config/config";
+import { MEMPOOL_URL } from "@/app/app/config/config";
+import axios from "axios";
 
 export async function POST(req: Request) {
   try {
@@ -11,16 +11,13 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "txId is required" }, { status: 400 });
     }
 
-    const {
-      bitcoin: { transactions },
-    } = mempoolJS({
-      hostname: "mempool.space",
-      network: testVersion ? "testnet" : "mainnet", // 'signet' | 'testnet' | 'mainnet',
+    const url = `${MEMPOOL_URL}/tx/${txId}/status`;
+    const res = await axios.get(url);
+
+    return NextResponse.json({
+      status: true,
+      block_height: res.data.block_height,
     });
-
-    const resp = await transactions.getTx({ txid: txId });
-
-    return NextResponse.json({ status: true, txDetails: resp.status });
   } catch (error) {
     return NextResponse.json({ status: false }, { status: 500 });
   }
