@@ -46,16 +46,16 @@ const links = [
     link: "/create",
     icon: <FaPlus />,
   },
-  {
-    label: "Swap",
-    link: "/swap",
-    icon: <AiOutlineSwap />,
-  },
-  {
-    label: "Pools",
-    link: "/pools",
-    icon: <GrMoney />,
-  },
+  // {
+  //   label: "Swap",
+  //   link: "/swap",
+  //   icon: <AiOutlineSwap />,
+  // },
+  // {
+  //   label: "Pools",
+  //   link: "/pools",
+  //   icon: <GrMoney />,
+  // },
 ];
 
 export default function Header() {
@@ -127,9 +127,9 @@ export default function Header() {
           const accounts = await unisat.requestAccounts();
           const address = accounts[0];
           const pubKey = await unisat.getPublicKey();
-          let res = await unisat.signMessage(SIGN_MESSAGE);
-          console.log("res :>> ", res);
+          await unisat.signMessage(SIGN_MESSAGE);
           const uInfo: any = await authUser(address, pubKey, address, pubKey);
+          console.log("uInfo :>> ", uInfo);
           storeLocalStorage("Unisat", address, pubKey, address, pubKey);
           setUserInfo(uInfo);
           setPaymentAddress(address);
@@ -475,7 +475,7 @@ export default function Header() {
             variant="ghost"
             endContent={<IoIosLink />}
           >
-            {TEST_MODE ? "Mainnet": "Testnet"}
+            {TEST_MODE ? "Mainnet" : "Testnet"}
           </Button>
         </div>
       </div>
@@ -484,6 +484,7 @@ export default function Header() {
         backdrop="blur"
         isOpen={walletModal.isOpen}
         onClose={walletModal.onClose}
+        isDismissable={false}
         motionProps={{
           variants: {
             enter: {

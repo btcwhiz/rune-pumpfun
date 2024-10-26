@@ -34,7 +34,7 @@ export const authUser = async (
     return res.data;
   } catch (error: any) {
     const msg: any = error.response.data.msg || "Something went wrong";
-    console.log("error :>> ", error);
+    toast.error(msg);
     return null;
   }
 };
