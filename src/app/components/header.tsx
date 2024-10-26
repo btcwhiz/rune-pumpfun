@@ -37,22 +37,22 @@ import { displayBtc, getWallet } from "../utils/util";
 
 const links = [
   {
-    label: "Home",
+    label: "HOME",
     link: "/",
     icon: <FaHome />,
   },
   {
-    label: "Etching",
+    label: "ETCHING",
     link: "/create",
     icon: <FaPlus />,
   },
   {
-    label: "Swap",
+    label: "SWAP",
     link: "/swap",
     icon: <AiOutlineSwap />,
   },
   {
-    label: "Pools",
+    label: "POOLS",
     link: "/pools",
     icon: <GrMoney />,
   },
@@ -339,8 +339,19 @@ export default function Header() {
   ];
 
   return (
-    <div className="z-10 bg-bgColor-ghost px-2 sm:px-12 border-b-2 border-bgColor-stroke w-full font-mono text-sm">
-      <div className="flex flex-wrap justify-center md:justify-between items-center bg-gradient-to-t dark:from-black dark:via-black lg:bg-none w-full lg:size-auto gap-3">
+    <div className="z-10 p-4 sm:px-12 border-b-0 border-bgColor-stroke w-full font-mono text-sm">
+      <div className="flex flex-wrap justify-center md:justify-between items-center bg-gradient-to-t dark:from-black dark:via-black lg:bg-none w-full lg:size-auto">
+        
+      <div className="flex items-center">
+          <Image
+            src="/img/runes_logo.png" // Replace with the actual path to your image
+            alt="Logo"
+            width={150} // Adjust the width as needed
+            height={150} // Adjust the height as needed
+            className="mr-4" // Add margin to the right of the image
+          />
+        </div>
+
         <div className="flex flex-wrap justify-center items-center gap-3">
           {links.map((item, index) => (
             <div key={index}>
@@ -349,10 +360,10 @@ export default function Header() {
                 as={Link}
                 className={`${
                   item.link === path
-                    ? "border-warning border-b text-warning"
+                    ? "border-pink border-b border-b-3 text-white"
                     : "text-white"
                 } rounded-none items-center sm:gap-2 sm:h-16 hidden sm:flex`}
-                color="warning"
+                // color="warning"
                 variant="light"
               >
                 {item.icon}
@@ -363,10 +374,10 @@ export default function Header() {
                 as={Link}
                 className={`${
                   item.link === path
-                    ? "border-warning border-b text-warning"
+                    ? "border-pink border-b border-3 text-pink"
                     : "text-white"
                 } rounded-none flex sm:hidden items-center sm:gap-2 sm:h-16`}
-                color="warning"
+                // color="pink"
                 variant="light"
                 isIconOnly
               >
@@ -389,7 +400,7 @@ export default function Header() {
                   <div>Admin</div>
                 </Button>
               )}
-              <div className="flex gap-1 items-center bg-bgColor-dark border-2 border-bgColor-stroke rounded-lg p-2">
+              <div className="flex gap-1 items-center bg-bgColor-dark border-bgColor-stroke rounded-lg p-2">
                 {`${displayBtc(userInfo.btcBalance)}`}
                 <span className="text-orange font-bold">BTC</span>
               </div>
@@ -454,12 +465,12 @@ export default function Header() {
             </div>
           ) : (
             <Button
-              color="warning"
+              // color="warning"
               // onClick={() => handleConnectWallet()}
               onClick={() => {
                 walletModal.onOpen();
               }}
-              className="rounded-md text-white"
+              className="rounded-md text-white bg-pink"
               variant="flat"
             >
               Connect Wallet
