@@ -148,7 +148,7 @@ export default function News() {
                   variant="flat"
                   disabled={!isSelected}
                 >
-                  Cancel
+                  Accept
                 </Button>
               </ModalFooter>
             </>
