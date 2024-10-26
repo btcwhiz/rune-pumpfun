@@ -76,7 +76,7 @@ export default function News() {
 
                 <p>
                   <span className="text-orange">2.</span> No Warranties
-                  <Runedcom /> is provided on an "as-is" basis without
+                  <Runedcom /> is provided on an &quote;as-is&quote; basis without
                   warranties of any kind, whether express or implied. There is
                   no guarantee that the platform will function error-free or
                   that its use will be safe. <Runedcom /> is currently untested
