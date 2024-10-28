@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 3033",
+    "dev": "next dev -p 3040",
     "build": "next build",
     "start": "next start -p 3088",
     "lint": "next lint"

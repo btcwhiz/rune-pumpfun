@@ -8,6 +8,8 @@ import { Bounce } from "react-awesome-reveal";
 import useSocket from "../hooks/useSocket";
 import { SATS_MULTIPLE } from "../config/config";
 
+import Image from 'next/image';
+
 export default function Trend() {
   const { socket, isConnected } = useSocket();
   const [newTrade, setNewTrade] = useState<any>({});
@@ -56,25 +58,34 @@ export default function Trend() {
   }, [socket, isConnected]);
 
   return (
-    <div className="z-10 bg-bgColor-ghost p-2 border-b-2 border-bgColor-stroke w-full font-mono text-sm flex gap-1 flex-wrap justify-center sm:justify-start">
+    <div className="z-10 p-2  w-full font-mono text-sm flex gap-1 flex-wrap justify-center sm:justify-start">
       {newTrade?.profileId && (
-        <Bounce key={newTrade.key} delay={500} triggerOnce={true}>
-          <div className="flex justify-start">
-            <div className="flex justify-between items-center gap-1 bg-warning-800 p-3 rounded-xl">
+        <Bounce key={newTrade.key} delay={500} triggerOnce={true} className="w-1/3">
+          <div className="w-full flex justify-center">
+            <div className="flex gap-1 justify-between items-center gap-2 h-20 px-4 bg-[#EAEAEA] p-3 rounded-xl w-full">
+              <div className="rounded-lg overflow-hidden">
+                <Image
+                  src="/img/thog.png" // Update this path to your actual logo path
+                  alt="Runes Logo"
+                  width={32}
+                  height={32}
+                  className="w-8 h-8" // Adjust size as needed
+                />
+              </div>
               <Link
                 href={`/profile/${encodeURIComponent(newTrade?.profileId)}`}
-                className="text-warning"
+                className="text-black"
               >
                 {newTrade?.profileId?.slice(0, 6)}
               </Link>
               {newTrade?.type === 0 && (
-                <div className="text-success">bought</div>
+                <div className="text-success">BOUGHT</div>
               )}
-              {newTrade?.type === 1 && <div className="text-danger">sold</div>}
+              {newTrade?.type === 1 && <div className="text-danger">SOLD</div>}
               {newTrade?.type === 2 && (
-                <div className="text-danger">burned</div>
+                <div className="text-danger">BURNED</div>
               )}
-              <div className="text-warning">
+              <div className="text-black">
                 {newTrade?.type === 2 ? (
                   <div>{`${newTrade?.runeAmount}`}</div>
                 ) : (
@@ -84,7 +95,7 @@ export default function Trend() {
               <div>of</div>
               <Link
                 href={`/rune/${encodeURIComponent(newTrade?.runeId)}`}
-                className="text-warning"
+                className="text-black"
               >
                 {displayRune(newTrade?.runeName)}
               </Link>
@@ -93,24 +104,33 @@ export default function Trend() {
         </Bounce>
       )}
       {newRune?.profileId && (
-        <Bounce key={newRune.key} delay={500} triggerOnce={true}>
-          <div className="flex justify-start">
-            <div className="flex justify-between items-center gap-1 bg-warning-900 p-3 rounded-xl">
+        <Bounce key={newRune.key} delay={500} triggerOnce={true} className="w-1/3">
+          <div className="w-full flex justify-center">
+            <div className="flex gap-1 justify-between items-center gap-2 h-20 px-4 bg-[#EAEAEA] p-3 rounded-xl w-full">
+              <div className="rounded-lg overflow-hidden">
+                <Image
+                  src="/img/thog.png" // Update this path to your actual logo path
+                  alt="Runes Logo"
+                  width={32}
+                  height={32}
+                  className="w-8 h-8" // Adjust size as needed
+                />
+              </div>
               <Link
                 href={`/profile/${encodeURIComponent(newRune?.profileId)}`}
-                className="text-warning"
+                className="text-black"
               >
                 {newRune?.profileId?.slice(0, 6)}
               </Link>
-              <div>created</div>
+              <div>CREATED</div>
               <Link
                 href={`/rune/${encodeURIComponent(newRune?.runeId)}`}
-                className="text-warning"
+                className="text-black"
               >
                 {displayRune(newRune.runeName)}
               </Link>
               <div>on</div>
-              <div className="text-warning">{displayDate(newRune.now)}</div>
+              <div className="text-black">{displayDate(newRune.now)}</div>
             </div>
           </div>
         </Bounce>

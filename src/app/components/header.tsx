@@ -339,8 +339,19 @@ export default function Header() {
   ];
 
   return (
-    <div className="z-10 bg-bgColor-ghost px-2 sm:px-12 border-b-2 border-bgColor-stroke w-full font-mono text-sm">
-      <div className="flex flex-wrap justify-center md:justify-between items-center bg-gradient-to-t dark:from-black dark:via-black lg:bg-none w-full lg:size-auto gap-3">
+    <div className="z-10 p-4 sm:px-12 border-b-0 border-bgColor-stroke w-full font-mono text-sm">
+      <div className="flex flex-wrap justify-center md:justify-between items-center bg-gradient-to-t dark:from-black dark:via-black lg:bg-none w-full lg:size-auto">
+        
+      <div className="flex items-center">
+          <Image
+            src="/img/runes_logo.png" // Replace with the actual path to your image
+            alt="Logo"
+            width={150} // Adjust the width as needed
+            height={150} // Adjust the height as needed
+            className="mr-4" // Add margin to the right of the image
+          />
+        </div>
+        
         <div className="flex flex-wrap justify-center items-center gap-3">
           {links.map((item, index) => (
             <div key={index}>
