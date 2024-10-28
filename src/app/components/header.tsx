@@ -151,7 +151,6 @@ export default function Header() {
   // Xverse Connect
   const xverseConnectWallet = async () => {
     try {
-      setIsLoading(true);
       const response: any = await getAddress({
         payload: {
           purposes: [
@@ -201,26 +200,28 @@ export default function Header() {
       const paymentPubkey = paymentAddressItem?.publicKey as string;
       const ordinalAddress = ordinalsAddressItem?.address as string;
       const ordinalPubkey = ordinalsAddressItem?.publicKey as string;
-
-      const uInfo: any = await authUser(
-        paymentAddress,
-        paymentPubkey,
-        ordinalAddress,
-        ordinalPubkey
-      );
-      if (uInfo !== null) {
-        storeLocalStorage(
-          "Xverse",
+      if (paymentAddress) {
+        setIsLoading(true);
+        const uInfo: any = await authUser(
           paymentAddress,
           paymentPubkey,
           ordinalAddress,
           ordinalPubkey
         );
-        setUserInfo(uInfo);
-        setPaymentAddress(paymentAddress);
-        setPaymentPubkey(paymentPubkey);
-        setOrdinalAddress(ordinalAddress);
-        setOrdinalPubkey(ordinalPubkey);
+        if (uInfo !== null) {
+          storeLocalStorage(
+            "Xverse",
+            paymentAddress,
+            paymentPubkey,
+            ordinalAddress,
+            ordinalPubkey
+          );
+          setUserInfo(uInfo);
+          setPaymentAddress(paymentAddress);
+          setPaymentPubkey(paymentPubkey);
+          setOrdinalAddress(ordinalAddress);
+          setOrdinalPubkey(ordinalPubkey);
+        }
       }
       walletModal.onClose();
       setIsLoading(false);
