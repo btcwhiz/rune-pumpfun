@@ -20,7 +20,7 @@ export default function News() {
     onOpen();
   }, []);
   const Runedcom = () => {
-    return <span className="text-orange"> Runed.com</span>;
+    return <span className="text-pink"> Runed.com</span>;
   };
   return (
     <div className="flex flex-col gap-2">
@@ -31,7 +31,7 @@ export default function News() {
         isDismissable={false}
         size="2xl"
       >
-        <ModalContent className="bg-bgColor-dark">
+        <ModalContent className="bg-black bg-opacity-90 backdrop-blur-[57px]">
           {(onClose) => (
             <>
               <ModalHeader className="flex gap-1">
@@ -39,7 +39,7 @@ export default function News() {
                 <span>Terms of Service (TOS)</span>
               </ModalHeader>
               <ModalBody>
-                <p className="text-lg font-bold text-orange">
+                <p className="text-lg font-bold text-pink">
                   WARNING: HIGH-RISK PLATFORM IN BETA
                 </p>
                 <p className="font-bold">
@@ -67,7 +67,7 @@ export default function News() {
 
                 <p className="font-bold text-xl">Terms of Service (TOS)</p>
                 <p>
-                  <span className="text-orange">1.</span> Acceptance of Risk By
+                  <span className="text-pink">1.</span> Acceptance of Risk By
                   accessing or using <Runedcom />, you acknowledge that the
                   platform is in a beta phase and subject to frequent changes,
                   errors, and disruptions. You accept full responsibility for
@@ -76,7 +76,7 @@ export default function News() {
                 </p>
 
                 <p>
-                  <span className="text-orange">2.</span> No Warranties
+                  <span className="text-pink">2.</span> No Warranties
                   <Runedcom /> is provided on an &quote;as-is&quote; basis
                   without warranties of any kind, whether express or implied.
                   There is no guarantee that the platform will function
@@ -87,7 +87,7 @@ export default function News() {
                 </p>
 
                 <p>
-                  <span className="text-orange">3.</span> No Liability for
+                  <span className="text-pink">3.</span> No Liability for
                   Losses We disclaim all liability for any financial or
                   asset-related losses incurred through the use of
                   <Runedcom />, including but not limited to losses resulting
@@ -98,7 +98,7 @@ export default function News() {
                 </p>
 
                 <p>
-                  <span className="text-orange">4.</span> Suspension of
+                  <span className="text-pink">4.</span> Suspension of
                   Activities <Runedcom /> reserves the right to suspend or
                   discontinue any activities or services at any time, for any
                   reason, without prior notice. This may include, but is not
@@ -107,7 +107,7 @@ export default function News() {
                 </p>
 
                 <p>
-                  <span className="text-orange">5.</span> Beta Testing
+                  <span className="text-pink">5.</span> Beta Testing
                   Environment and Testnet Availability
                   <Runedcom /> is an evolving platform subject to ongoing
                   development. Users may encounter operational errors, limited
@@ -119,7 +119,7 @@ export default function News() {
                 </p>
 
                 <p>
-                  <span className="text-orange">6.</span> Assumption of
+                  <span className="text-pink">6.</span> Assumption of
                   Financial Loss Due to the platform’s beta status, we advise
                   that users should expect financial losses. Proceed only if you
                   are fully prepared to accept these risks.
@@ -132,10 +132,11 @@ export default function News() {
 
                 <p>
                   <Checkbox
-                    color="warning"
+                    // color="warning"
+                    className="text-pink"
                     onChange={(e) => setIsSelected(e.target.checked)}
                   >
-                    <span className="text-orange">
+                    <span className="text-pink">
                       Accept these terms of service
                     </span>
                   </Checkbox>
@@ -143,7 +144,7 @@ export default function News() {
               </ModalBody>
               <ModalFooter>
                 <Button
-                  color="warning"
+                  // color="warning"
                   onClick={onClose}
                   className={`rounded-md ${
                     isSelected ? "text-white" : "text-bgColor-stroke"

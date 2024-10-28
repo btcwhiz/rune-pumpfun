@@ -19,7 +19,7 @@
 body {
   color: rgb(var(--foreground-rgb));
   background: linear-gradient(180deg, #3D1C3B 0%, #000000 54.7%);
-  color: #191336;
+  color: white;
   min-height: 100vh;
 }
 

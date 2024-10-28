@@ -255,7 +255,7 @@ export default function Home() {
 
   return (
     <main className="p-3 min-h-screen">
-      <div className="flex flex-col gap-12">
+      <div className="flex flex-col sm:gap-12 gap-0">
         <News />
         {/* --- Rune List --- */}
         <div className="flex flex-col gap-3 md:px-10 p-2">
@@ -323,7 +323,7 @@ export default function Home() {
             />
           </div>
           <div>
-            {selected === "all" && <div>Etched Runes</div>}
+            {selected === "all" && <div className="text-center sm:text-left mt-4">Etched Runes</div>}
             {selected === "pending" && <div>Pending Runes</div>}
             {selected === "waiting" && (
               <div>Waiting Runes To Transfer BTC For Etching Runes</div>
