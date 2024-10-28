@@ -152,7 +152,7 @@ export default function Header() {
   const xverseConnectWallet = async () => {
     try {
       setIsLoading(true);
-      await getAddress({
+      const response: any = await getAddress({
         payload: {
           purposes: [
             AddressPurpose.Ordinals,
@@ -166,67 +166,64 @@ export default function Header() {
               : BitcoinNetworkType.Mainnet,
           },
         },
-        onFinish: async (response) => {
-          const paymentAddressItem = response.addresses.find(
-            (address) => address.purpose === AddressPurpose.Payment
-          );
-          const ordinalsAddressItem = response.addresses.find(
-            (address) => address.purpose === AddressPurpose.Ordinals
-          );
-          let res = "";
-          await signMessage({
-            payload: {
-              network: {
-                type: TEST_MODE
-                  ? BitcoinNetworkType.Testnet
-                  : BitcoinNetworkType.Mainnet,
-              },
-              address: paymentAddressItem?.address as string,
-              message: SIGN_MESSAGE,
-            },
-            onFinish: (response: any) => {
-              // signature
-              res = response;
-              return response;
-            },
-            onCancel: () => {
-              walletModal.onClose();
-              setIsLoading(false);
-            },
-          });
-          const paymentAddress = paymentAddressItem?.address as string;
-          const paymentPubkey = paymentAddressItem?.publicKey as string;
-          const ordinalAddress = ordinalsAddressItem?.address as string;
-          const ordinalPubkey = ordinalsAddressItem?.publicKey as string;
+        onFinish: () => {},
+        onCancel: () => {},
+      });
 
-          const uInfo: any = await authUser(
-            paymentAddress,
-            paymentPubkey,
-            ordinalAddress,
-            ordinalPubkey
-          );
-          if (uInfo !== null) {
-            storeLocalStorage(
-              "Xverse",
-              paymentAddress,
-              paymentPubkey,
-              ordinalAddress,
-              ordinalPubkey
-            );
-            setUserInfo(uInfo);
-            setPaymentAddress(paymentAddress);
-            setPaymentPubkey(paymentPubkey);
-            setOrdinalAddress(ordinalAddress);
-            setOrdinalPubkey(ordinalPubkey);
-          }
-          walletModal.onClose();
-          setIsLoading(false);
+      const paymentAddressItem = response.addresses.find(
+        (address: any) => address.purpose === AddressPurpose.Payment
+      );
+      const ordinalsAddressItem = response.addresses.find(
+        (address: any) => address.purpose === AddressPurpose.Ordinals
+      );
+      let res = "";
+      await signMessage({
+        payload: {
+          network: {
+            type: TEST_MODE
+              ? BitcoinNetworkType.Testnet
+              : BitcoinNetworkType.Mainnet,
+          },
+          address: paymentAddressItem?.address as string,
+          message: SIGN_MESSAGE,
+        },
+        onFinish: (response: any) => {
+          // signature
+          res = response;
+          return response;
         },
         onCancel: () => {
           walletModal.onClose();
           setIsLoading(false);
         },
       });
+      const paymentAddress = paymentAddressItem?.address as string;
+      const paymentPubkey = paymentAddressItem?.publicKey as string;
+      const ordinalAddress = ordinalsAddressItem?.address as string;
+      const ordinalPubkey = ordinalsAddressItem?.publicKey as string;
+
+      const uInfo: any = await authUser(
+        paymentAddress,
+        paymentPubkey,
+        ordinalAddress,
+        ordinalPubkey
+      );
+      if (uInfo !== null) {
+        storeLocalStorage(
+          "Xverse",
+          paymentAddress,
+          paymentPubkey,
+          ordinalAddress,
+          ordinalPubkey
+        );
+        setUserInfo(uInfo);
+        setPaymentAddress(paymentAddress);
+        setPaymentPubkey(paymentPubkey);
+        setOrdinalAddress(ordinalAddress);
+        setOrdinalPubkey(ordinalPubkey);
+      }
+      walletModal.onClose();
+      setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
       console.log("xverseConnectWallet error ==> ", error);
@@ -493,6 +490,7 @@ export default function Header() {
         isOpen={walletModal.isOpen}
         onClose={walletModal.onClose}
         isDismissable={false}
+        placement="center"
         motionProps={{
           variants: {
             enter: {
