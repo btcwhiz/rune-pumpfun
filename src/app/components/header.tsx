@@ -46,16 +46,16 @@ const links = [
     link: "/create",
     icon: <FaPlus />,
   },
-  {
-    label: "Swap",
-    link: "/swap",
-    icon: <AiOutlineSwap />,
-  },
-  {
-    label: "Pools",
-    link: "/pools",
-    icon: <GrMoney />,
-  },
+  // {
+  //   label: "Swap",
+  //   link: "/swap",
+  //   icon: <AiOutlineSwap />,
+  // },
+  // {
+  //   label: "Pools",
+  //   link: "/pools",
+  //   icon: <GrMoney />,
+  // },
 ];
 
 export default function Header() {
@@ -123,13 +123,13 @@ export default function Header() {
           if (network != (TEST_MODE ? "testnet" : "livenet")) {
             await unisat.switchNetwork(TEST_MODE ? "testnet" : "livenet");
           }
-          setIsLoading(true);
           const accounts = await unisat.requestAccounts();
           const address = accounts[0];
           const pubKey = await unisat.getPublicKey();
-          let res = await unisat.signMessage(SIGN_MESSAGE);
-          console.log("res :>> ", res);
+          await unisat.signMessage(SIGN_MESSAGE);
+          setIsLoading(true);
           const uInfo: any = await authUser(address, pubKey, address, pubKey);
+          console.log("uInfo :>> ", uInfo);
           storeLocalStorage("Unisat", address, pubKey, address, pubKey);
           setUserInfo(uInfo);
           setPaymentAddress(address);
@@ -151,8 +151,7 @@ export default function Header() {
   // Xverse Connect
   const xverseConnectWallet = async () => {
     try {
-      setIsLoading(true);
-      await getAddress({
+      const response: any = await getAddress({
         payload: {
           purposes: [
             AddressPurpose.Ordinals,
@@ -166,42 +165,50 @@ export default function Header() {
               : BitcoinNetworkType.Mainnet,
           },
         },
-        onFinish: async (response) => {
-          const paymentAddressItem = response.addresses.find(
-            (address) => address.purpose === AddressPurpose.Payment
-          );
-          const ordinalsAddressItem = response.addresses.find(
-            (address) => address.purpose === AddressPurpose.Ordinals
-          );
-          let res = "";
-          await signMessage({
-            payload: {
-              network: {
-                type: TEST_MODE
-                  ? BitcoinNetworkType.Testnet
-                  : BitcoinNetworkType.Mainnet,
-              },
-              address: paymentAddressItem?.address as string,
-              message: SIGN_MESSAGE,
-            },
-            onFinish: (response: any) => {
-              // signature
-              res = response;
-              return response;
-            },
-            onCancel: () => toast.error("Canceled"),
-          });
-          const paymentAddress = paymentAddressItem?.address as string;
-          const paymentPubkey = paymentAddressItem?.publicKey as string;
-          const ordinalAddress = ordinalsAddressItem?.address as string;
-          const ordinalPubkey = ordinalsAddressItem?.publicKey as string;
+        onFinish: () => {},
+        onCancel: () => {},
+      });
 
-          const uInfo: any = await authUser(
-            paymentAddress,
-            paymentPubkey,
-            ordinalAddress,
-            ordinalPubkey
-          );
+      const paymentAddressItem = response.addresses.find(
+        (address: any) => address.purpose === AddressPurpose.Payment
+      );
+      const ordinalsAddressItem = response.addresses.find(
+        (address: any) => address.purpose === AddressPurpose.Ordinals
+      );
+      let res = "";
+      await signMessage({
+        payload: {
+          network: {
+            type: TEST_MODE
+              ? BitcoinNetworkType.Testnet
+              : BitcoinNetworkType.Mainnet,
+          },
+          address: paymentAddressItem?.address as string,
+          message: SIGN_MESSAGE,
+        },
+        onFinish: (response: any) => {
+          // signature
+          res = response;
+          return response;
+        },
+        onCancel: () => {
+          walletModal.onClose();
+          setIsLoading(false);
+        },
+      });
+      const paymentAddress = paymentAddressItem?.address as string;
+      const paymentPubkey = paymentAddressItem?.publicKey as string;
+      const ordinalAddress = ordinalsAddressItem?.address as string;
+      const ordinalPubkey = ordinalsAddressItem?.publicKey as string;
+      if (paymentAddress) {
+        setIsLoading(true);
+        const uInfo: any = await authUser(
+          paymentAddress,
+          paymentPubkey,
+          ordinalAddress,
+          ordinalPubkey
+        );
+        if (uInfo !== null) {
           storeLocalStorage(
             "Xverse",
             paymentAddress,
@@ -214,11 +221,10 @@ export default function Header() {
           setPaymentPubkey(paymentPubkey);
           setOrdinalAddress(ordinalAddress);
           setOrdinalPubkey(ordinalPubkey);
-          walletModal.onClose();
-          setIsLoading(false);
-        },
-        onCancel: () => toast.error("You canceled the wallet connect"),
-      });
+        }
+      }
+      walletModal.onClose();
+      setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
       console.log("xverseConnectWallet error ==> ", error);
@@ -486,7 +492,7 @@ export default function Header() {
             variant="ghost"
             endContent={<IoIosLink />}
           >
-            {TEST_MODE ? "Mainnet": "Testnet"}
+            {TEST_MODE ? "Mainnet" : "Testnet"}
           </Button>
         </div>
       </div>
@@ -495,6 +501,8 @@ export default function Header() {
         backdrop="blur"
         isOpen={walletModal.isOpen}
         onClose={walletModal.onClose}
+        isDismissable={false}
+        placement="center"
         motionProps={{
           variants: {
             enter: {

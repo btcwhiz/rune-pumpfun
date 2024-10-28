@@ -10,6 +10,7 @@ import { SATS_MULTIPLE } from "./config/config";
 import { calcProgress } from "./utils/util";
 import { TfiReload } from "react-icons/tfi";
 import { SearchIcon } from "./components/icons/SearchIcon";
+import News from "./components/News";
 
 export default function Home() {
   const [runes, setRunes] = useState<any[]>([]);
@@ -255,6 +256,7 @@ export default function Home() {
   return (
     <main className="p-2 min-h-screen">
       <div className="flex flex-col gap-3">
+        <News />
         {/* --- Rune List --- */}
         <div className="flex flex-col gap-3 md:px-10 p-2">
           <div className="flex justify-center md:justify-between items-center flex-col gap-2 sm:flex-row">

@@ -33,6 +33,7 @@ import { XverseSignPsbt } from "../utils/transaction";
 import { BTCImg, ImgStr } from "../config/imageStrings";
 
 export default function Page() {
+  return <></>;
   const { socket, isConnected } = useSocket();
   const { userInfo } = useContext(MainContext);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();

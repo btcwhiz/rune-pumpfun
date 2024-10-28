@@ -31,6 +31,7 @@ import { XverseSignPsbt } from "../utils/transaction";
 import { BTCImg, ImgStr } from "../config/imageStrings";
 
 export default function Page() {
+  return <></>;
   const { socket, isConnected } = useSocket();
   const { userInfo } = useContext(MainContext);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -99,14 +100,17 @@ export default function Page() {
         } else {
           signedPsbt = await (window as any).unisat.signPsbt(psbtHex);
         }
-        // console.log("signedPsbt :>> ", signedPsbt);
-        const { success } = await swapToken(
-          pendingSwapId,
-          feeId,
-          signedPsbt,
-          storedWallet.type
-        );
-        if (success) toast.success("Success, please wait while tx confirming");
+        if (signedPsbt) {
+          // console.log("signedPsbt :>> ", signedPsbt);
+          const { success } = await swapToken(
+            pendingSwapId,
+            feeId,
+            signedPsbt,
+            storedWallet.type
+          );
+          if (success)
+            toast.success("Success, please wait while tx confirming");
+        }
       }
       setIsLoading(false);
     } catch (error) {
