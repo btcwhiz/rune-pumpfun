@@ -254,28 +254,42 @@ export default function Home() {
   };
 
   return (
-    <main className="p-2 min-h-screen">
-      <div className="flex flex-col gap-3">
+    <main className="p-3 min-h-screen">
+      <div className="flex flex-col gap-12">
         <News />
         {/* --- Rune List --- */}
         <div className="flex flex-col gap-3 md:px-10 p-2">
-          <div className="flex justify-center md:justify-between items-center flex-col gap-2 sm:flex-row">
-            <div className="flex items-center flex-wrap gap-3 justify-center sm:justify-normal">
+          <div className="flex justify-center md:justify-between items-center flex-col gap-6 sm:flex-row">
+            <div className="flex items-center flex-wrap gap-8 justify-center sm:justify-normal">
               <Tabs
-                aria-label="Options"
-                color="warning"
-                variant="underlined"
-                selectedKey={selected}
-                onSelectionChange={(tab) => handleTabChange(tab as string)}
-              >
-                <Tab key="all" title="Runes"></Tab>
-                <Tab key="pending" title="Pending"></Tab>
+            aria-label="Options"
+            variant="underlined"
+            selectedKey={selected}
+            onSelectionChange={(tab) => handleTabChange(tab as string)}
+            classNames={{
+              tabList: "gap-6 w-full relative rounded-none p-0 border-b border-bgColor-stroke",
+              cursor: "w-full bg-pink",
+              tab: "max-w-fit px-0 h-12",
+              tabContent: "group-data-[selected=true]:text-white"
+            }}>
+  <Tab 
+    key="all" 
+    title={
+      <span className="group-data-[selected=true]:text-white">Runes</span>
+    }
+  />
+  <Tab 
+    key="pending" 
+    title={
+      <span className="group-data-[selected=true]:text-white">Pending Runes</span>
+    }
+  />
                 <Tab key="waiting" title="Waiting"></Tab>
               </Tabs>
               <Button
-                color="warning"
+                // color="warning"
                 onClick={() => getRunes()}
-                className="rounded-full text-white"
+                className="rounded-full text-pink"
                 isIconOnly
                 variant="flat"
               >
@@ -283,32 +297,28 @@ export default function Home() {
               </Button>
             </div>
             <Input
-              label="Search"
-              color="warning"
+              // label="Search"
+              // color="warning"
               // isClearable
               radius="lg"
               value={searchKey}
               onChange={(e) => handleSearchKeyChange(e.target.value as string)}
-              className="w-60"
+              className="w-1/3 min-w-[300px] h-[50px] bg-[rgba(234,234,234,0.2)] rounded-md flex-grow-0 z-0"
               classNames={{
-                label: "text-black/50 dark:text-white/90",
-                input: [
-                  "bg-bgColor-dark",
-                  "hover:border-warning",
-                  "!placeholder:text-placeHolder",
-                ],
-                innerWrapper: "bg-transparent",
-                inputWrapper: [
-                  "!bg-bgColor-dark",
-                  "!hover:bg-bgColor-stroke",
-                  "border-2",
-                  "border-bgColor-stroke",
-                  "hover:border-bgColor-stroke",
-                ],
+                base: "max-w-full",
+                mainWrapper: "h-full",
+                input: "text-[#EAEAEA] font-arial font-normal text-base leading-[17px] tracking-[-0.32px]",
+                inputWrapper: "h-full bg-transparent hover:bg-transparent",
               }}
-              placeholder="Type to search..."
+
               startContent={
-                <SearchIcon className="text-black/50 mb-0.5 dark:text-white/90 text-slate-400 pointer-events-none flex-shrink-0" />
+                <div className="flex items-center gap-2.5 mb-0">
+                <SearchIcon className="w-[18px] h-[18px] text-[#EAEAEA]" />
+                <span className="text-[#EAEAEA] font-arial font-normal text-base leading-[17px] tracking-[-0.32px]">
+                  Search
+                </span>
+              </div>
+             
               }
             />
           </div>
