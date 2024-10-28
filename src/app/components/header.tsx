@@ -345,7 +345,7 @@ export default function Header() {
   ];
 
   return (
-    <div className="z-10 p-4 sm:px-12 border-b-0 border-bgColor-stroke w-full font-mono text-sm">
+<div className="z-10 p-4 sm:px-12 border-b-0 border-bgColor-stroke w-full font-mono text-sm">
       <div className="flex flex-wrap justify-center md:justify-between items-center bg-gradient-to-t dark:from-black dark:via-black lg:bg-none w-full lg:size-auto">
         
       <div className="flex items-center">
@@ -357,7 +357,6 @@ export default function Header() {
             className="mr-4" // Add margin to the right of the image
           />
         </div>
-        
         <div className="flex flex-wrap justify-center items-center gap-3">
           {links.map((item, index) => (
             <div key={index}>
@@ -366,23 +365,23 @@ export default function Header() {
                 as={Link}
                 className={`${
                   item.link === path
-                    ? "border-warning border-b text-warning"
-                    : "text-white"
-                } rounded-none items-center sm:gap-2 sm:h-16 hidden sm:flex`}
-                color="warning"
-                variant="light"
-              >
-                {item.icon}
-                <span>{item.label}</span>
-              </Button>
-              <Button
-                href={item.link}
-                as={Link}
-                className={`${
-                  item.link === path
-                    ? "border-warning border-b text-warning"
-                    : "text-white"
-                } rounded-none flex sm:hidden items-center sm:gap-2 sm:h-16`}
+                  ? "border-pink border-b-3  text-white"
+                  : "text-white"
+              } rounded-none items-center sm:gap-2 sm:h-16 hidden sm:flex`}
+              // color="warning"
+              variant="light"
+            >
+              {item.icon}
+              <span>{item.label}</span>
+            </Button>
+            <Button
+              href={item.link}
+              as={Link}
+              className={`${
+                item.link === path
+                  ? "border-pink border-b-3  text-pink"
+                  : "text-white"
+              } rounded-none flex sm:hidden items-center sm:gap-2 sm:h-16`}
                 color="warning"
                 variant="light"
                 isIconOnly
@@ -472,24 +471,24 @@ export default function Header() {
               </div>
             ) : (
               <Button
-                color="warning"
-                // onClick={() => handleConnectWallet()}
-                onClick={() => {
-                  walletModal.onOpen();
-                }}
-                className="rounded-md text-white"
-                variant="flat"
-              >
-                Connect Wallet
-              </Button>
+              // color="warning"
+              // onClick={() => handleConnectWallet()}
+              onClick={() => {
+                walletModal.onOpen();
+              }}
+              className="rounded-md text-white bg-pink"
+              variant="flat"
+            >
+              Connect Wallet
+            </Button>
             )}
           </div>
           <Button
             href={TEST_MODE ? BETA_URL : TEST_URL}
             as={Link}
             color="warning"
-            className="rounded-md text-white"
-            variant="ghost"
+            className="rounded-md text-white border-2 border-white bg-transparent hover-text-black"
+           
             endContent={<IoIosLink />}
           >
             {TEST_MODE ? "Mainnet" : "Testnet"}
