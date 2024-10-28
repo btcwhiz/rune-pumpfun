@@ -189,7 +189,10 @@ export default function Header() {
               res = response;
               return response;
             },
-            onCancel: () => toast.error("Canceled"),
+            onCancel: () => {
+              walletModal.onClose();
+              setIsLoading(false);
+            },
           });
           const paymentAddress = paymentAddressItem?.address as string;
           const paymentPubkey = paymentAddressItem?.publicKey as string;
@@ -202,22 +205,27 @@ export default function Header() {
             ordinalAddress,
             ordinalPubkey
           );
-          storeLocalStorage(
-            "Xverse",
-            paymentAddress,
-            paymentPubkey,
-            ordinalAddress,
-            ordinalPubkey
-          );
-          setUserInfo(uInfo);
-          setPaymentAddress(paymentAddress);
-          setPaymentPubkey(paymentPubkey);
-          setOrdinalAddress(ordinalAddress);
-          setOrdinalPubkey(ordinalPubkey);
+          if (uInfo !== null) {
+            storeLocalStorage(
+              "Xverse",
+              paymentAddress,
+              paymentPubkey,
+              ordinalAddress,
+              ordinalPubkey
+            );
+            setUserInfo(uInfo);
+            setPaymentAddress(paymentAddress);
+            setPaymentPubkey(paymentPubkey);
+            setOrdinalAddress(ordinalAddress);
+            setOrdinalPubkey(ordinalPubkey);
+          }
           walletModal.onClose();
           setIsLoading(false);
         },
-        onCancel: () => toast.error("You canceled the wallet connect"),
+        onCancel: () => {
+          walletModal.onClose();
+          setIsLoading(false);
+        },
       });
     } catch (error) {
       setIsLoading(false);

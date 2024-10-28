@@ -82,6 +82,7 @@ export default function CreateRune() {
         }
         setLoading(false);
       } else {
+        setLoading(false);
         return toast.error("Please connect wallet");
       }
     } catch (error) {
@@ -115,15 +116,16 @@ export default function CreateRune() {
             } else {
               signedPsbt = await unisatSignPsbt(preWithdrawRes?.psbt);
             }
-
-            const withdrawRes = await withdrawFunc(
-              userInfo.userId,
-              runeId,
-              withdrawAmount,
-              preWithdrawRes.requestId,
-              signedPsbt
-            );
-            toast.success(withdrawRes.msg);
+            if (signedPsbt) {
+              const withdrawRes = await withdrawFunc(
+                userInfo.userId,
+                runeId,
+                withdrawAmount,
+                preWithdrawRes.requestId,
+                signedPsbt
+              );
+              toast.success(withdrawRes.msg);
+            }
           } else {
             const withdrawRes = await withdrawFunc(
               userInfo.userId,

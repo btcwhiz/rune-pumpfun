@@ -30,7 +30,7 @@ export const XverseSignPsbt = async (psbtHex: string, inputsToSign: any) => {
       signedPSBT = psbt.toHex();
       txId = response.txId;
     },
-    onCancel: () => toast.error("Canceled"),
+    onCancel: () => {},
   };
 
   await signTransaction(signPsbtOptions);

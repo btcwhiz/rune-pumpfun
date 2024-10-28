@@ -135,15 +135,17 @@ export default function CreateRune() {
         } else {
           signedPsbt = await unisatSignPsbt(etchingPsbt.psbt);
         }
-        const { status, msg } = await etchingRuneFunc(
-          userInfo.userId,
-          signedPsbt,
-          waitEtchingData.waitEtchingId,
-          etchingPsbt.requestId
-        );
+        if (signedPsbt) {
+          const { status, msg } = await etchingRuneFunc(
+            userInfo.userId,
+            signedPsbt,
+            waitEtchingData.waitEtchingId,
+            etchingPsbt.requestId
+          );
 
-        if (status) {
-          toast.success(msg);
+          if (status) {
+            toast.success(msg);
+          }
         }
       }
       setImageData(null);

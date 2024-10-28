@@ -110,7 +110,7 @@ export default function CreateRune() {
 
   const handlePreBuy = async () => {
     try {
-      if (userInfo.userId && runeId) {
+      if (userInfo?.userId && runeId) {
         if (target === false && !btcAmount) {
           return toast.error("Please input BTC amount");
         } else if (target === true && !buyRuneAmount) {
@@ -118,7 +118,7 @@ export default function CreateRune() {
         }
         setLoading(true);
         const res = await pumpPreBuyFunc(
-          userInfo.userId,
+          userInfo?.userId,
           runeId,
           btcAmount,
           buyRuneAmount,
@@ -150,7 +150,7 @@ export default function CreateRune() {
   const handleBuy = async () => {
     try {
       if (
-        userInfo.userId &&
+        userInfo?.userId &&
         runeId &&
         estimatePrice &&
         slippage &&
@@ -183,7 +183,7 @@ export default function CreateRune() {
           signedPsbt = await unisatSignPsbt(buyPsbtData?.psbt);
         }
         const res = await pumpBuyFunc(
-          userInfo.userId,
+          userInfo?.userId,
           runeId,
           runeAmount,
           btcPrice,
@@ -199,7 +199,7 @@ export default function CreateRune() {
         setLoading(false);
         getRuneBalanceFunc();
         if (socket && isConnected) {
-          socket.emit("update-user", { userId: userInfo.userId });
+          socket.emit("update-user", { userId: userInfo?.userId });
         }
       } else {
         return toast.error("Please connect wallet");
@@ -214,10 +214,10 @@ export default function CreateRune() {
 
   const handlePreSell = async () => {
     try {
-      if (userInfo.userId && runeId && sellRuneAmount) {
+      if (userInfo?.userId && runeId && sellRuneAmount) {
         setLoading(true);
         const res = await pumpPreSellFunc(
-          userInfo.userId,
+          userInfo?.userId,
           runeId,
           sellRuneAmount,
           slippage
@@ -243,7 +243,7 @@ export default function CreateRune() {
   const handleSell = async () => {
     try {
       if (
-        userInfo.userId &&
+        userInfo?.userId &&
         runeId &&
         sellRuneAmount &&
         slippage &&
@@ -266,7 +266,7 @@ export default function CreateRune() {
                   ? BitcoinNetworkType.Testnet
                   : BitcoinNetworkType.Mainnet,
               },
-              address: userInfo.paymentAddress as string,
+              address: userInfo?.paymentAddress as string,
               message: message,
             },
             onFinish: (response: any) => {
@@ -281,7 +281,7 @@ export default function CreateRune() {
         }
         if (signature) {
           const res = await pumpSellFunc(
-            userInfo.userId,
+            userInfo?.userId,
             runeId,
             sellRuneAmount,
             estimatePrice,
@@ -296,7 +296,7 @@ export default function CreateRune() {
             initialize();
             getRuneBalanceFunc();
             if (socket) {
-              socket.emit("update-user", { userId: userInfo.userId });
+              socket.emit("update-user", { userId: userInfo?.userId });
             }
           }
         }
@@ -315,12 +315,12 @@ export default function CreateRune() {
 
   const handleBurn = async () => {
     try {
-      if (userInfo.userId && runeId && burnRuneAmount) {
+      if (userInfo?.userId && runeId && burnRuneAmount) {
         setLoading(true);
         const storedWallet = getWallet();
         const burnResponse = await preBurn(
           runeId,
-          userInfo.userId,
+          userInfo?.userId,
           burnRuneAmount,
           storedWallet.type
         );
@@ -428,14 +428,14 @@ export default function CreateRune() {
 
   const getRuneBalanceFunc = async () => {
     try {
-      const rBalance = await getRuneBalance(userInfo.userId, runeId);
+      const rBalance = await getRuneBalance(userInfo?.userId, runeId);
       setRuneBalance(rBalance.balance);
       setAvailableBurn(rBalance.availableBurn);
     } catch (error) {}
   };
 
   useEffect(() => {
-    userInfo.userId && runeId && getRuneBalanceFunc();
+    userInfo?.userId && runeId && getRuneBalanceFunc();
     // eslint-disable-next-line
   }, [userInfo, runeId]);
 
@@ -602,7 +602,7 @@ export default function CreateRune() {
                       ? "Owner "
                       : ""
                   } ${
-                    item.ordinalAddress == userInfo.ordinalAddress ? "You" : ""
+                    item.ordinalAddress == userInfo?.ordinalAddress ? "You" : ""
                   }`}
                 </Link>
                 <div>
