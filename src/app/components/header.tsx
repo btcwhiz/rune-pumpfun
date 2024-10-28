@@ -123,11 +123,11 @@ export default function Header() {
           if (network != (TEST_MODE ? "testnet" : "livenet")) {
             await unisat.switchNetwork(TEST_MODE ? "testnet" : "livenet");
           }
-          setIsLoading(true);
           const accounts = await unisat.requestAccounts();
           const address = accounts[0];
           const pubKey = await unisat.getPublicKey();
           await unisat.signMessage(SIGN_MESSAGE);
+          setIsLoading(true);
           const uInfo: any = await authUser(address, pubKey, address, pubKey);
           console.log("uInfo :>> ", uInfo);
           storeLocalStorage("Unisat", address, pubKey, address, pubKey);
