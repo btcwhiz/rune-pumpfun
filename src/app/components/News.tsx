@@ -29,6 +29,7 @@ export default function News() {
         onOpenChange={onOpenChange}
         scrollBehavior={"inside"}
         isDismissable={false}
+        size="2xl"
       >
         <ModalContent className="bg-bgColor-dark">
           {(onClose) => (
@@ -76,13 +77,13 @@ export default function News() {
 
                 <p>
                   <span className="text-orange">2.</span> No Warranties
-                  <Runedcom /> is provided on an &quote;as-is&quote; basis without
-                  warranties of any kind, whether express or implied. There is
-                  no guarantee that the platform will function error-free or
-                  that its use will be safe. <Runedcom /> is currently untested
-                  by third parties, and we offer no assurances regarding the
-                  security, reliability, or accuracy of any transactions made on
-                  the platform.
+                  <Runedcom /> is provided on an &quote;as-is&quote; basis
+                  without warranties of any kind, whether express or implied.
+                  There is no guarantee that the platform will function
+                  error-free or that its use will be safe. <Runedcom /> is
+                  currently untested by third parties, and we offer no
+                  assurances regarding the security, reliability, or accuracy of
+                  any transactions made on the platform.
                 </p>
 
                 <p>
@@ -144,7 +145,9 @@ export default function News() {
                 <Button
                   color="warning"
                   onClick={onClose}
-                  className="rounded-md text-white"
+                  className={`rounded-md ${
+                    isSelected ? "text-white" : "text-bgColor-stroke"
+                  }`}
                   variant="flat"
                   disabled={!isSelected}
                 >
