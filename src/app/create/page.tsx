@@ -259,10 +259,10 @@ export default function CreateRune() {
           )} for etching`}</div>
         )}
         <Button
-          color="warning"
+          // color="warning"
           onClick={() => handleEtchingRune()}
           isLoading={loading}
-          className="text-white"
+          className="text-white background-pink"
         >
           Etching
         </Button>
