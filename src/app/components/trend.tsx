@@ -58,9 +58,9 @@ export default function Trend() {
   }, [socket, isConnected]);
 
   return (
-    <div className="z-10 p-2 w-full font-mono text-sm flex gap-8 px-12">
+    <div className="z-10 p-1 w-full font-mono text-sm flex flex-col md:flex-row gap-8 px-5 md:px-10">
       {newTrade?.profileId && (
-        <Bounce key={newTrade.key} delay={500} triggerOnce={true} className="w-1/2">
+        <Bounce key={newTrade.key} delay={500} triggerOnce={true} className="w-full md:w-1/2">
           <div className="w-full flex justify-center">
             <div className="flex gap-1 justify-between items-center gap-2 h-20 px-4 bg-[#ffffff] p-3 rounded-xl w-full">
               <div className="rounded-lg overflow-hidden">
@@ -104,7 +104,7 @@ export default function Trend() {
         </Bounce>
       )}
       {newRune?.profileId && (
-        <Bounce key={newRune.key} delay={500} triggerOnce={true} className="w-1/2">
+        <Bounce key={newRune.key} delay={500} triggerOnce={true} className="w-full md:w-1/2">
           <div className="w-full flex justify-center">
             <div className="flex gap-1 justify-between items-center gap-2 h-20 px-4 bg-[rgba(234,234,234,0.1)] p-3 rounded-xl w-full">
               <div className="rounded-lg overflow-hidden">
