@@ -630,11 +630,10 @@ export default function CreateRune() {
                 <div className="flex items-center gap-2">
                   <div>
                     <span>Ticker: </span>
-                    <span className="text-pink">{runeInfo.runeName}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span>Marketcap: </span>
-                    <div className="text-pink">
+                    <div className="text-green">
                       {`${displayBtc(
                         runeInfo.runeAmount *
                           (runeInfo.pool / runeInfo.remainAmount)
@@ -645,7 +644,7 @@ export default function CreateRune() {
                 <div>
                   <div className="flex items-center gap-2">
                     <span>Created by</span>
-                    <span className="text-pink">
+                    <span className="text-orange">
                       {`${
                         runeInfo.creatorAddress &&
                         runeInfo.creatorAddress.slice(0, 5)
@@ -665,14 +664,16 @@ export default function CreateRune() {
                 <Card className="border-2 bg-bgColor-ghost border-bgColor-stroke text-white">
                   <CardBody className="flex flex-col gap-3">
                     {/* Buy */}
-                    <div className="flex justify-around">
+                    {/* Your Balance */}
+                    <div className="flex flex-row justify-between text-black ">
                       <div>Your balance</div>
                       <div>{runeBalance}</div>
                     </div>
                     <div className="flex flex-col gap-3">
                       <div className="flex flex-col gap-3">
+                        {/* //Switch to BTC */}
                         <Button
-                          color="warning"
+                          className="text-black"
                           variant="flat"
                           onClick={() => {
                             setBuyFlag(false);
@@ -687,11 +688,11 @@ export default function CreateRune() {
                           <Input
                             type="text"
                             label="Rune Amount"
-                            color="warning"
+                           className="text-red"
                             classNames={{
                               input: [
                                 "bg-bgColor-dark",
-                                "hover:border-warning",
+                                "hover:border-pink",
                                 "!placeholder:text-placeHolder",
                               ],
                               inputWrapper: [
@@ -712,7 +713,8 @@ export default function CreateRune() {
                             endContent={
                               <div className="flex justify-center items-center">
                                 <Button
-                                  color="warning"
+                                  className="color-purple 
+                                   text-white" // Change to your desired background color"
                                   variant="flat"
                                   onClick={() => handleMaxAmount(target)}
                                 >
@@ -725,7 +727,7 @@ export default function CreateRune() {
                           <Input
                             type="text"
                             label="BTC Amount"
-                            color="warning"
+                            className="text-black"
                             classNames={InputStyles}
                             value={btcAmount}
                             disabled={loading}
@@ -749,7 +751,7 @@ export default function CreateRune() {
                           label="Slippage (%)"
                           value={`${slippage}`}
                           disabled={loading}
-                          color="warning"
+                          className="text-orange"
                           classNames={InputStyles}
                           min={0}
                           onChange={(e) => {
@@ -767,7 +769,7 @@ export default function CreateRune() {
                                   } btc`}
                             </div>
                             <Button
-                              color="warning"
+                              className="text-green"
                               variant="flat"
                               onClick={() => handleBuy()}
                               isLoading={loading}
@@ -777,7 +779,7 @@ export default function CreateRune() {
                           </div>
                         ) : (
                           <Button
-                            color="warning"
+                            className="text-white bg-pink"
                             variant="flat"
                             onClick={() => handlePreBuy()}
                             isLoading={loading}
@@ -931,7 +933,7 @@ export default function CreateRune() {
                       <div className="flex flex-col gap-3">
                         <div className="flex flex-col gap-3">
                           <Button
-                            color="warning"
+                            className="text-black"
                             variant="flat"
                             onClick={() => {
                               setBuyFlag(false);
@@ -971,7 +973,7 @@ export default function CreateRune() {
                               endContent={
                                 <div className="flex justify-center items-center">
                                   <Button
-                                    color="warning"
+                                    className="text-pink"
                                     variant="flat"
                                     onClick={() => handleMaxAmount(target)}
                                   >
@@ -1073,7 +1075,7 @@ export default function CreateRune() {
                           <Input
                             type="text"
                             label="Sell Rune Amount"
-                            color="warning"
+                            className="text-white"
                             classNames={InputStyles}
                             value={sellRuneAmount}
                             disabled={loading}
