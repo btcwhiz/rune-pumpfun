@@ -630,11 +630,11 @@ export default function CreateRune() {
                 <div className="flex items-center gap-2">
                   <div>
                     <span>Ticker: </span>
-                    <span className="text-warning">{runeInfo.runeName}</span>
+                    <span className="text-pink">{runeInfo.runeName}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span>Marketcap: </span>
-                    <div className="text-warning">
+                    <div className="text-pink">
                       {`${displayBtc(
                         runeInfo.runeAmount *
                           (runeInfo.pool / runeInfo.remainAmount)
@@ -645,7 +645,7 @@ export default function CreateRune() {
                 <div>
                   <div className="flex items-center gap-2">
                     <span>Created by</span>
-                    <span className="text-warning">
+                    <span className="text-pink">
                       {`${
                         runeInfo.creatorAddress &&
                         runeInfo.creatorAddress.slice(0, 5)

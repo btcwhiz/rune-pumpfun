@@ -21,6 +21,7 @@ const config: Config = {
       transparent: "transparent",
       current: "currentColor",
       white: "#ffffff",
+      black:"#000000",
       orange: "#F68615",
       purple: "#3f3cbb",
       midnight: "#121063",

@@ -172,7 +172,7 @@ export default function Home() {
 
     return (
 <Card className="relative box-border flex flex-col p-3 gap-4 bg-[rgba(234,234,234,0.1)] rounded-lg border border-bgColor-stroke text-primary-50">
-  <CardBody className="flex flex-col justify-between p-10">
+  <CardBody className="flex flex-col justify-between p-5">
     {selected === "pending" && (
       <div className="flex justify-between items-center gap-2 text-small">
         <span className="pl-2 flex gap-1">
@@ -225,19 +225,19 @@ export default function Home() {
       </div>
 
       <div className="rounded p-2 h-[auto] overflow-hidden">
-        <p className="text-white text-xs leading-tight">
+        <p className="text-xs leading-tight">
           {item.runeDescription}
         </p>
       </div>
 
-      <div className="flex justify-between mt-0">
-        <button className="bg-[#99E591] text-black text-[10px] rounded w-[96px] h-[35px]">
+      <div className="flex justify-between mt-0 gap-2"> 
+        <button className="bg-[#99E591] text-[#000000] leading-[1.1] text-[10px] rounded w-[96px] h-[35px]">
           Remain: {item.remainAmount}
         </button>
-        <button className="bg-[#91DEE5] text-black text-[10px] rounded w-[96px] h-[35px]">
+        <button className="bg-[#91DEE5] text-[#000000] text-[10px] leading-[1.1] rounded w-[96px] h-[35px]">
           Price: {(item.pool / item.remainAmount).toFixed(5)}
         </button>
-        <button className="bg-[#E591DD] text-black text-[10px] rounded w-[96px] h-[35px]">
+        <button className="bg-[#E591DD] text-[#000000] leading-[1.1] text-[10px] rounded w-[96px] h-[35px]">
           Cap: {((item.runeAmount * (item.pool / item.remainAmount)) / SATS_MULTIPLE).toFixed(5)}
         </button>
       </div>
@@ -254,7 +254,7 @@ export default function Home() {
   };
 
   return (
-    <main className="p-3 min-h-screen">
+    <main className="p-3 pt-0 min-h-screen">
       <div className="flex flex-col sm:gap-12 gap-0">
         <News />
         {/* --- Rune List --- */}
