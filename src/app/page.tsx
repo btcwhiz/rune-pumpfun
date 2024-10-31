@@ -171,7 +171,7 @@ export default function Home() {
     }, [item, selected]);
 
     return (
-<Card className="relative box-border flex flex-col p-3 gap-4 bg-[rgba(234,234,234,0.1)] rounded-lg border border-bgColor-stroke text-primary-50">
+<Card className="relative box-border flex flex-col p-3 gap-4 bg-[rgba(234,234,234,0.1)] rounded-md border border-bgColor-stroke text-primary-50">
   <CardBody className="flex flex-col justify-between p-5">
     {selected === "pending" && (
       <div className="flex justify-between items-center gap-2 text-small">
@@ -254,12 +254,12 @@ export default function Home() {
   };
 
   return (
-    <main className="p-3 pt-0 min-h-screen">
+    <main className="p-3 pt-0 min-h-screen w-full md:max-w-[1280px]">
       <div className="flex flex-col sm:gap-12 gap-0">
         <News />
         {/* --- Rune List --- */}
         <div className="flex flex-col gap-3 md:px-10 p-2">
-          <div className="flex justify-center md:justify-between items-center flex-col gap-6 sm:flex-row">
+          <div className="flex justify-center md:justify-between items-center flex-col gap-6 sm:flex-row ">
             <div className="flex items-center flex-wrap gap-8 justify-center sm:justify-normal">
               <Tabs
             aria-label="Options"
@@ -267,7 +267,7 @@ export default function Home() {
             selectedKey={selected}
             onSelectionChange={(tab) => handleTabChange(tab as string)}
             classNames={{
-              tabList: "gap-6 w-full relative rounded-none p-0 border-b border-bgColor-stroke",
+              tabList: "gap-6 w-full relative rounded-none p-0 border-b border-bgColor-stroke w-full",
               cursor: "w-full bg-pink",
               tab: "max-w-fit px-0 h-12",
               tabContent: "group-data-[selected=true]:text-white"
@@ -281,7 +281,7 @@ export default function Home() {
   <Tab 
     key="pending" 
     title={
-      <span className="group-data-[selected=true]:text-white">Pending Runes</span>
+      <span className="group-data-[selected=true]:text-white w-full align-center">Pending Runes</span>
     }
   />
                 <Tab key="waiting" title="Waiting"></Tab>
@@ -296,6 +296,8 @@ export default function Home() {
                 <TfiReload />
               </Button>
             </div>
+
+            
             <Input
               // label="Search"
               // color="warning"
@@ -303,18 +305,18 @@ export default function Home() {
               radius="lg"
               value={searchKey}
               onChange={(e) => handleSearchKeyChange(e.target.value as string)}
-              className="w-full min-w-[300px] max-w-[600px] h-[50px] bg-[rgba(234,234,234,0.2)] rounded-md flex-grow-0 z-0"
+              className="w-full min-w-[300px] md:max-w-[400px] h-[50px] bg-transparent bg-[rgba(234,234,234,0.2)] rounded-xl flex-grow-0 z-0"
               classNames={{
                 base: "max-w-full",
                 mainWrapper: "h-full",
-                input: "text-[#EAEAEA] font-arial font-normal text-base leading-[17px] tracking-[-0.32px]",
-                inputWrapper: "h-full bg-transparent hover:bg-black",
+                input: "text-pink font-arial font-normal text-base leading-[17px] tracking-[-0.32px]",
+                inputWrapper: "h-full bg-transparent !hover:bg-pink",
               }}
 
               startContent={
                 <div className="flex items-center gap-2.5 mb-0">
-                <SearchIcon className="w-[18px] h-[18px] text-[#EAEAEA]" />
-                <span className="text-[#EAEAEA] font-arial font-normal text-base leading-[17px] tracking-[-0.32px]">
+                <SearchIcon className="w-[18px] h-[18px] text-pink" />
+                <span className="text-pink font-arial font-normal text-base leading-[17px] tracking-[-0.32px]">
                   Search
                 </span>
               </div>
@@ -323,10 +325,10 @@ export default function Home() {
             />
           </div>
           <div>
-            {selected === "all" && <div className="text-center sm:text-left mt-4">Etched Runes</div>}
-            {selected === "pending" && <div>Pending Runes</div>}
+            {selected === "all" && <div className="text-center sm:text-left mt-0 h-full bg-transparent p-3 rounded-xl justify-center align-center">Etched Runes</div>}
+            {selected === "pending" && <div className="text-center sm:text-left mt-0 h-full bg-transparent p-3 rounded-xl justify-center align-center">Pending Runes</div>}
             {selected === "waiting" && (
-              <div>Waiting Runes To Transfer BTC For Etching Runes</div>
+              <div className="text-center sm:text-left mt-0 h-full bg-transparent p-3 rounded-xl justify-center align-center">Waiting Runes To Transfer BTC For Etching Runes</div>
             )}
           </div>
           <div className="gap-3 grid grid-cols-1 md:grid-cols-3">

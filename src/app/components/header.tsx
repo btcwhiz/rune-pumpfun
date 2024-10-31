@@ -273,7 +273,7 @@ export default function Header() {
   ];
 
   return (
-    <div className="z-10 p-4 sm:px-12 border-b-0 border-bgColor-stroke w-full font-mono text-sm">
+    <div className="z-10 p-4 sm:px-12 border-b-0 border-bgColor-stroke w-full font-mono text-sm max-w-[1258px]">
       <div className="flex flex-wrap justify-center md:justify-between items-center bg-gradient-to-t dark:from-black dark:via-black lg:bg-none w-full lg:size-auto mt-6">
         <div className="flex items-center">
           <Image
@@ -496,5 +496,6 @@ export default function Header() {
         </ModalContent>
       </Modal>
     </div>
+
   );
 }

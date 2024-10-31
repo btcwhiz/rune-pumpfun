@@ -3,12 +3,12 @@ import { ReactNode } from "react";
 
 export const InputStyles = {
   input: [
-    "bg-bgColor-dark",
+    "bg-bgColor-white",
     "hover:border-pink",
     "!placeholder:text-placeHolder",
   ],
   inputWrapper: [
-    "!bg-bgColor-dark",
+    "!bg-bgColor-white",
     "!hover:bg-bgColor-stroke",
     "border-2",
     "border-bgColor-stroke",

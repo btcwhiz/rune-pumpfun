@@ -58,7 +58,7 @@ export default function Trend() {
   }, [socket, isConnected]);
 
   return (
-    <div className="z-10 p-1 w-full font-mono text-sm flex flex-col xl:flex-row gap-4 px-5 md:px-10">
+    <div className="z-10 p-1 w-full font-mono text-sm flex flex-col xl:flex-row gap-4 px-5 md:px-10 max-w-[1258px]">
       {newTrade?.profileId && (
         <Bounce key={newTrade.key} delay={500} triggerOnce={true} className="w-full xl:w-1/2">
           <div className="w-full flex justify-cente">

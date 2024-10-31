@@ -33,7 +33,7 @@ export default function RootLayout({
         <QueryClientProvider client={queryClient}>
           <NextUIProvider>
             <MainProvider>
-              <div>
+              <div className="flex flex-col items-center">
                 <Header></Header>
                 <Trend></Trend>
                 {children}

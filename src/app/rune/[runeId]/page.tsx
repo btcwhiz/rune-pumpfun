@@ -644,7 +644,7 @@ export default function CreateRune() {
                 <div>
                   <div className="flex items-center gap-2">
                     <span>Created by</span>
-                    <span className="text-orange">
+                    <span className="text-pink">
                       {`${
                         runeInfo.creatorAddress &&
                         runeInfo.creatorAddress.slice(0, 5)
@@ -665,7 +665,7 @@ export default function CreateRune() {
                   <CardBody className="flex flex-col gap-3">
                     {/* Buy */}
                     {/* Your Balance */}
-                    <div className="flex flex-row justify-between text-black ">
+                    <div className="flex flex-row justify-between text-pink">
                       <div>Your balance</div>
                       <div>{runeBalance}</div>
                     </div>
@@ -688,15 +688,15 @@ export default function CreateRune() {
                           <Input
                             type="text"
                             label="Rune Amount"
-                           className="text-red"
+                           className="text-pink"
                             classNames={{
                               input: [
-                                "bg-bgColor-dark",
+                                "bg-bgColor-white",
                                 "hover:border-pink",
-                                "!placeholder:text-placeHolder",
+                                "!placeholder:text-pink",
                               ],
                               inputWrapper: [
-                                "!bg-bgColor-dark",
+                                "!bg-bgColor-white",
                                 "!hover:bg-bgColor-stroke",
                                 "border-2",
                                 "border-bgColor-stroke",
@@ -711,7 +711,7 @@ export default function CreateRune() {
                               setBuyRuneAmount(e.target.value);
                             }}
                             endContent={
-                              <div className="flex justify-center items-center">
+                              <div className="flex justify-center items-center !bg-bgColor-dark rounded-xl">
                                 <Button
                                   className="color-purple 
                                    text-white" // Change to your desired background color"
@@ -751,7 +751,7 @@ export default function CreateRune() {
                           label="Slippage (%)"
                           value={`${slippage}`}
                           disabled={loading}
-                          className="text-orange"
+                          className="text-white"
                           classNames={InputStyles}
                           min={0}
                           onChange={(e) => {
@@ -760,7 +760,7 @@ export default function CreateRune() {
                           }}
                         />
                         {buyFlag ? (
-                          <div className="flex flex-col items-center gap-3">
+                          <div className="flex flex-col items-center">
                             <div>
                               {target === false
                                 ? `You would get ${estimatePrice} ${runeInfo.runeName}`
@@ -830,6 +830,7 @@ export default function CreateRune() {
                           label="Slippage (%)"
                           color="warning"
                           classNames={InputStyles}
+                          className="bg-pink"
                           value={`${slippage}`}
                           disabled={loading}
                           min={0}
@@ -951,12 +952,12 @@ export default function CreateRune() {
                               color="warning"
                               classNames={{
                                 input: [
-                                  "bg-bgColor-dark",
+                                  "bg-bgColor-white",
                                   "hover:border-warning",
                                   "!placeholder:text-placeHolder",
                                 ],
                                 inputWrapper: [
-                                  "!bg-bgColor-dark",
+                                  "!bg-bgColor-white",
                                   "!hover:bg-bgColor-stroke",
                                   "border-2",
                                   "border-bgColor-stroke",
