@@ -52,7 +52,7 @@ export default function Admin() {
                 <div key={index} className="flex items-center">
                   <div className="w-10">{index + 1}</div>
                   <div className="gap-3 grid grid-cols-2 w-full">
-                    <div>
+                    <div className="text-pink">
                       {item.type === 0 && "Deposit"}
                       {item.type === 1 && "Withdraw"}
                       {item.type === 2 && "Buy"}

@@ -4,7 +4,7 @@ import { ReactNode } from "react";
 export const InputStyles = {
   input: [
     "bg-bgColor-dark",
-    "hover:border-warning",
+    "hover:border-pink",
     "!placeholder:text-placeHolder",
   ],
   inputWrapper: [
@@ -20,9 +20,9 @@ const PumpInput = ({
   type = "text",
   label = "",
   value,
-  color = "warning",
+  color = "secondary",
   placeholder = "",
-  className = "",
+  className = "text-pink",
   classNames = InputStyles,
   onChange,
   disabled = false,
