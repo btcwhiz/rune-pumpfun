@@ -195,29 +195,33 @@ export default function CreateRune() {
           </div>
           <input
             type="file"
-            className="hidden opacity-0 min-w-full min-h-full"
+            className="hidden opacity-0 min-w-full min-h-full  text-white"
             ref={fileInputRef}
             accept="image/*"
             onChange={handleImageUpload}
           />
         </div>
         <PumpInput
+         className="!text-white"
           label="Rune Symbol (optional)"
           value={ticker}
           onChange={setTicker}
         ></PumpInput>
         <PumpInput
+        className="!text-white"
           label="Rune Name"
           value={name}
           onChange={setName}
         ></PumpInput>
         <PumpInput
+        className="!text-white"
           type="textarea"
           label="Rune Description"
           value={description}
           onChange={setDescription}
         ></PumpInput>
         <PumpInput
+        className="!text-white"
           type="number"
           label="Dex Percentage(min: 20, max: 50)"
           value={`${dexPercentage}`}
@@ -234,7 +238,7 @@ export default function CreateRune() {
             aria-label="Show more options"
             title="Show more options"
           >
-            <div className="flex flex-col gap-3 !text-primary-50">
+            <div className="flex flex-col gap-3 !text-white">
               <PumpInput
                 label="Twitter Link (Optional)"
                 value={twitter}
@@ -259,10 +263,10 @@ export default function CreateRune() {
           )} for etching`}</div>
         )}
         <Button
-          color="warning"
+          // color="warning"
           onClick={() => handleEtchingRune()}
           isLoading={loading}
-          className="text-white"
+          className="text-white bg-pink"
         >
           Etching
         </Button>

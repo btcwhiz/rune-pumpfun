@@ -20,14 +20,12 @@ import { usePathname } from "next/navigation";
 import { GiMoneyStack } from "react-icons/gi";
 import { AiOutlineSwap } from "react-icons/ai";
 import { GrMoney } from "react-icons/gr";
-
 import {
   AddressPurpose,
   BitcoinNetworkType,
   getAddress,
   signMessage,
 } from "sats-connect";
-
 import { MainContext } from "../contexts/MainContext";
 import { authUser } from "../api/requests";
 import Image from "next/image";
@@ -46,16 +44,6 @@ const links = [
     link: "/create",
     icon: <FaPlus />,
   },
-  // {
-  //   label: "Swap",
-  //   link: "/swap",
-  //   icon: <AiOutlineSwap />,
-  // },
-  // {
-  //   label: "Pools",
-  //   link: "/pools",
-  //   icon: <GrMoney />,
-  // },
 ];
 
 export default function Header() {
@@ -120,7 +108,7 @@ export default function Header() {
         const unisat: any = currentWindow?.unisat;
         try {
           const network = await unisat.getNetwork();
-          if (network != (TEST_MODE ? "testnet" : "livenet")) {
+          if (network !== (TEST_MODE ? "testnet" : "livenet")) {
             await unisat.switchNetwork(TEST_MODE ? "testnet" : "livenet");
           }
           const accounts = await unisat.requestAccounts();
@@ -175,6 +163,7 @@ export default function Header() {
       const ordinalsAddressItem = response.addresses.find(
         (address: any) => address.purpose === AddressPurpose.Ordinals
       );
+
       let res = "";
       await signMessage({
         payload: {
@@ -187,7 +176,6 @@ export default function Header() {
           message: SIGN_MESSAGE,
         },
         onFinish: (response: any) => {
-          // signature
           res = response;
           return response;
         },
@@ -196,10 +184,12 @@ export default function Header() {
           setIsLoading(false);
         },
       });
+
       const paymentAddress = paymentAddressItem?.address as string;
       const paymentPubkey = paymentAddressItem?.publicKey as string;
       const ordinalAddress = ordinalsAddressItem?.address as string;
       const ordinalPubkey = ordinalsAddressItem?.publicKey as string;
+
       if (paymentAddress) {
         setIsLoading(true);
         const uInfo: any = await authUser(
@@ -234,70 +224,8 @@ export default function Header() {
 
   // Leader Connect
   const leaderConnectWallet = async () => {
-    // try {
-    //   const currentWindow: any = window;
-    //   const addressesRes = await currentWindow.btc?.request("getAddresses", {});
-    //   const { address, publicKey } = (
-    //     addressesRes as any
-    //   ).result.addresses.find((address: BtcAddress) => address.type === "p2tr");
-    //   const { address: paymentAddress, publicKey: paymentPublickey } = (
-    //     addressesRes as any
-    //   ).result.addresses.find(
-    //     (address: BtcAddress) => address.type === "p2wpkh"
-    //   );
-    //   const vaultType = paymentAddress.slice(0, 2);
-    //   if (vaultType == (TEST_MODE ? "bc" : "tb")) {
-    //     Notiflix.Notify.failure("You need to switch your network.");
-    //     return;
-    //   }
-    //   setWalletType(WalletTypes.HIRO);
-    //   setPaymentAddress(paymentAddress);
-    //   setPaymentPublicKey(paymentPublickey);
-    //   setOrdinalAddress(address);
-    //   setOrdinalPublicKey(publicKey);
-    //   storeLocalStorage(
-    //     address,
-    //     publicKey,
-    //     paymentAddress,
-    //     paymentPublickey,
-    //     WalletTypes.HIRO
-    //   );
-    //   Notiflix.Notify.success("Connected Successfully.");
-    //   // Register Modal Part
-    //   try {
-    //     const paymentAddress: string = localStorage.getItem(
-    //       "paymentAddress"
-    //     ) as string;
-    //     const exist = await axios.post(`${baseUrl}/check_user`, {
-    //       paymentAddress,
-    //     });
-    //     console.log("exist :>> ", exist);
-    //     if (exist?.data.success && paymentAddress != ADMIN_PAYMENT_ADDRESS) {
-    //       registerModal.onOpen();
-    //     }
-    //   } catch (error) {
-    //     console.log("error :>> ", error);
-    //   }
-    // } catch (err) {
-    //   Notiflix.Notify.failure("Connection Canceled");
-    // }
+    // Implementation for Leader Connect Wallet
   };
-
-  // useEffect(() => {
-  //   const autoConnect = async () => {
-  //     const storedWallet = localStorage.getItem("wallet");
-  //     if (storedWallet) {
-  //       const { session } = JSON.parse(storedWallet);
-  //       if (session > moment.now() && !loadingRef.current) {
-  //         loadingRef.current = true;
-  //         await handleConnectWallet();
-  //         loadingRef.current = false;
-  //       }
-  //     }
-  //   };
-
-  //   autoConnect();
-  // }, []);
 
   const walletProviders = [
     {
@@ -345,10 +273,9 @@ export default function Header() {
   ];
 
   return (
-<div className="z-10 p-4 sm:px-12 border-b-0 border-bgColor-stroke w-full font-mono text-sm">
+    <div className="z-10 p-4 sm:px-12 border-b-0 border-bgColor-stroke w-full font-mono text-sm">
       <div className="flex flex-wrap justify-center md:justify-between items-center bg-gradient-to-t dark:from-black dark:via-black lg:bg-none w-full lg:size-auto mt-6">
-        
-      <div className="flex items-center">
+        <div className="flex items-center">
           <Image
             src="/img/runes_logo.png" // Replace with the actual path to your image
             alt="Logo"
@@ -365,24 +292,22 @@ export default function Header() {
                 as={Link}
                 className={`${
                   item.link === path
-                  ? "border-pink border-b-3  text-white"
-                  : "text-white"
-              } rounded-none items-center sm:gap-2 sm:h-16 hidden sm:flex`}
-              // color="warning"
-              variant="light"
-            >
-              {item.icon}
-              <span>{item.label}</span>
-            </Button>
-            <Button
-              href={item.link}
-              as={Link}
-              className={`${
-                item.link === path
-                  ? "border-pink border-b-3  text-pink"
-                  : "text-white"
-              } rounded-none flex sm:hidden items-center sm:gap-2 sm:h-16`}
-                color="warning"
+                    ? "border-pink border-b-3 text-white"
+                    : "text-white"
+                } rounded-none items-center sm:gap-2 sm:h-16 hidden sm:flex`}
+                variant="light"
+              >
+                {item.icon}
+                <span>{item.label}</span>
+              </Button>
+              <Button
+                href={item.link}
+                as={Link}
+                className={`${
+                  item.link === path
+                    ? "border-pink border-b-3 text-pink"
+                    : "text-white"
+                } rounded-none flex sm:hidden items-center sm:gap-2 sm:h-16`}
                 variant="light"
                 isIconOnly
               >
@@ -397,10 +322,9 @@ export default function Header() {
               <div className="flex flex-wrap justify-center items-center gap-3">
                 {userInfo.role === 1 && (
                   <Button
-                    color="warning"
                     href={`/pump-admin`}
                     as={Link}
-                    className="flex items-center gap-2 text-white"
+                    className="flex items-center gap-2 text-white bg-pink"
                     variant="flat"
                   >
                     <div>Admin</div>
@@ -411,29 +335,26 @@ export default function Header() {
                   <span className="text-orange font-bold">BTC</span>
                 </div>
                 <Button
-                  color="warning"
                   onClick={refreshBalance}
-                  className="rounded-full"
+                  className="rounded-full bg-pink color-pink"
                   isIconOnly
                   variant="flat"
                 >
                   <TfiReload className="text-white" />
                 </Button>
                 <Button
-                  color="warning"
                   href={`/payment`}
                   as={Link}
-                  className="hidden sm:flex items-center gap-2 text-white"
+                  className="hidden sm:flex items-center gap-2 text-white bg-pink color-pink"
                   variant="flat"
                 >
                   <div>Payment</div>
                   <GiMoneyStack />
                 </Button>
                 <Button
-                  color="warning"
                   href={`/payment`}
                   as={Link}
-                  className="flex sm:hidden items-center gap-2 text-white rounded-full"
+                  className="flex sm:hidden items-center gap-2 text-white rounded-full bg-pink color-pink"
                   variant="flat"
                   isIconOnly
                 >
@@ -441,9 +362,8 @@ export default function Header() {
                 </Button>
                 <Button
                   as={Link}
-                  color="warning"
                   href={`/profile/${encodeURIComponent(userInfo?.profileId)}`}
-                  className="hidden sm:flex items-center gap-2 text-white"
+                  className="hidden sm:flex items-center gap-2 text-white bg-pink color-pink"
                   variant="flat"
                 >
                   <div>Profile</div>
@@ -451,44 +371,38 @@ export default function Header() {
                 </Button>
                 <Button
                   as={Link}
-                  color="warning"
                   href={`/profile/${encodeURIComponent(userInfo?.profileId)}`}
-                  className="flex sm:hidden items-center gap-2 text-white rounded-full"
+                  className="flex sm:hidden items-center gap-2 text-white rounded-full bg-pink color-pink"
                   variant="flat"
                   isIconOnly
                 >
                   <FaUser />
                 </Button>
                 <Button
-                  color="warning"
-                  onClick={() => handleDisConnectWallet()}
+                  onClick={handleDisConnectWallet}
                   className="rounded-full"
                   isIconOnly
                   variant="flat"
                 >
-                  <IoIosLogOut className="text-white text-xl" />
+                  <IoIosLogOut className="text-white text-xl bg-pink color-pink" />
                 </Button>
               </div>
             ) : (
               <Button
-              // color="warning"
-              // onClick={() => handleConnectWallet()}
-              onClick={() => {
-                walletModal.onOpen();
-              }}
-              className="rounded-md text-white bg-pink"
-              variant="flat"
-            >
-              Connect Wallet
-            </Button>
+                onClick={() => {
+                  walletModal.onOpen();
+                }}
+                className="rounded-md text-white bg-pink"
+                variant="flat"
+              >
+                Connect Wallet
+              </Button>
             )}
           </div>
           <Button
             href={TEST_MODE ? BETA_URL : TEST_URL}
             as={Link}
-            color="warning"
-            className="rounded-md text-white border-2 border-white bg-transparent hover-text-black"
-           
+            className="rounded-md text-white border-1 border-white bg-transparent hover:text-black color-pink"
             endContent={<IoIosLink />}
           >
             {TEST_MODE ? "Mainnet" : "Testnet"}
@@ -531,7 +445,7 @@ export default function Header() {
                   <div className="flex flex-col text-black text-[26px]">
                     <p className="text-center font-bold">Connect Wallet</p>
                   </div>
-                  <Divider className="bg-warning" />
+                  <Divider className="bg-pink" />
                   {walletProviders.map((walletProvider, index) => (
                     <Button
                       key={index}
@@ -550,7 +464,7 @@ export default function Header() {
                             width={20}
                             height={20}
                             alt=""
-                          ></Image>
+                          />
                           <p className="text-white text-[20px]">
                             {walletProvider.label}
                           </p>

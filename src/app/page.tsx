@@ -184,8 +184,8 @@ export default function Home() {
           size="md"
           aria-label="Loading..."
           value={runeProcess}
-          className="max-w-md"
-          color="warning"
+          className="max-w-md bg-pink color-pink text-pink"
+          // color="warning"
         />
       </div>
     )}
@@ -303,12 +303,12 @@ export default function Home() {
               radius="lg"
               value={searchKey}
               onChange={(e) => handleSearchKeyChange(e.target.value as string)}
-              className="w-1/3 min-w-[300px] h-[50px] bg-[rgba(234,234,234,0.2)] rounded-md flex-grow-0 z-0"
+              className="w-full min-w-[300px] max-w-[600px] h-[50px] bg-[rgba(234,234,234,0.2)] rounded-md flex-grow-0 z-0"
               classNames={{
                 base: "max-w-full",
                 mainWrapper: "h-full",
                 input: "text-[#EAEAEA] font-arial font-normal text-base leading-[17px] tracking-[-0.32px]",
-                inputWrapper: "h-full bg-transparent hover:bg-transparent",
+                inputWrapper: "h-full bg-transparent hover:bg-black",
               }}
 
               startContent={

@@ -23,7 +23,7 @@ export default function News() {
     return <span className="text-pink"> Runed.com</span>;
   };
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 bg-opacity-0">
       <Modal
         isOpen={isOpen}
         onOpenChange={onOpenChange}
