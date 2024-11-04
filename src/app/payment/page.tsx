@@ -95,13 +95,22 @@ export default function CreateRune() {
 
   const handleWithdraw = async () => {
     try {
+      const wAmount = Number(withdrawAmount);
       const storedWallet = getWallet();
-      if (userInfo.userId && runeId && withdrawAmount) {
+      if (!runeId) {
+        toast.error("Please input runeID");
+        return;
+      }
+      if (!wAmount) {
+        toast.error("Please input withdraw amount");
+        return;
+      }
+      if (userInfo.userId) {
         setLoading(true);
         const preWithdrawRes = await preWithdrawFunc(
           userInfo.userId,
           runeId,
-          withdrawAmount
+          wAmount
         );
         if (preWithdrawRes !== null) {
           if (runeId === "btc") {
@@ -121,7 +130,7 @@ export default function CreateRune() {
               const withdrawRes = await withdrawFunc(
                 userInfo.userId,
                 runeId,
-                withdrawAmount,
+                wAmount,
                 preWithdrawRes.requestId,
                 signedPsbt
               );
@@ -131,7 +140,7 @@ export default function CreateRune() {
             const withdrawRes = await withdrawFunc(
               userInfo.userId,
               runeId,
-              withdrawAmount,
+              wAmount,
               preWithdrawRes.requestId,
               ""
             );

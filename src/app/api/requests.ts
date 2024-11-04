@@ -222,7 +222,7 @@ export const getAllTransactions = async (userId: string) => {
 export const preWithdrawFunc = async (
   userId: string,
   runeId: string,
-  amount: string
+  amount: number
 ) => {
   try {
     const urlEndpoint = `${process.env.NEXT_PUBLIC_API_URL}/api/payment/pre-withdraw`;
@@ -244,7 +244,7 @@ export const preWithdrawFunc = async (
 export const withdrawFunc = async (
   userId: string,
   runeId: string,
-  amount: string,
+  amount: number,
   requestId: any,
   signedPsbt: any
 ) => {
