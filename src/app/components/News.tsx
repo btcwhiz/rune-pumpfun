@@ -12,16 +12,27 @@ import {
   Radio,
   Checkbox,
 } from "@nextui-org/react";
+import { getStorage, storeStorage } from "../utils/stoage";
 
 export default function News() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [isSelected, setIsSelected] = useState<boolean>(false);
+
   useEffect(() => {
-    onOpen();
+    const value = getStorage("tos");
+    if (value === null || value === "" || value !== true) {
+      onOpen();
+    }
   }, []);
+
   const Runedcom = () => {
     return <span className="text-pink"> Runed.com</span>;
   };
+
+  const handleAcceptTOS = () => {
+    storeStorage("tos", "true");
+  };
+
   return (
     <div className="flex flex-col gap-2 bg-opacity-0">
       <Modal
@@ -87,9 +98,9 @@ export default function News() {
                 </p>
 
                 <p>
-                  <span className="text-pink">3.</span> No Liability for
-                  Losses We disclaim all liability for any financial or
-                  asset-related losses incurred through the use of
+                  <span className="text-pink">3.</span> No Liability for Losses
+                  We disclaim all liability for any financial or asset-related
+                  losses incurred through the use of
                   <Runedcom />, including but not limited to losses resulting
                   from bugs, platform failures, unauthorized access, or any
                   other operational issues. By using <Runedcom />, you agree not
@@ -98,17 +109,16 @@ export default function News() {
                 </p>
 
                 <p>
-                  <span className="text-pink">4.</span> Suspension of
-                  Activities <Runedcom /> reserves the right to suspend or
-                  discontinue any activities or services at any time, for any
-                  reason, without prior notice. This may include, but is not
-                  limited to, changes to features, access, or availability of
-                  the platform.
+                  <span className="text-pink">4.</span> Suspension of Activities{" "}
+                  <Runedcom /> reserves the right to suspend or discontinue any
+                  activities or services at any time, for any reason, without
+                  prior notice. This may include, but is not limited to, changes
+                  to features, access, or availability of the platform.
                 </p>
 
                 <p>
-                  <span className="text-pink">5.</span> Beta Testing
-                  Environment and Testnet Availability
+                  <span className="text-pink">5.</span> Beta Testing Environment
+                  and Testnet Availability
                   <Runedcom /> is an evolving platform subject to ongoing
                   development. Users may encounter operational errors, limited
                   functionality, and frequent changes to the user experience.
@@ -119,10 +129,10 @@ export default function News() {
                 </p>
 
                 <p>
-                  <span className="text-pink">6.</span> Assumption of
-                  Financial Loss Due to the platform’s beta status, we advise
-                  that users should expect financial losses. Proceed only if you
-                  are fully prepared to accept these risks.
+                  <span className="text-pink">6.</span> Assumption of Financial
+                  Loss Due to the platform’s beta status, we advise that users
+                  should expect financial losses. Proceed only if you are fully
+                  prepared to accept these risks.
                 </p>
 
                 <p>
@@ -145,7 +155,10 @@ export default function News() {
               <ModalFooter>
                 <Button
                   // color="warning"
-                  onClick={onClose}
+                  onClick={() => {
+                    handleAcceptTOS();
+                    onClose();
+                  }}
                   className={`rounded-md ${
                     isSelected ? "text-white" : "text-bgColor-stroke"
                   }`}

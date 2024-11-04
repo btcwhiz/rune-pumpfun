@@ -399,14 +399,14 @@ export default function Header() {
               </Button>
             )}
           </div>
-          <Button
+          {/* <Button
             href={TEST_MODE ? BETA_URL : TEST_URL}
             as={Link}
             className="rounded-md text-white border-1 border-white bg-transparent hover:text-black color-pink"
             endContent={<IoIosLink />}
           >
             {TEST_MODE ? "Mainnet" : "Testnet"}
-          </Button>
+          </Button> */}
         </div>
       </div>
 
