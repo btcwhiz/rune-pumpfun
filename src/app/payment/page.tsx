@@ -38,17 +38,18 @@ export default function CreateRune() {
   };
 
   const handleDeposit = async () => {
+    const dAmount = Number(depositAmount);
     const currentWindow: any = window;
     try {
-      if (userInfo.userId && depositAmount) {
+      if (userInfo.userId) {
+        if (!dAmount) {
+          toast.error("Please input deposit amount");
+          return;
+        }
         setLoading(true);
         const storedWallet = getWallet();
         const walletType = storedWallet.type;
-        const res = await preDepositFunc(
-          walletType,
-          userInfo.userId,
-          depositAmount
-        );
+        const res = await preDepositFunc(walletType, userInfo.userId, dAmount);
         let signedPsbt = "";
         if (walletType === "Unisat") {
           if (currentWindow?.unisat) {

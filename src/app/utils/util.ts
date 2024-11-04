@@ -1,5 +1,6 @@
 import moment from "moment-timezone";
 import { NEXT_POOL_AMOUNT, SATS_MULTIPLE } from "../config/config";
+import { getStorage } from "./stoage";
 
 export const getTimeDifference = (date: any) => {
   // Set the timezone to PT (Pacific Time)
@@ -60,5 +61,5 @@ export const displayBtc = (btcAmount: number) => {
 };
 
 export const getWallet = () => {
-  return JSON.parse(localStorage.getItem("wallet") as string);
+  return getStorage("wallet");
 };

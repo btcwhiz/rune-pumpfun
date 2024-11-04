@@ -42,7 +42,7 @@ export const authUser = async (
 export const preDepositFunc = async (
   walletType: string,
   userId: string,
-  depositAmount: string
+  depositAmount: number
 ) => {
   try {
     const urlEndpoint = `${process.env.NEXT_PUBLIC_API_URL}/api/payment/pre-deposit`;

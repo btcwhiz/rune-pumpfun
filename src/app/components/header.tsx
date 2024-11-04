@@ -32,6 +32,8 @@ import Image from "next/image";
 import { CheckIcon } from "./icons/CheckIcon";
 import { BETA_URL, SIGN_MESSAGE, TEST_MODE, TEST_URL } from "../config";
 import { displayBtc, getWallet } from "../utils/util";
+import { storeStorage } from "../utils/stoage";
+import useSocket from "../hooks/useSocket";
 
 const links = [
   {
@@ -48,6 +50,7 @@ const links = [
 
 export default function Header() {
   const path = usePathname();
+  const { socket, isConnected } = useSocket();
   const loadingRef = useRef(false);
   const [isLoading, setIsLoading] = useState(false);
   const {
@@ -68,26 +71,6 @@ export default function Header() {
     setPaymentPubkey("");
     setOrdinalAddress("");
     setOrdinalPubkey("");
-  };
-
-  const storeLocalStorage = (
-    type: string,
-    paymentAddress: string,
-    paymentPubkey: string,
-    ordinalAddress: string,
-    ordinalPubkey: string
-  ) => {
-    localStorage.setItem(
-      "wallet",
-      JSON.stringify({
-        type,
-        paymentAddress,
-        paymentPubkey,
-        ordinalAddress,
-        ordinalPubkey,
-        session: moment.now() + 60 * 60 * 1000,
-      })
-    );
   };
 
   const refreshBalance = async () => {
@@ -118,7 +101,14 @@ export default function Header() {
           setIsLoading(true);
           const uInfo: any = await authUser(address, pubKey, address, pubKey);
           console.log("uInfo :>> ", uInfo);
-          storeLocalStorage("Unisat", address, pubKey, address, pubKey);
+          storeStorage("wallet", {
+            type: "Unisat",
+            paymentAddress: address,
+            paymentPubkey: pubKey,
+            ordinalAddress: address,
+            ordinalPubkey: pubKey,
+            session: moment.now() + 60 * 60 * 1000,
+          });
           setUserInfo(uInfo);
           setPaymentAddress(address);
           setPaymentPubkey(pubKey);
@@ -196,13 +186,14 @@ export default function Header() {
               ordinalPubkey
             );
             if (uInfo !== null) {
-              storeLocalStorage(
-                "Xverse",
+              storeStorage("wallet", {
+                type: "Xverse",
                 paymentAddress,
                 paymentPubkey,
                 ordinalAddress,
-                ordinalPubkey
-              );
+                ordinalPubkey,
+                session: moment.now() + 60 * 60 * 1000,
+              });
               setUserInfo(uInfo);
               setPaymentAddress(paymentAddress);
               setPaymentPubkey(paymentPubkey);
@@ -271,6 +262,23 @@ export default function Header() {
         "https://chromewebstore.google.com/detail/leather/ldinpeekobnhjjdofggfgjlcehhmanlj",
     },
   ];
+
+  useEffect(() => {
+    if (socket && isConnected) {
+      socket.on(
+        "deposited",
+        ({ paymentAddress }: { paymentAddress: string }) => {
+          if (paymentAddress === userInfo.paymentAddress) {
+            console.log("paymentAddress :>> ", paymentAddress);
+            refreshBalance();
+          }
+        }
+      );
+      return () => {
+        socket.off("deposited");
+      };
+    }
+  }, [socket, isConnected, userInfo, refreshBalance]);
 
   return (
     <div className="z-10 p-4 sm:px-12 border-b-0 border-bgColor-stroke w-full font-mono text-sm max-w-[1258px]">
@@ -380,11 +388,11 @@ export default function Header() {
                 </Button>
                 <Button
                   onClick={handleDisConnectWallet}
-                  className="rounded-full"
+                  className="rounded-full bg-pink color-pink"
                   isIconOnly
                   variant="flat"
                 >
-                  <IoIosLogOut className="text-white text-xl bg-pink color-pink" />
+                  <IoIosLogOut className="text-white text-xl" />
                 </Button>
               </div>
             ) : (
