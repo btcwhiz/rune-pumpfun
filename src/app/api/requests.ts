@@ -568,6 +568,18 @@ export const burnFunc = async (
   }
 };
 
+export const getBtcBalance = async (address: string) => {
+  try {
+    const urlEndpoint = `/api/mempool/get-balance?address=${address}`;
+    const res = await fetch(urlEndpoint, { method: "POST" });
+    const detailsData: any = await res.json();
+    return detailsData;
+  } catch (error) {
+    console.log("error :>> ", error);
+    return { success: false };
+  }
+};
+
 export const getTxDetails = async (txId: string) => {
   try {
     const urlEndpoint = `/api/mempool/get-tx-details?txId=${txId}`;

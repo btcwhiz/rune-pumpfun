@@ -8,6 +8,7 @@ import toast from "react-hot-toast";
 import {
   depositFunc,
   getAllTransactions,
+  getBtcBalance,
   preDepositFunc,
   preWithdrawFunc,
   withdrawFunc,
@@ -44,6 +45,11 @@ export default function CreateRune() {
       if (userInfo.userId) {
         if (!dAmount) {
           toast.error("Please input deposit amount");
+          return;
+        }
+        const btcBalance = await getBtcBalance(userInfo.paymentAddress);
+        if (btcBalance.balance < dAmount * SATS_MULTIPLE) {
+          toast.error("You don't have enough balance.");
           return;
         }
         setLoading(true);
@@ -105,6 +111,14 @@ export default function CreateRune() {
         toast.error("Please input withdraw amount");
         return;
       }
+      if (runeId.toLocaleLowerCase() === "btc") {
+        const btcBalance = await getBtcBalance(userInfo.multisigWallet);
+        if (btcBalance.balance < wAmount * SATS_MULTIPLE) {
+          toast.error("You don't have enough balance to withdraw.");
+          return;
+        }
+      }
+
       if (userInfo.userId) {
         setLoading(true);
         const preWithdrawRes = await preWithdrawFunc(

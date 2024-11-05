@@ -166,7 +166,7 @@ export default function CreateRune() {
 
   return (
     <div className="flex justify-center p-3 md:pt-20">
-      <div className="flex flex-col gap-3 border-2 bg-bgColor-ghost p-6 border-bgColor-stroke rounded-2xl w-[420px]">
+      <div className="flex flex-col gap-3 border-2 bg-bgColor-ghost p-6 border-bgColor-stroke rounded-2xl w-[92vw] md:w-[420px]">
         <div className="py-3 font-bold text-2xl text-center">Etching</div>
         <div className="flex items-center">
           <div className="flex justify-center w-full">
@@ -202,26 +202,26 @@ export default function CreateRune() {
           />
         </div>
         <PumpInput
-         className="!text-white"
+          className="!text-white"
           label="Rune Symbol (optional)"
           value={ticker}
           onChange={setTicker}
         ></PumpInput>
         <PumpInput
-        className="!text-white"
+          className="!text-white"
           label="Rune Name"
           value={name}
           onChange={setName}
         ></PumpInput>
         <PumpInput
-        className="!text-white"
+          className="!text-white"
           type="textarea"
           label="Rune Description"
           value={description}
           onChange={setDescription}
         ></PumpInput>
         <PumpInput
-        className="!text-white"
+          className="!text-white"
           type="number"
           label="Dex Percentage(min: 20, max: 50)"
           value={`${dexPercentage}`}

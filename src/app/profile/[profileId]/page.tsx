@@ -65,19 +65,28 @@ export default function Profile() {
 
   const handleWithdraw = async () => {
     try {
-      if (userInfo.userId && runeId && runeAmount) {
+      if (!runeId) {
+        toast.error("Please input rune ID");
+        return;
+      }
+      const rAmount = Number(runeAmount);
+      if (!rAmount) {
+        toast.error("Please input rune amount");
+        return;
+      }
+      if (userInfo.userId) {
         setLoading(true);
         const preWithdrawRes = await preWithdrawFunc(
           userInfo.userId,
           runeId,
-          runeAmount
+          rAmount
         );
         if (runeId === "btc") {
           const signedPsbt = await unisatSignPsbt(preWithdrawRes?.psbt);
           const withdrawRes = await withdrawFunc(
             userInfo.userId,
             runeId,
-            runeAmount,
+            rAmount,
             preWithdrawRes.requestId,
             signedPsbt
           );
@@ -86,7 +95,7 @@ export default function Profile() {
           const withdrawRes = await withdrawFunc(
             userInfo.userId,
             runeId,
-            runeAmount,
+            rAmount,
             preWithdrawRes.requestId,
             ""
           );
@@ -132,7 +141,7 @@ export default function Profile() {
   return (
     <div className="flex flex-col gap-3">
       <div className="flex justify-center p-3 md:pt-20">
-        <div className="flex flex-col justify-center gap-3 border-2 bg-bgColor-ghost p-6 border-bgColor-stroke rounded-xl w-[700px] max-w-[700px]">
+        <div className="flex flex-col justify-center gap-3 border-2 bg-bgColor-ghost p-6 border-bgColor-stroke rounded-xl w-[92vw] md:w-[700px]">
           <div className="py-3 font-bold text-2xl text-center">
             User Profile
           </div>
