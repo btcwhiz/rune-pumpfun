@@ -36,6 +36,8 @@ export default function CreateRune() {
   const [telegram, setTelegram] = useState<string>("");
   const [website, setWebsite] = useState<string>("");
   const [etchingFeeRate, setEtchingFeeRate] = useState<string>("");
+  const [preFlag, setPreFlag] = useState<boolean>(false);
+  const [preEtchingResp, setPreEtchingResp] = useState<any>(null);
 
   const handleUploadImage = () => {
     if (fileInputRef.current) {
@@ -85,8 +87,11 @@ export default function CreateRune() {
     }
   };
 
-  const handleEtchingRune = async () => {
+  const handlePreEtchingRune = async () => {
     try {
+      if (!userInfo.userId) {
+        return toast.error("Please connect wallet first.");
+      }
       let rTicker: any = ticker;
       if (!rTicker) rTicker = "$";
       if (!imageContent || !name) {
@@ -118,8 +123,26 @@ export default function CreateRune() {
         website,
       };
 
-      const { status, etchingPsbt, etchingFee, waitEtchingData }: any =
-        await preEtchingRuneFunc(userInfo.userId, imageContent, saveData);
+      const resp: any = await preEtchingRuneFunc(
+        userInfo.userId,
+        imageContent,
+        saveData
+      );
+      if (resp.status) setEtchingFeeRate(resp.etchingFee);
+      setPreEtchingResp(resp);
+      setLoading(false);
+      setPreFlag(true);
+    } catch (error) {
+      setLoading(false);
+    }
+  };
+
+  const handleEtchingRune = async () => {
+    try {
+      const { status, etchingPsbt, etchingFee, waitEtchingData }: any = {
+        ...preEtchingResp,
+      };
+      setLoading(true);
       if (status) {
         setEtchingFeeRate(etchingFee);
         const storedWallet = getWallet();
@@ -147,20 +170,21 @@ export default function CreateRune() {
             toast.success(msg);
           }
         }
+        setImageData(null);
+        setImageContent("");
+        setTicker("");
+        setName("");
+        setDescription("");
+        setInitialBuyAmount("");
+        setTwitter("");
+        setTelegram("");
+        setWebsite("");
+        setEtchingFeeRate("");
+        setPreFlag(false);
       }
-      setImageData(null);
-      setImageContent("");
-      setTicker("");
-      setName("");
-      setDescription("");
-      setInitialBuyAmount("");
-      setTwitter("");
-      setTelegram("");
-      setWebsite("");
       setLoading(false);
-      setEtchingFeeRate("");
     } catch (error) {
-      setLoading(false);
+      console.log("error :>> ", error);
     }
   };
 
@@ -262,14 +286,25 @@ export default function CreateRune() {
             Number(etchingFeeRate)
           )} for etching`}</div>
         )}
-        <Button
-          // color="warning"
-          onClick={() => handleEtchingRune()}
-          isLoading={loading}
-          className="text-white bg-pink"
-        >
-          Etching
-        </Button>
+        {preFlag === true ? (
+          <Button
+            // color="warning"
+            onClick={() => handleEtchingRune()}
+            isLoading={loading}
+            className="text-white bg-pink"
+          >
+            Confirm
+          </Button>
+        ) : (
+          <Button
+            // color="warning"
+            onClick={() => handlePreEtchingRune()}
+            isLoading={loading}
+            className="text-white bg-pink"
+          >
+            Etching
+          </Button>
+        )}
       </div>
     </div>
   );
