@@ -195,8 +195,8 @@ export default function CreateRune() {
                 variant="flat"
                 onClick={() => handleDeposit()}
                 isLoading={loading}
-                className={`bg-bgColor-pink${
-                  depositAmount ? "" : "/[.5]"
+                className={`${
+                  depositAmount ? "bg-bgColor-pink" : "bg-bgColor-pink/[.5]"
                 } text-white`}
                 disabled={depositAmount ? false : true}
               >
@@ -234,8 +234,10 @@ export default function CreateRune() {
                 variant="flat"
                 onClick={() => handleWithdraw()}
                 isLoading={loading}
-                className={`bg-bgColor-pink${
-                  runeId && withdrawAmount ? "" : "/[.5]"
+                className={`${
+                  runeId && withdrawAmount
+                    ? "bg-bgColor-pink"
+                    : "bg-bgColor-pink/[.5]"
                 } text-white`}
                 disabled={runeId && withdrawAmount ? false : true}
               >
