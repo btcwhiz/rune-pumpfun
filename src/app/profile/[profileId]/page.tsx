@@ -4,7 +4,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import copy from "copy-to-clipboard";
-import { FaCopy, FaEdit, FaSave } from "react-icons/fa";
+import { FaCopy, FaSave } from "react-icons/fa";
 import toast from "react-hot-toast";
 
 import {
@@ -32,6 +32,9 @@ import { displayAddress, unisatSignPsbt } from "../../utils/pump";
 import { MainContext } from "../../contexts/MainContext";
 import PumpInput from "../../components/PumpInput";
 import { IoMdCloseCircle } from "react-icons/io";
+import { RiEditCircleLine } from "react-icons/ri";
+import Image from "next/image";
+import ImageDisplay from "../../components/ImageDIsplay";
 
 export default function Profile() {
   const router = useRouter();
@@ -118,6 +121,7 @@ export default function Profile() {
   const getAllRuneBalances = async () => {
     try {
       const pfp: any = await getUserInfoByProfileId(profileId as string);
+      console.log("pfp :>> ", pfp);
       setProfileInfo({
         ...pfp.userInfo,
         multisigWallet: pfp.multisigWallet,
@@ -154,27 +158,27 @@ export default function Profile() {
                 onChange={setPId}
               ></PumpInput>
               {
-                <div className="flex gap-2">
+                <div className="flex gap-1">
                   {profileId === userInfo.profileId ? (
                     pId !== profileId ? (
                       <Button
-                        color="warning"
+                        className="bg-pink"
                         variant="flat"
                         onClick={() => handleChangeProfile()}
                         isIconOnly
                       >
-                        <FaSave />
+                        <FaSave className="text-white" />
                       </Button>
                     ) : (
                       <Button
-                        color="warning"
+                        className="bg-pink"
                         variant="flat"
                         onClick={() => {
                           setIsEditable(!isEditable);
                         }}
                         isIconOnly
                       >
-                        <FaEdit />
+                        <RiEditCircleLine className="text-white" size={22} />
                       </Button>
                     )
                   ) : (
@@ -183,14 +187,14 @@ export default function Profile() {
                   <div>
                     {isEditable && (
                       <Button
-                        color="warning"
+                        className="bg-pink"
                         variant="flat"
                         onClick={() => {
                           setIsEditable(!isEditable);
                         }}
                         isIconOnly
                       >
-                        <IoMdCloseCircle />
+                        <IoMdCloseCircle className="text-white" size={24} />
                       </Button>
                     )}
                   </div>
@@ -208,13 +212,12 @@ export default function Profile() {
               <div className="flex items-center gap-2">
                 <div>{`${displayAddress(profileInfo?.paymentAddress)}`}</div>
                 <Button
-                  color="warning"
                   variant="flat"
                   onClick={() => copy(profileInfo?.paymentAddress)}
-                  className="flex justify-center items-center"
+                  className="flex justify-center items-center bg-pink"
                   isIconOnly
                 >
-                  <FaCopy />
+                  <FaCopy className="text-white" size={18} />
                 </Button>
               </div>
             </div>
@@ -226,10 +229,10 @@ export default function Profile() {
                   color="warning"
                   variant="flat"
                   onClick={() => copy(profileInfo?.multisigWallet)}
-                  className="flex justify-center items-center"
+                  className="flex justify-center items-center bg-pink"
                   isIconOnly
                 >
-                  <FaCopy />
+                  <FaCopy className="text-white" size={18} />
                 </Button>
               </div>
             </div>
@@ -253,9 +256,15 @@ export default function Profile() {
                                   ? `/rune/${encodeURIComponent(rune.runeId)}`
                                   : `#`
                               }`}
-                              className="w-full"
+                              className="w-full flex items-center gap-1"
                             >
-                              <div className="flex flex-col gap-1 py-2">
+                              <div className="rounded-lg flex items-center justify-center">
+                                <ImageDisplay
+                                  src={rune.runeImage}
+                                  className="w-14 h-14"
+                                ></ImageDisplay>
+                              </div>
+                              <div className="flex flex-col gap-1 py-2 w-full">
                                 <div className="flex justify-between items-center gap-2">
                                   <span>Rune Name</span>
                                   <span>{rune?.runeName}</span>
@@ -271,9 +280,9 @@ export default function Profile() {
                                 setRuneId(rune.runeId);
                                 onOpen();
                               }}
-                              color="warning"
                               variant="flat"
                               disabled={rune.balance ? false : true}
+                              className="bg-pink text-white"
                             >
                               Withdraw
                             </Button>
@@ -304,7 +313,13 @@ export default function Profile() {
                               }`}
                               className="w-full"
                             >
-                              <div className="flex flex-col gap-1 hover:bg-foreground-300 p-2">
+                              <div className="rounded-lg flex items-center justify-center">
+                                <ImageDisplay
+                                  src={rune.runeImage}
+                                  className="w-14 h-14"
+                                ></ImageDisplay>
+                              </div>
+                              <div className="flex flex-col gap-1 hover:bg-foreground-300 p-2 w-full">
                                 <div className="flex justify-between items-center gap-2">
                                   <span>Rune Name</span>
                                   <span>{rune?.runeName}</span>
@@ -320,7 +335,7 @@ export default function Profile() {
                                 setRuneId(rune.runeId);
                                 onOpen();
                               }}
-                              color="warning"
+                              className="bg-pink text-white"
                               variant="flat"
                             >
                               Withdraw
@@ -357,13 +372,17 @@ export default function Profile() {
               </ModalBody>
               <ModalFooter>
                 <Button
-                  color="warning"
+                  className="bg-pink text-white"
                   variant="flat"
                   onPress={() => handleWithdraw()}
                 >
                   Withdraw
                 </Button>
-                <Button color="warning" variant="light" onPress={onClose}>
+                <Button
+                  className="text-pink"
+                  variant="bordered"
+                  onPress={onClose}
+                >
                   Close
                 </Button>
               </ModalFooter>

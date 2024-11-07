@@ -673,7 +673,7 @@ export default function CreateRune() {
                       <div className="flex flex-col gap-3">
                         {/* //Switch to BTC */}
                         <Button
-                          className="text-black"
+                          className="text-white"
                           variant="flat"
                           onClick={() => {
                             setBuyFlag(false);
@@ -688,7 +688,7 @@ export default function CreateRune() {
                           <Input
                             type="text"
                             label="Rune Amount"
-                           className="text-pink"
+                            className="text-pink"
                             classNames={{
                               input: [
                                 "bg-bgColor-white",

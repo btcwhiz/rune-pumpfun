@@ -12,26 +12,23 @@ import {
 } from "@nextui-org/react";
 import toast from "react-hot-toast";
 import { FaHome, FaPlus, FaUser } from "react-icons/fa";
-import { IoIosLink, IoIosLogOut } from "react-icons/io";
-import { TfiReload } from "react-icons/tfi";
 import Link from "next/link";
 import moment from "moment-timezone";
 import { usePathname } from "next/navigation";
 import { GiMoneyStack } from "react-icons/gi";
-import { AiOutlineSwap } from "react-icons/ai";
-import { GrMoney } from "react-icons/gr";
 import {
   AddressPurpose,
   BitcoinNetworkType,
   getAddress,
   signMessage,
 } from "sats-connect";
+import { RiLogoutCircleRLine, RiRefreshLine } from "react-icons/ri";
 import { MainContext } from "../contexts/MainContext";
 import { authUser } from "../api/requests";
 import Image from "next/image";
 import { CheckIcon } from "./icons/CheckIcon";
-import { BETA_URL, SIGN_MESSAGE, TEST_MODE, TEST_URL } from "../config";
-import { displayBtc, getWallet } from "../utils/util";
+import { SIGN_MESSAGE, TEST_MODE } from "../config";
+import { displayBtc } from "../utils/util";
 import { storeStorage } from "../utils/stoage";
 import useSocket from "../hooks/useSocket";
 
@@ -267,9 +264,15 @@ export default function Header() {
     if (socket && isConnected) {
       socket.on(
         "deposited",
-        ({ paymentAddress }: { paymentAddress: string }) => {
+        ({
+          paymentAddress,
+          amount,
+        }: {
+          paymentAddress: string;
+          amount: number;
+        }) => {
           if (paymentAddress === userInfo.paymentAddress) {
-            console.log("paymentAddress :>> ", paymentAddress);
+            toast.success(`${amount} BTC deposited`);
             refreshBalance();
           }
         }
@@ -290,6 +293,7 @@ export default function Header() {
             width={150} // Adjust the width as needed
             height={150} // Adjust the height as needed
             className="mr-4" // Add margin to the right of the image
+            draggable={false}
           />
         </div>
         <div className="flex flex-wrap justify-center items-center gap-3">
@@ -338,9 +342,22 @@ export default function Header() {
                     <div>Admin</div>
                   </Button>
                 )}
-                <div className="flex gap-1 items-center bg-bgColor-dark border-2 border-bgColor-stroke rounded-lg p-2">
-                  {`${displayBtc(userInfo.btcBalance)}`}
-                  <span className="text-orange font-bold">BTC</span>
+                <div className="flex items-center bg-bgColor-dark border-2 border-bgColor-stroke rounded-lg">
+                  <div className="flex flex-col justify-center">
+                    <div className="text-bgColor-lime text-center">
+                      Deposited
+                    </div>
+                    <div className="flex gap-1 items-center px-2">
+                      {`${displayBtc(userInfo.btcBalance)}`}
+                    </div>
+                  </div>
+                  <div className="flex flex-col justify-center">
+                    <div className="text-bgColor-lime text-center">Account</div>
+                    <div className="flex gap-1 items-center px-2">
+                      {`${displayBtc(userInfo.paymentBalance)}`}
+                      <span className="text-orange font-bold">BTC</span>
+                    </div>
+                  </div>
                 </div>
                 <Button
                   onClick={refreshBalance}
@@ -348,7 +365,7 @@ export default function Header() {
                   isIconOnly
                   variant="flat"
                 >
-                  <TfiReload className="text-white" />
+                  <RiRefreshLine className="text-white" size={24} />
                 </Button>
                 <Button
                   href={`/payment`}
@@ -357,7 +374,7 @@ export default function Header() {
                   variant="flat"
                 >
                   <div>Payment</div>
-                  <GiMoneyStack />
+                  <GiMoneyStack size={26} />
                 </Button>
                 <Button
                   href={`/payment`}
@@ -366,7 +383,7 @@ export default function Header() {
                   variant="flat"
                   isIconOnly
                 >
-                  <GiMoneyStack />
+                  <GiMoneyStack size={26} />
                 </Button>
                 <Button
                   as={Link}
@@ -375,7 +392,7 @@ export default function Header() {
                   variant="flat"
                 >
                   <div>Profile</div>
-                  <FaUser />
+                  <FaUser size={20} />
                 </Button>
                 <Button
                   as={Link}
@@ -384,7 +401,7 @@ export default function Header() {
                   variant="flat"
                   isIconOnly
                 >
-                  <FaUser />
+                  <FaUser size={20} />
                 </Button>
                 <Button
                   onClick={handleDisConnectWallet}
@@ -392,7 +409,10 @@ export default function Header() {
                   isIconOnly
                   variant="flat"
                 >
-                  <IoIosLogOut className="text-white text-xl" />
+                  <RiLogoutCircleRLine
+                    className="text-white text-xl"
+                    size={22}
+                  />
                 </Button>
               </div>
             ) : (

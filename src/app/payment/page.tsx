@@ -192,10 +192,13 @@ export default function CreateRune() {
                 onChange={setDepositAmount}
               ></PumpInput>
               <Button
-                color="warning"
                 variant="flat"
                 onClick={() => handleDeposit()}
                 isLoading={loading}
+                className={`bg-bgColor-pink${
+                  depositAmount ? "" : "/[.5]"
+                } text-white`}
+                disabled={depositAmount ? false : true}
               >
                 {loading ? "Loading" : "Deposit"}
               </Button>
@@ -228,10 +231,13 @@ export default function CreateRune() {
                 // }
               ></PumpInput>
               <Button
-                color="warning"
                 variant="flat"
                 onClick={() => handleWithdraw()}
                 isLoading={loading}
+                className={`bg-bgColor-pink${
+                  runeId && withdrawAmount ? "" : "/[.5]"
+                } text-white`}
+                disabled={runeId && withdrawAmount ? false : true}
               >
                 {loading ? "Loading" : "Withdraw"}
               </Button>

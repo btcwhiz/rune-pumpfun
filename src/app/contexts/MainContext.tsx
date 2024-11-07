@@ -14,6 +14,7 @@ const defaultValue = {
     userId: "",
     btcBalance: 0,
     paymentAddress: "",
+    paymentBalance: 0,
     paymentPublicKey: "",
     ordinalAddress: "",
     ordinalPublicKey: "",
@@ -41,6 +42,7 @@ export function MainProvider({ children }: { children: any }) {
   const [multiBalance, setMultiBalance] = useState<string>("");
   const [userInfo, setUserInfo] = useState<any>({
     userId: "",
+    paymentBalance: 0,
     btcBalance: 0,
   });
 
