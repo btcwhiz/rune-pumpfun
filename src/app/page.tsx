@@ -195,10 +195,10 @@ export default function Home() {
             }`}
             className="flex flex-col gap-3"
           >
-            <div className="flex gap-2.5">
+            <div className="flex flex-wrap gap-2.5">
               <ImageDisplay
                 src={item.image || item.imageString}
-                className="w-[90px] h-[90px] rounded"
+                className="w-[90px] h-[90px] min-w-[90px] min-h-[90px] rounded"
               />
               <div className="flex flex-col justify-between w-[220px] h-[77px]">
                 <div>

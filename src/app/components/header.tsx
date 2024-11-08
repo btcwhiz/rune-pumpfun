@@ -24,7 +24,7 @@ import {
 } from "sats-connect";
 import { RiLogoutCircleRLine, RiRefreshLine } from "react-icons/ri";
 import { MainContext } from "../contexts/MainContext";
-import { authUser } from "../api/requests";
+import { authUser, getUserInfoByProfileId } from "../api/requests";
 import Image from "next/image";
 import { CheckIcon } from "./icons/CheckIcon";
 import { SIGN_MESSAGE, TEST_MODE } from "../config";
@@ -36,12 +36,12 @@ const links = [
   {
     label: "Home",
     link: "/",
-    icon: <FaHome />,
+    icon: <FaHome size={20} />,
   },
   {
     label: "Etching",
     link: "/create",
-    icon: <FaPlus />,
+    icon: <FaPlus size={20} />,
   },
 ];
 
@@ -58,6 +58,7 @@ export default function Header() {
     setOrdinalPubkey,
     userInfo,
     setUserInfo,
+    setUserRunes,
   } = useContext(MainContext);
 
   const walletModal = useDisclosure();
@@ -283,6 +284,15 @@ export default function Header() {
     }
   }, [socket, isConnected, userInfo, refreshBalance]);
 
+  const getInitialData = async () => {
+    const pfp: any = await getUserInfoByProfileId(userInfo.profileId as string);
+    setUserRunes(pfp.runes);
+  };
+
+  useEffect(() => {
+    if (userInfo.profileId) getInitialData();
+  }, [userInfo]);
+
   return (
     <div className="z-10 p-4 sm:px-12 border-b-0 border-bgColor-stroke w-full font-mono text-sm max-w-[1258px]">
       <div className="flex flex-wrap justify-center md:justify-between items-center bg-gradient-to-t dark:from-black dark:via-black lg:bg-none w-full lg:size-auto mt-6">
@@ -465,19 +475,19 @@ export default function Header() {
           },
         }}
       >
-        <ModalContent className="w-[90%] sm:w-full bg-bgColor-dark border-2 border-bgColor-stroke p-3">
+        <ModalContent className="w-[90%] sm:w-full bg-bgColor-dark border-2 border-bgColor-stroke px-0 sm:px-3 py-3">
           {(onClose) => (
             <>
               <ModalBody>
                 <div className="w-full h-full flex flex-col gap-3 items-center rounded-xl">
-                  <div className="flex flex-col text-black text-[26px]">
+                  <div className="flex flex-col text-[26px]">
                     <p className="text-center font-bold">Connect Wallet</p>
                   </div>
                   <Divider className="bg-pink" />
                   {walletProviders.map((walletProvider, index) => (
                     <Button
                       key={index}
-                      className={`flex-row justify-between rounded-2xl w-full p-3 py-7 bg-bgColor-dark hover:brightness-125 duration-300 border-2 border-bgColor-stroke items-center ${
+                      className={`flex-row justify-between rounded-2xl w-full px-3 py-7 bg-bgColor-dark hover:brightness-125 duration-300 border-2 border-bgColor-stroke items-center ${
                         walletProvider.label === "Xverse"
                           ? "flex"
                           : "hidden sm:flex"

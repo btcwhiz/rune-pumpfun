@@ -40,10 +40,10 @@ export default function Profile() {
   const router = useRouter();
   const { profileId } = useParams();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { userInfo, setUserInfo } = useContext(MainContext);
+  const { userInfo, setUserInfo, userRunes } = useContext(MainContext);
 
   const [profileInfo, setProfileInfo] = useState<any>({});
-  const [runes, setRunes] = useState<any[]>([]);
+  const [runes, setRunes] = useState<any[]>(userRunes);
   const [myRunes, setMyRunes] = useState<any[]>([]);
   const [isEditable, setIsEditable] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
@@ -84,11 +84,11 @@ export default function Profile() {
           runeId,
           rAmount
         );
-        if (runeId === "btc") {
+        if (runeId.toLocaleLowerCase() === "btc") {
           const signedPsbt = await unisatSignPsbt(preWithdrawRes?.psbt);
           const withdrawRes = await withdrawFunc(
             userInfo.userId,
-            runeId,
+            runeId.toLocaleLowerCase(),
             rAmount,
             preWithdrawRes.requestId,
             signedPsbt
@@ -121,13 +121,12 @@ export default function Profile() {
   const getAllRuneBalances = async () => {
     try {
       const pfp: any = await getUserInfoByProfileId(profileId as string);
-      console.log("pfp :>> ", pfp);
       setProfileInfo({
         ...pfp.userInfo,
         multisigWallet: pfp.multisigWallet,
       });
       // console.log("pfp.runes :>> ", pfp.runes);
-      setRunes(pfp.runes);
+      setRunes(userRunes);
       setMyRunes(
         pfp.runes.filter(
           (item: any) => item.creatorAddress === userInfo.paymentAddress

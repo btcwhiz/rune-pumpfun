@@ -781,7 +781,7 @@ export default function CreateRune() {
                               (target === true ? buyRuneAmount : btcAmount) &&
                               slippage
                                 ? "bg-bgColor-pink"
-                                : "bg-bgColor-pink/[.5] cursor-not-allowed"
+                                : "bg-bgColor-pink/[.5]"
                             } text-white`}
                             variant="flat"
                             onClick={() => handlePreBuy()}
@@ -845,7 +845,7 @@ export default function CreateRune() {
                               estimatePrice / SATS_MULTIPLE
                             } btc`}</div>
                             <Button
-                              className="bg-bgColor-pink text-bgColor-lime"
+                              className="bg-bgColor-pink text-white"
                               variant="flat"
                               onClick={() => handleSell()}
                               isLoading={loading}

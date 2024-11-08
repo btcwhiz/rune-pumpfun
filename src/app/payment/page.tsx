@@ -1,6 +1,12 @@
 "use client";
 
-import { Button } from "@nextui-org/react";
+import {
+  Avatar,
+  Button,
+  Select,
+  SelectItem,
+  SelectSection,
+} from "@nextui-org/react";
 import Link from "next/link";
 import { useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -9,6 +15,7 @@ import {
   depositFunc,
   getAllTransactions,
   getBtcBalance,
+  getUserInfoByProfileId,
   preDepositFunc,
   preWithdrawFunc,
   withdrawFunc,
@@ -18,12 +25,217 @@ import { unisatSignPsbt } from "../utils/pump";
 import { SATS_MULTIPLE, testVersion } from "../config/config";
 import useSocket from "../hooks/useSocket";
 import PumpInput from "../components/PumpInput";
-import { getWallet } from "../utils/util";
+import { displayBtc, getWallet } from "../utils/util";
 import { XverseSignPsbt } from "../utils/transaction";
+import ImageDisplay from "../components/ImageDIsplay";
+import Image from "next/image";
+
+const users = [
+  {
+    id: 1,
+    name: "Tony Reichert",
+    role: "CEO",
+    team: "Management",
+    status: "active",
+    age: "29",
+    avatar: "https://d2u8k2ocievbld.cloudfront.net/memojis/male/1.png",
+    email: "tony.reichert@example.com",
+  },
+  {
+    id: 2,
+    name: "Zoey Lang",
+    role: "Tech Lead",
+    team: "Development",
+    status: "paused",
+    age: "25",
+    avatar: "https://d2u8k2ocievbld.cloudfront.net/memojis/female/1.png",
+    email: "zoey.lang@example.com",
+  },
+  {
+    id: 3,
+    name: "Jane Fisher",
+    role: "Sr. Dev",
+    team: "Development",
+    status: "active",
+    age: "22",
+    avatar: "https://d2u8k2ocievbld.cloudfront.net/memojis/female/2.png",
+    email: "jane.fisher@example.com",
+  },
+  {
+    id: 4,
+    name: "William Howard",
+    role: "C.M.",
+    team: "Marketing",
+    status: "vacation",
+    age: "28",
+    avatar: "https://d2u8k2ocievbld.cloudfront.net/memojis/male/2.png",
+    email: "william.howard@example.com",
+  },
+  {
+    id: 5,
+    name: "Kristen Copper",
+    role: "S. Manager",
+    team: "Sales",
+    status: "active",
+    age: "24",
+    avatar: "https://d2u8k2ocievbld.cloudfront.net/memojis/female/3.png",
+    email: "kristen.cooper@example.com",
+  },
+  {
+    id: 6,
+    name: "Brian Kim",
+    role: "P. Manager",
+    team: "Management",
+    age: "29",
+    avatar: "https://d2u8k2ocievbld.cloudfront.net/memojis/male/3.png",
+    email: "brian.kim@example.com",
+    status: "active",
+  },
+  {
+    id: 7,
+    name: "Michael Hunt",
+    role: "Designer",
+    team: "Design",
+    status: "paused",
+    age: "27",
+    avatar: "https://d2u8k2ocievbld.cloudfront.net/memojis/male/4.png",
+    email: "michael.hunt@example.com",
+  },
+  {
+    id: 8,
+    name: "Samantha Brooks",
+    role: "HR Manager",
+    team: "HR",
+    status: "active",
+    age: "31",
+    avatar: "https://d2u8k2ocievbld.cloudfront.net/memojis/female/4.png",
+    email: "samantha.brooks@example.com",
+  },
+  {
+    id: 9,
+    name: "Frank Harrison",
+    role: "F. Manager",
+    team: "Finance",
+    status: "vacation",
+    age: "33",
+    avatar: "https://d2u8k2ocievbld.cloudfront.net/memojis/male/5.png",
+    email: "frank.harrison@example.com",
+  },
+  {
+    id: 10,
+    name: "Emma Adams",
+    role: "Ops Manager",
+    team: "Operations",
+    status: "active",
+    age: "35",
+    avatar: "https://d2u8k2ocievbld.cloudfront.net/memojis/female/5.png",
+    email: "emma.adams@example.com",
+  },
+  {
+    id: 11,
+    name: "Brandon Stevens",
+    role: "Jr. Dev",
+    team: "Development",
+    status: "active",
+    age: "22",
+    avatar: "https://d2u8k2ocievbld.cloudfront.net/memojis/male/7.png",
+    email: "brandon.stevens@example.com",
+  },
+  {
+    id: 12,
+    name: "Megan Richards",
+    role: "P. Manager",
+    team: "Product",
+    status: "paused",
+    age: "28",
+    avatar: "https://d2u8k2ocievbld.cloudfront.net/memojis/female/7.png",
+    email: "megan.richards@example.com",
+  },
+  {
+    id: 13,
+    name: "Oliver Scott",
+    role: "S. Manager",
+    team: "Security",
+    status: "active",
+    age: "37",
+    avatar: "https://d2u8k2ocievbld.cloudfront.net/memojis/male/8.png",
+    email: "oliver.scott@example.com",
+  },
+  {
+    id: 14,
+    name: "Grace Allen",
+    role: "M. Specialist",
+    team: "Marketing",
+    status: "active",
+    age: "30",
+    avatar: "https://d2u8k2ocievbld.cloudfront.net/memojis/female/8.png",
+    email: "grace.allen@example.com",
+  },
+  {
+    id: 15,
+    name: "Noah Carter",
+    role: "IT Specialist",
+    team: "I. Technology",
+    status: "paused",
+    age: "31",
+    avatar: "https://d2u8k2ocievbld.cloudfront.net/memojis/male/9.png",
+    email: "noah.carter@example.com",
+  },
+  {
+    id: 16,
+    name: "Ava Perez",
+    role: "Manager",
+    team: "Sales",
+    status: "active",
+    age: "29",
+    avatar: "https://d2u8k2ocievbld.cloudfront.net/memojis/female/9.png",
+    email: "ava.perez@example.com",
+  },
+  {
+    id: 17,
+    name: "Liam Johnson",
+    role: "Data Analyst",
+    team: "Analysis",
+    status: "active",
+    age: "28",
+    avatar: "https://d2u8k2ocievbld.cloudfront.net/memojis/male/11.png",
+    email: "liam.johnson@example.com",
+  },
+  {
+    id: 18,
+    name: "Sophia Taylor",
+    role: "QA Analyst",
+    team: "Testing",
+    status: "active",
+    age: "27",
+    avatar: "https://d2u8k2ocievbld.cloudfront.net/memojis/female/11.png",
+    email: "sophia.taylor@example.com",
+  },
+  {
+    id: 19,
+    name: "Lucas Harris",
+    role: "Administrator",
+    team: "Information Technology",
+    status: "paused",
+    age: "32",
+    avatar: "https://d2u8k2ocievbld.cloudfront.net/memojis/male/12.png",
+    email: "lucas.harris@example.com",
+  },
+  {
+    id: 20,
+    name: "Mia Robinson",
+    role: "Coordinator",
+    team: "Operations",
+    status: "active",
+    age: "26",
+    avatar: "https://d2u8k2ocievbld.cloudfront.net/memojis/female/12.png",
+    email: "mia.robinson@example.com",
+  },
+];
 
 export default function CreateRune() {
   const { socket, isConnected } = useSocket();
-  const { userInfo } = useContext(MainContext);
+  const { userInfo, userRunes, setUserRunes } = useContext(MainContext);
 
   const [loading, setLoading] = useState<boolean>(false);
   const [allTransactions, setAllTransactions] = useState<any[]>([]);
@@ -36,6 +248,11 @@ export default function CreateRune() {
     const alltxs = await getAllTransactions(userInfo.userId);
     // console.log("alltxs :>> ", alltxs.txs);
     setAllTransactions(alltxs.txs || []);
+  };
+
+  const getInitialData = async () => {
+    const pfp: any = await getUserInfoByProfileId(userInfo.profileId as string);
+    setUserRunes(pfp.runes);
   };
 
   const handleDeposit = async () => {
@@ -163,13 +380,16 @@ export default function CreateRune() {
           getTxs();
         }
         setLoading(false);
+        getInitialData();
       } else {
         setLoading(false);
+        getInitialData();
         return toast.error("Please connect wallet");
       }
     } catch (error) {
       console.log("error :>> ", error);
       setLoading(false);
+      getInitialData();
     }
   };
 
@@ -209,11 +429,72 @@ export default function CreateRune() {
           <div className="flex flex-col gap-3 border-2 bg-bgColor-ghost p-2 border-bgColor-stroke rounded-xl">
             <div className="py-3 font-bold text-center text-lg">Withdraw</div>
             <div className="flex flex-col gap-3">
-              <PumpInput
+              <Select
+                items={[
+                  {
+                    runeId: "btc",
+                    runeName: "BTC",
+                    balance: displayBtc(userInfo.btcBalance),
+                  },
+                  ...userRunes,
+                ]}
+                placeholder="Select TOKEN"
+                labelPlacement="outside"
+                className="max-w-xs border-2 border-bgColor-stroke rounded-xl text-bgColor-ghost"
+                classNames={{
+                  label:
+                    "group-data-[filled=true]:-translate-y-5 text-bgColor-pink text-bgColor-pink",
+                  trigger: "min-h-10 h-14 text-bgColor-pink text-bgColor-pink",
+                  listboxWrapper:
+                    "max-h-[400px] text-bgColor-pink text-bgColor-pink",
+                }}
+                onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                  setRuneId(e.target.value);
+                }}
+              >
+                {(userRune: any) => (
+                  <SelectItem
+                    key={userRune.runeId}
+                    textValue={`${userRune.runeName} - ${userRune.balance}`}
+                  >
+                    <div className="flex gap-2 items-center">
+                      <div className="rounded-lg flex items-center justify-center">
+                        {userRune.runeId.toLocaleLowerCase() === "btc" ? (
+                          <Image
+                            width={48}
+                            height={48}
+                            src={"/img/bitcoin.png"}
+                            alt="great"
+                            draggable={false}
+                          />
+                        ) : (
+                          <ImageDisplay
+                            src={userRune.runeImage}
+                            className="w-14 h-14 min-w-10 min-h-10"
+                          ></ImageDisplay>
+                        )}
+                      </div>
+                      {/* <Avatar
+                        alt={user.name}
+                        className="flex-shrink-0"
+                        size="sm"
+                        src={user.avatar}
+                      /> */}
+                      <div className="flex flex-col">
+                        <span className="text-small">{userRune.runeName}</span>
+                        <span className="text-tiny text-default-400">
+                          {userRune.balance}
+                        </span>
+                      </div>
+                    </div>
+                  </SelectItem>
+                )}
+              </Select>
+              {/* <PumpInput
                 label="Rune ID ('btc' or rune id)"
                 value={runeId}
                 onChange={setRuneId}
-              ></PumpInput>
+              ></PumpInput> */}
               <PumpInput
                 label="Withdraw Amount"
                 value={withdrawAmount}
@@ -265,12 +546,7 @@ export default function CreateRune() {
             <div key={index} className="gap-3 grid grid-cols-4 sm:grid-cols-6">
               <div className="hidden sm:flex">{index + 1}</div>
               <div className="uppercase">
-                <span className="hidden sm:flex">
-                  {item.type === 0 ? "deposit" : "withdraw"}
-                </span>
-                <span className="flex sm:hidden">
-                  {item.type === 0 ? "d" : "w"}
-                </span>
+                <span>{item.type === 0 ? "deposit" : "withdraw"}</span>
               </div>
               <div className="uppercase hidden sm:flex">
                 {item.withdrawType === 0 ? "btc" : "rune"}
