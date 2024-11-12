@@ -290,7 +290,9 @@ export default function Header() {
   };
 
   useEffect(() => {
-    if (userInfo.profileId) getInitialData();
+    if (userInfo) {
+      if (userInfo?.profileId) getInitialData();
+    }
   }, [userInfo]);
 
   return (
