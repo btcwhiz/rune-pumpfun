@@ -172,7 +172,7 @@ export default function Home() {
 
     return (
       <Card className="relative box-border flex flex-col p-3 gap-4 bg-[rgba(234,234,234,0.1)] rounded-md border border-bgColor-stroke text-primary-50">
-        <CardBody className="flex flex-col justify-between p-5">
+        <CardBody className="flex flex-col justify-between p-2">
           {selected === "pending" && (
             <div className="flex justify-between items-center gap-2 text-small">
               <span className="pl-2 flex gap-1">
@@ -200,17 +200,17 @@ export default function Home() {
                 src={item.image || item.imageString}
                 className="w-[90px] h-[90px] min-w-[90px] min-h-[90px] rounded"
               />
-              <div className="flex flex-col justify-between w-[220px] h-[77px]">
+              <div className="flex flex-col justify-between w-[200px] h-[77px]">
                 <div>
                   <span className="text-white text-xs">NAME:</span>
                   <h3 className="text-white text-base font-bold">
-                    {item.runeName}
+                    {`${item?.runeName?.slice(0, 10)}...`}
                   </h3>
                 </div>
                 <div>
                   <span className="text-white text-xs">ID: {item.runeId}</span>
                 </div>
-                <div className="flex items-center bg-[rgba(0,0,0,0.2)] rounded p-2.5 pl-0 h-[25px] gap-[5px] bg-transparent">
+                <div className="flex items-center rounded p-2.5 pl-0 h-[25px] gap-[5px] bg-transparent">
                   <span className="text-white text-xs w-auto">{`${
                     progress?.toFixed(2) || 0
                   }%`}</span>
@@ -233,13 +233,13 @@ export default function Home() {
             </div>
 
             <div className="flex justify-between mt-0 gap-2">
-              <button className="bg-[#99E591] text-[#000000] leading-[1.1] text-[10px] rounded w-[96px] h-[35px]">
-                Remain: {item.remainAmount}
+              <button className="bg-[#99E591] text-[#000000] leading-[1.1] text-[13px] rounded w-[96px] h-[35px] font-bold">
+                Remaining: {item.remainAmount}
               </button>
-              <button className="bg-[#91DEE5] text-[#000000] text-[10px] leading-[1.1] rounded w-[96px] h-[35px]">
+              <button className="bg-[#91DEE5] text-[#000000] leading-[1.1] text-[13px] rounded w-[96px] h-[35px] font-bold">
                 Price: {(item.pool / item.remainAmount).toFixed(5)}
               </button>
-              <button className="bg-[#E591DD] text-[#000000] leading-[1.1] text-[10px] rounded w-[96px] h-[35px]">
+              <button className="bg-[#E591DD] text-[#000000] leading-[1.1] text-[13px] rounded w-[96px] h-[35px] font-bold">
                 Cap:{" "}
                 {(
                   (item.runeAmount * (item.pool / item.remainAmount)) /
@@ -248,11 +248,11 @@ export default function Home() {
               </button>
             </div>
 
-            <div className="flex justify-between mt-0 w-full gap-2">
+            {/* <div className="flex justify-between mt-0 w-full gap-2">
               <button className="b-grey-100 border-1 rounded-4 text-white text-[10px] font-bold w-full h-[35px]">
                 VIEW TOKEN
               </button>
-            </div>
+            </div> */}
           </Link>
         </CardBody>
       </Card>

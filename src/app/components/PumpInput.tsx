@@ -29,7 +29,7 @@ const PumpInput = ({
   endContent,
 }: {
   type?: string;
-  label?: string;
+  label?: string | ReactNode;
   value: string;
   color?:
     | "default"

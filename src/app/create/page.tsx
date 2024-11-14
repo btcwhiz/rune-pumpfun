@@ -2,21 +2,32 @@
 
 import { useContext, useRef, useState } from "react";
 import Image from "next/image";
-import { Accordion, AccordionItem, Button, Input } from "@nextui-org/react";
+import {
+  Accordion,
+  AccordionItem,
+  Button,
+  Input,
+  Tooltip,
+} from "@nextui-org/react";
 import toast from "react-hot-toast";
 import { LuUpload } from "react-icons/lu";
+import { useRouter } from "next/navigation";
 import { etchingRuneFunc, preEtchingRuneFunc } from "../api/requests";
 import { MainContext } from "../contexts/MainContext";
 import { unisatSignPsbt } from "../utils/pump";
 import PumpInput from "../components/PumpInput";
 import { displayBtc, getWallet } from "../utils/util";
 import { XverseSignPsbt } from "../utils/transaction";
+import { WalletTypes } from "../utils/types";
+import { GrCircleQuestion } from "react-icons/gr";
+
+const itemClasses = {
+  base: "py-0 w-full",
+  title: "text-white",
+};
 
 export default function CreateRune() {
-  const itemClasses = {
-    base: "py-0 w-full",
-    title: "text-white",
-  };
+  const { push } = useRouter();
 
   const { userInfo } = useContext(MainContext);
 
@@ -147,9 +158,9 @@ export default function CreateRune() {
         setEtchingFeeRate(etchingFee);
         const storedWallet = getWallet();
         let signedPsbt = "";
-        if (storedWallet.type === "Unisat") {
+        if (storedWallet.type === WalletTypes.UNISAT) {
           signedPsbt = await unisatSignPsbt(etchingPsbt.psbt);
-        } else if (storedWallet.type === "Xverse") {
+        } else if (storedWallet.type === WalletTypes.XVERSE) {
           const { signedPSBT } = await XverseSignPsbt(
             etchingPsbt.psbt,
             etchingPsbt.inputsToSign
@@ -167,7 +178,7 @@ export default function CreateRune() {
           );
 
           if (status) {
-            toast.success(msg);
+            toast.success(msg, { duration: 5000 });
           }
         }
         setImageData(null);
@@ -181,6 +192,7 @@ export default function CreateRune() {
         setWebsite("");
         setEtchingFeeRate("");
         setPreFlag(false);
+        push("/");
       }
       setLoading(false);
     } catch (error) {
@@ -233,7 +245,27 @@ export default function CreateRune() {
         ></PumpInput>
         <PumpInput
           className="!text-white"
-          label="Rune Name"
+          label={
+            <div className="flex items-center gap-1">
+              <span>Rune Name</span>
+              <Tooltip
+                color="secondary"
+                content={
+                  <div className="px-1 py-2">
+                    <div className="text-tiny">E.g. THOG.IS.THE.BEST</div>
+                  </div>
+                }
+                className=" bg-pink"
+              >
+                <Button
+                  isIconOnly
+                  className="rounded-full p-0 w-[14px] h-[14px] min-w-[14px] min-h-[14px] bg-transparent text-pink mt-[2px] cursor-pointer"
+                >
+                  <GrCircleQuestion />
+                </Button>
+              </Tooltip>
+            </div>
+          }
           value={name}
           onChange={setName}
         ></PumpInput>
@@ -247,7 +279,27 @@ export default function CreateRune() {
         <PumpInput
           className="!text-white"
           type="number"
-          label="Dex Percentage(min: 20, max: 50)"
+          label={
+            <div className="flex items-center gap-1">
+              <span>Dex Percentage</span>
+              <Tooltip
+                color="secondary"
+                content={
+                  <div className="px-1 py-2">
+                    <div className="text-tiny">Min: 20, Max: 50</div>
+                  </div>
+                }
+                className=" bg-pink"
+              >
+                <Button
+                  isIconOnly
+                  className="rounded-full p-0 w-[14px] h-[14px] min-w-[14px] min-h-[14px] bg-transparent text-pink mt-[2px] cursor-pointer"
+                >
+                  <GrCircleQuestion />
+                </Button>
+              </Tooltip>
+            </div>
+          }
           value={`${dexPercentage}`}
           onChange={setDexPercentage}
         ></PumpInput>

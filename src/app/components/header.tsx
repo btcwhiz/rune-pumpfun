@@ -308,39 +308,39 @@ export default function Header() {
             draggable={false}
           />
         </div>
-        <div className="flex flex-wrap justify-center items-center gap-3">
-          {links.map((item, index) => (
-            <div key={index}>
-              <Button
-                href={item.link}
-                as={Link}
-                className={`${
-                  item.link === path
-                    ? "border-pink border-b-3 text-white"
-                    : "text-white"
-                } rounded-none items-center sm:gap-2 sm:h-16 hidden sm:flex`}
-                variant="light"
-              >
-                {item.icon}
-                <span>{item.label}</span>
-              </Button>
-              <Button
-                href={item.link}
-                as={Link}
-                className={`${
-                  item.link === path
-                    ? "border-pink border-b-3 text-pink"
-                    : "text-white"
-                } rounded-none flex sm:hidden items-center sm:gap-2 sm:h-16`}
-                variant="light"
-                isIconOnly
-              >
-                {item.icon}
-              </Button>
-            </div>
-          ))}
-        </div>
-        <div className="flex items-center gap-2">
+        <div className="flex justify-end gap-2">
+          <div className="flex flex-wrap justify-center items-center gap-3">
+            {links.map((item, index) => (
+              <div key={index}>
+                <Button
+                  href={item.link}
+                  as={Link}
+                  className={`${
+                    item.link === path
+                      ? "border-pink border-t-3 border-b-3 text-white"
+                      : "text-white"
+                  } rounded-none items-center sm:gap-2 sm:h-16 hidden sm:flex`}
+                  variant="light"
+                >
+                  {item.icon}
+                  <span>{item.label}</span>
+                </Button>
+                <Button
+                  href={item.link}
+                  as={Link}
+                  className={`${
+                    item.link === path
+                      ? "border-pink border-b-3 text-pink"
+                      : "text-white"
+                  } rounded-none flex sm:hidden items-center sm:gap-2 sm:h-16`}
+                  variant="light"
+                  isIconOnly
+                >
+                  {item.icon}
+                </Button>
+              </div>
+            ))}
+          </div>
           <div className="py-3 flex justify-center items-center">
             {userInfo?.userId ? (
               <div className="flex flex-wrap justify-center items-center gap-3">

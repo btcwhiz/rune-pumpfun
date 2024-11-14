@@ -630,6 +630,7 @@ export default function CreateRune() {
                 <div className="flex items-center gap-2">
                   <div>
                     <span>Ticker: </span>
+                    <span>{runeInfo?.runeName}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span>Marketcap: </span>
