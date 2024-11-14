@@ -75,7 +75,7 @@ export default function CreateRune() {
   const [runeInfo, setRuneInfo] = useState<any>({});
   const [runeBalance, setRuneBalance] = useState<number>(0);
 
-  const [target, setTarget] = useState<boolean>(true);
+  const [target, setTarget] = useState<boolean>(false);
 
   // Buy
   const [buyFlag, setBuyFlag] = useState<boolean>(false);
