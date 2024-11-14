@@ -108,6 +108,7 @@ export default function CreateRune() {
       if (!imageContent || !name) {
         return toast.error("Invalid parameters");
       }
+      const runeName = name.replace(/ /g, ".");
       if (initialBuyAmount) {
         if (
           !Number(initialBuyAmount) ||
@@ -124,7 +125,7 @@ export default function CreateRune() {
       setLoading(true);
 
       const saveData = {
-        name,
+        name: runeName,
         ticker: rTicker,
         description,
         dexPercentage,

@@ -787,7 +787,12 @@ export default function CreateRune() {
                             variant="flat"
                             onClick={() => handlePreBuy()}
                             isLoading={loading}
-                            disabled={buyRuneAmount && slippage ? false : true}
+                            disabled={
+                              (target === true ? buyRuneAmount : btcAmount) &&
+                              slippage
+                                ? false
+                                : true
+                            }
                           >
                             Buy
                           </Button>
