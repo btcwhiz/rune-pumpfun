@@ -233,18 +233,22 @@ export default function Home() {
             </div>
 
             <div className="flex justify-between mt-0 gap-2">
-              <button className="bg-[#99E591] text-[#000000] leading-[1.1] text-[13px] rounded w-[96px] h-[35px] font-bold">
-                Remaining: {item.remainAmount}
+              <button className="bg-[#99E591] text-[#000000] leading-[1.1] text-[13px] rounded w-[96px] h-[35px] font-bold flex flex-col gap-1 justify-center items-center">
+                <div>Remaining:</div>
+                <div>{item.remainAmount}</div>
               </button>
-              <button className="bg-[#91DEE5] text-[#000000] leading-[1.1] text-[13px] rounded w-[96px] h-[35px] font-bold">
-                Price: {(item.pool / item.remainAmount).toFixed(5)}
+              <button className="bg-[#91DEE5] text-[#000000] leading-[1.1] text-[13px] rounded w-[96px] h-[35px] font-bold flex flex-col gap-1 justify-center items-center">
+                <div>Price:</div>
+                <div>{(item.pool / item.remainAmount).toFixed(5)}</div>
               </button>
-              <button className="bg-[#E591DD] text-[#000000] leading-[1.1] text-[13px] rounded w-[96px] h-[35px] font-bold">
-                Cap:{" "}
-                {(
-                  (item.runeAmount * (item.pool / item.remainAmount)) /
-                  SATS_MULTIPLE
-                ).toFixed(5)}
+              <button className="bg-[#E591DD] text-[#000000] leading-[1.1] text-[13px] rounded w-[96px] h-[35px] font-bold flex flex-col gap-1 justify-center items-center">
+                <div>Cap:</div>
+                <div>
+                  {(
+                    (item.runeAmount * (item.pool / item.remainAmount)) /
+                    SATS_MULTIPLE
+                  ).toFixed(5)}
+                </div>
               </button>
             </div>
 

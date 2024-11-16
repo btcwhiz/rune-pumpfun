@@ -26,7 +26,7 @@ const PumpInput = ({
   classNames = InputStyles,
   onChange,
   disabled = false,
-  endContent,
+  endContent = <></>,
 }: {
   type?: string;
   label?: string | ReactNode;
@@ -65,6 +65,7 @@ const PumpInput = ({
       }}
       disabled={disabled}
       placeholder={placeholder}
+      endContent={endContent}
     />
   );
 };

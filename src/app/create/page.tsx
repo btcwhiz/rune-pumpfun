@@ -38,8 +38,8 @@ export default function CreateRune() {
   // Etching
   const [imageData, setImageData] = useState(null);
   const [imageContent, setImageContent] = useState<string>("");
+  const [symbol, setSymbol] = useState<string>("");
   const [ticker, setTicker] = useState<string>("");
-  const [name, setName] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [dexPercentage, setDexPercentage] = useState<number>(20);
   const [initialBuyAmount, setInitialBuyAmount] = useState<string>("");
@@ -103,12 +103,18 @@ export default function CreateRune() {
       if (!userInfo.userId) {
         return toast.error("Please connect wallet first.");
       }
-      let rTicker: any = ticker;
-      if (!rTicker) rTicker = "$";
-      if (!imageContent || !name) {
+      let rSymbol: any = symbol;
+      if (!rSymbol) rSymbol = "$";
+      if (!imageContent || !ticker) {
         return toast.error("Invalid parameters");
       }
-      const runeName = name.replace(/ /g, ".");
+      const rTicker = ticker
+        .replace(/[^a-zA-Z.• ]/g, "")
+        .toUpperCase()
+        .replace(/[.\s]/g, "•");
+      if (rTicker.length < 12 || rTicker.length > 30) {
+        return toast.error("invalid ticker");
+      }
       if (initialBuyAmount) {
         if (
           !Number(initialBuyAmount) ||
@@ -125,8 +131,8 @@ export default function CreateRune() {
       setLoading(true);
 
       const saveData = {
-        name: runeName,
         ticker: rTicker,
+        symbol: rSymbol,
         description,
         dexPercentage,
         initialBuyAmount,
@@ -184,8 +190,8 @@ export default function CreateRune() {
         }
         setImageData(null);
         setImageContent("");
+        setSymbol("");
         setTicker("");
-        setName("");
         setDescription("");
         setInitialBuyAmount("");
         setTwitter("");
@@ -240,20 +246,15 @@ export default function CreateRune() {
         </div>
         <PumpInput
           className="!text-white"
-          label="Rune Symbol (optional)"
-          value={ticker}
-          onChange={setTicker}
-        ></PumpInput>
-        <PumpInput
-          className="!text-white"
+          placeholder="Ticker"
           label={
             <div className="flex items-center gap-1">
-              <span>Rune Name</span>
+              <span>Rune Ticker</span>
               <Tooltip
                 color="secondary"
                 content={
-                  <div className="px-1 py-2">
-                    <div className="text-tiny">E.g. THOG.IS.THE.BEST</div>
+                  <div className="px-1 py-2 text-tiny">
+                    The identifier for this rune. Use . for • spacers
                   </div>
                 }
                 className=" bg-pink"
@@ -267,8 +268,48 @@ export default function CreateRune() {
               </Tooltip>
             </div>
           }
-          value={name}
-          onChange={setName}
+          value={ticker}
+          onChange={(value) => {
+            if (value.length <= 30) {
+              const filteredValue = value
+                .replace(/[^a-zA-Z.• ]/g, "")
+                .toUpperCase()
+                .replace(/[.\s]/g, "•");
+              setTicker(filteredValue);
+            }
+          }}
+          endContent={<div className="text-xs w-24">12~30 chars</div>}
+        ></PumpInput>
+        <PumpInput
+          className="!text-white"
+          label={
+            <div className="flex items-center gap-1">
+              <span>Symbol</span>
+              <Tooltip
+                color="secondary"
+                content={
+                  <div className="px-1 py-2 text-tiny">
+                    Single character symbol for your token, e.g. $
+                  </div>
+                }
+                className=" bg-pink"
+              >
+                <Button
+                  isIconOnly
+                  className="rounded-full p-0 w-[14px] h-[14px] min-w-[14px] min-h-[14px] bg-transparent text-pink mt-[2px] cursor-pointer"
+                >
+                  <GrCircleQuestion />
+                </Button>
+              </Tooltip>
+            </div>
+          }
+          placeholder="One charactor"
+          value={symbol}
+          onChange={(value) => {
+            if (value.length <= 1) {
+              setSymbol(value);
+            }
+          }}
         ></PumpInput>
         <PumpInput
           className="!text-white"
