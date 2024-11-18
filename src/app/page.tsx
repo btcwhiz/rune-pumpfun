@@ -1,7 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Button, Input, Progress, Spinner, Tab, Tabs } from "@nextui-org/react";
+import {
+  Button,
+  Input,
+  Progress,
+  Select,
+  SelectItem,
+  Spinner,
+  Tab,
+  Tabs,
+} from "@nextui-org/react";
 import Link from "next/link";
 import { Card, CardBody } from "@nextui-org/react";
 import { getCurrentBlock, getRuneFunc, getTxDetails } from "./api/requests";
@@ -11,6 +20,12 @@ import { calcProgress } from "./utils/util";
 import { SearchIcon } from "./components/icons/SearchIcon";
 import News from "./components/News";
 import { RiRefreshLine } from "react-icons/ri";
+
+const searchEngine = [
+  { key: "creation", label: "Creation Time" },
+  { key: "marketcap", label: "Marketcap" },
+  { key: "currentlylive", label: "Currently Live" },
+];
 
 export default function Home() {
   const [runes, setRunes] = useState<any[]>([]);
@@ -27,7 +42,7 @@ export default function Home() {
       setRecentBlockHeight(latestBlock.blockHeight);
       let runeRes: any = await getRuneFunc();
       if (runeRes) {
-        setSearchKey("");
+        setSearchKey("creation");
         const etchedRunes = runeRes.runes.filter(
           (item: any) => item.runeId !== ""
         );
@@ -195,16 +210,18 @@ export default function Home() {
             }`}
             className="flex flex-col gap-3"
           >
-            <div className="flex flex-wrap gap-2.5">
+            <div className="flex gap-2.5">
               <ImageDisplay
                 src={item.image || item.imageString}
                 className="w-[90px] h-[90px] min-w-[90px] min-h-[90px] rounded"
               />
-              <div className="flex flex-col justify-between w-[200px] h-[77px]">
+              <div className="flex flex-col justify-between w-full h-[77px]">
                 <div>
                   <span className="text-white text-xs">NAME:</span>
                   <h3 className="text-white text-base font-bold">
-                    {`${item?.runeName?.slice(0, 10)}...`}
+                    {`${item?.runeName?.slice(0, 16)}${
+                      item?.runeName.length > 16 ? "..." : ""
+                    }`}
                   </h3>
                 </div>
                 <div>
@@ -271,6 +288,33 @@ export default function Home() {
         <div className="flex flex-col gap-3 md:px-10 p-2">
           <div className="flex justify-center md:justify-between items-center flex-col gap-6 sm:flex-row ">
             <div className="flex items-center flex-wrap gap-8 justify-center sm:justify-normal">
+              <div className="flex items-end">
+                <Select
+                  className="min-w-52"
+                  labelPlacement="outside"
+                  color="secondary"
+                  // @ts-ignore @es-lint-disable-next-line
+                  aria-label="This is Select Option"
+                  classNames={{
+                    value: "text-pink",
+                    label: "!text-pink",
+                    trigger: "bg-[rgba(234,234,234,0.2)]",
+                  }}
+                  defaultSelectedKeys={"creation"}
+                >
+                  {searchEngine.map((engine) => (
+                    <SelectItem
+                      key={engine.key}
+                      classNames={{
+                        title: "text-pink",
+                        base: "text-pink",
+                      }}
+                    >
+                      {engine.label}
+                    </SelectItem>
+                  ))}
+                </Select>
+              </div>
               <Tabs
                 aria-label="Options"
                 variant="underlined"
@@ -302,15 +346,17 @@ export default function Home() {
                 />
                 <Tab key="waiting" title="Waiting"></Tab>
               </Tabs>
-              <Button
-                // color="warning"
-                onClick={() => getRunes()}
-                className="rounded-full bg-pink"
-                isIconOnly
-                variant="flat"
-              >
-                <RiRefreshLine className="text-white" size={24} />
-              </Button>
+              <div className="flex items-end">
+                <Button
+                  // color="warning"
+                  onClick={() => getRunes()}
+                  className="rounded-full bg-pink"
+                  isIconOnly
+                  variant="flat"
+                >
+                  <RiRefreshLine className="text-white" size={24} />
+                </Button>
+              </div>
             </div>
 
             <Input
@@ -320,7 +366,7 @@ export default function Home() {
               radius="lg"
               value={searchKey}
               onChange={(e) => handleSearchKeyChange(e.target.value as string)}
-              className="w-full min-w-[300px] md:max-w-[400px] h-[50px] bg-transparent bg-[rgba(234,234,234,0.2)] rounded-xl flex-grow-0 z-0"
+              className="w-full min-w-[300px] md:max-w-[400px] h-[50px] bg-[rgba(234,234,234,0.2)] rounded-xl flex-grow-0 z-0"
               classNames={{
                 base: "max-w-full",
                 mainWrapper: "h-full",
