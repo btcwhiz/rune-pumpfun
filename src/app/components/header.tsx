@@ -366,7 +366,7 @@ export default function Header() {
                   <div className="flex flex-col justify-center">
                     <div className="text-bgColor-lime text-center">Account</div>
                     <div className="flex gap-1 items-center px-2">
-                      {`${displayBtc(userInfo.paymentBalance)}`}
+                      {`${displayBtc(userInfo.paymentBalance).toFixed(2)}`}
                       <span className="text-orange font-bold">BTC</span>
                     </div>
                   </div>

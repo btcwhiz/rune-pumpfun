@@ -22,6 +22,7 @@ import News from "./components/News";
 import { RiRefreshLine } from "react-icons/ri";
 
 const searchEngine = [
+  { key: "trade", label: "Trade" },
   { key: "creation", label: "Creation Time" },
   { key: "marketcap", label: "Marketcap" },
   { key: "currentlylive", label: "Currently Live" },
@@ -42,7 +43,7 @@ export default function Home() {
       setRecentBlockHeight(latestBlock.blockHeight);
       let runeRes: any = await getRuneFunc();
       if (runeRes) {
-        setSearchKey("creation");
+        setSearchKey("");
         const etchedRunes = runeRes.runes.filter(
           (item: any) => item.runeId !== ""
         );
@@ -280,6 +281,25 @@ export default function Home() {
     );
   };
 
+  const changeSortType = (sortType: string) => {
+    let tempRunes = [...filteredRunes];
+    if (sortType === "creation") {
+      tempRunes = tempRunes.sort(
+        (a: any, b: any) =>
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      );
+    } else if (sortType === "marketcap") {
+      tempRunes = tempRunes.sort(
+        (a: any, b: any) =>
+          b.runeAmount * (b.pool / b.remainAmount) -
+          a.runeAmount * (a.pool / a.remainAmount)
+      );
+    } else if (sortType === "currentlylive") {
+      tempRunes = tempRunes.filter((item: any) => item.stage < 2);
+    }
+    setRunes(tempRunes);
+  };
+
   return (
     <main className="p-3 pt-0 min-h-screen w-full md:max-w-[1280px]">
       <div className="flex flex-col sm:gap-12 gap-0">
@@ -300,7 +320,8 @@ export default function Home() {
                     label: "!text-pink",
                     trigger: "bg-[rgba(234,234,234,0.2)]",
                   }}
-                  defaultSelectedKeys={"creation"}
+                  defaultSelectedKeys={["trade"]}
+                  onChange={(e) => changeSortType(e.target.value)}
                 >
                   {searchEngine.map((engine) => (
                     <SelectItem
@@ -384,22 +405,11 @@ export default function Home() {
               }
             />
           </div>
-          <div>
-            {selected === "all" && (
-              <div className="text-center sm:text-left mt-0 h-full bg-transparent p-3 rounded-xl justify-center align-center">
-                Etched Runes
-              </div>
-            )}
-            {selected === "pending" && (
-              <div className="text-center sm:text-left mt-0 h-full bg-transparent p-3 rounded-xl justify-center align-center">
-                Pending Runes
-              </div>
-            )}
-            {selected === "waiting" && (
-              <div className="text-center sm:text-left mt-0 h-full bg-transparent p-3 rounded-xl justify-center align-center">
-                Waiting Runes To Transfer BTC For Etching Runes
-              </div>
-            )}
+          <div className="text-center sm:text-left mt-0 h-full bg-transparent p-3 rounded-xl justify-center align-center">
+            {selected === "all" && "Etched Runes"}
+            {selected === "pending" && "Pending Runes"}
+            {selected === "waiting" &&
+              "Waiting Runes To Transfer BTC For Etching Runes"}
           </div>
           <div className="gap-3 grid grid-cols-1 md:grid-cols-3">
             {filteredRunes.map((item, index) => {
