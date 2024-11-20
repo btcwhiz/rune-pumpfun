@@ -9,6 +9,7 @@ import useSocket from "../hooks/useSocket";
 import { SATS_MULTIPLE } from "../config/config";
 
 import Image from "next/image";
+import { displayDate, displayRune } from "../utils/util";
 
 export default function Trend() {
   const { socket, isConnected } = useSocket();
@@ -21,22 +22,6 @@ export default function Trend() {
     } catch (error) {
       return btcAmount?.toFixed(8);
     }
-  };
-
-  const displayRune = (runeName: string) => {
-    try {
-      return runeName?.split(".")[0];
-    } catch (error) {
-      return "";
-    }
-  };
-
-  const displayDate = (date: string) => {
-    // Convert the date string to a moment object in the local timezone
-    const localDate = moment.tz(date, moment.tz.guess());
-
-    // Format the date as MM/DD/YY
-    return localDate.format("MM/DD/YY");
   };
 
   useEffect(() => {
