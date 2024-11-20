@@ -10,6 +10,7 @@ import { SATS_MULTIPLE } from "../config/config";
 
 import Image from "next/image";
 import { displayDate, displayRune } from "../utils/util";
+import ImageDisplay from "./ImageDIsplay";
 
 export default function Trend() {
   const { socket, isConnected } = useSocket();
@@ -59,10 +60,11 @@ export default function Trend() {
               >
                 <div className="rounded-lg flex items-center justify-center min-w-12 min-h-12">
                   <Image
-                    src="/img/thog.png"
+                    src="/img/runes_logo.png"
+                    draggable={false}
                     alt="Runes Logo"
-                    width={32}
-                    height={32}
+                    width={48}
+                    height={48}
                     className="min-w-12 min-h-12 sm:flex rounded-lg"
                   />
                 </div>
@@ -101,13 +103,17 @@ export default function Trend() {
                 className="text-white w-auto p-4 border-black border-0 rounded-lg flex items-center gap-[14px] px-0"
               >
                 <div className="rounded-lg flex items-center justify-center min-w-12 min-h-12">
-                  <Image
-                    src="/img/thog.png"
+                  <ImageDisplay
+                    src={newTrade.runeImage}
+                    className="w-12 h-12"
+                  ></ImageDisplay>
+                  {/* <Image
+                    src="/img/runes_logo.png"
                     alt="Runes Logo"
                     width={32}
                     height={32}
                     className="min-w-12 min-h-12 sm:flex rounded-lg"
-                  />
+                  /> */}
                 </div>
 
                 {displayRune(newTrade?.runeName)}
@@ -125,30 +131,36 @@ export default function Trend() {
         >
           <div className="w-full flex justify-center">
             <div className="flex items-center h-20 bg-[rgba(234,234,234,0.1)] p-3 rounded-xl w-full gap-2 sm:gap-8  overflow-y-hidden overflow-x-auto">
-              <div className="rounded-lg flex items-center justify-center min-w-12 min-h-12">
-                <Image
-                  src="/img/thog.png"
-                  alt="Runes Logo"
-                  width={32}
-                  height={32}
-                  className="min-w-12 min-h-12 sm:flex rounded-lg"
-                />
-              </div>
               <Link
                 href={`/profile/${encodeURIComponent(newRune?.profileId)}`}
                 className="text-white w-auto underline"
               >
-                {newRune?.profileId?.slice(0, 6)}
+                <div className="rounded-lg flex items-center justify-center min-w-12 min-h-12 gap-2">
+                  <Image
+                    src="/img/runes_logo.png"
+                    draggable={false}
+                    alt="Runes Logo"
+                    width={48}
+                    height={48}
+                    className="min-w-12 min-h-12 sm:flex rounded-lg"
+                  />
+                  {newRune?.profileId?.slice(0, 6)}
+                </div>
               </Link>
               <div>Created</div>
               <div className="rounded-lg flex items-center justify-center min-w-12 min-h-12">
-                <Image
-                  src="/img/thog.png"
+                {/* <Image
+                  src="/img/runes_logo.png"
                   alt="Runes Logo"
                   width={32}
                   height={32}
                   className="min-w-12 min-h-12 sm:flex rounded-lg"
-                />
+                /> */}
+
+                <ImageDisplay
+                  src={newTrade.runeImage}
+                  className="w-12 h-12"
+                ></ImageDisplay>
               </div>
               <Link
                 href={`/rune/${encodeURIComponent(newRune?.runeId)}`}
