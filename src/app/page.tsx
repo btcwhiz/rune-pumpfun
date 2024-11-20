@@ -200,8 +200,8 @@ export default function Home() {
                 size="md"
                 aria-label="Loading..."
                 value={runeProcess}
-                className="max-w-md bg-pink color-pink text-pink"
-                // color="warning"
+                className="max-w-md bg-pink color-pink text-pink rounded-lg"
+                color="secondary"
               />
             </div>
           )}
