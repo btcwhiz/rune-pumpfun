@@ -148,7 +148,7 @@ export default function Trend() {
                 >
                   <div className="rounded-lg flex items-center justify-center min-w-12 min-h-12 gap-4">
                     <ImageDisplay
-                      src={newTrade.runeImage}
+                      src={newRune.runeImage}
                       className="w-12 h-12"
                     ></ImageDisplay>
                     {displayRune(newRune.runeName)}
