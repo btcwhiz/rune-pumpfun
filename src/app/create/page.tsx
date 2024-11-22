@@ -105,15 +105,20 @@ export default function CreateRune() {
       }
       let rSymbol: any = symbol;
       if (!rSymbol) rSymbol = "$";
-      if (!imageContent || !ticker) {
-        return toast.error("Invalid parameters");
+      if (!imageContent) {
+        return toast.error("Please upload image.");
+      }
+      if (!ticker) {
+        return toast.error("Please input ticker.");
       }
       const rTicker = ticker
         .replace(/[^a-zA-Z.• ]/g, "")
         .toUpperCase()
         .replace(/[.\s]/g, "•");
       if (rTicker.length < 12 || rTicker.length > 30) {
-        return toast.error("invalid ticker");
+        return toast.error(
+          "Ticker Error. The text must be between 15 and 30 characters long."
+        );
       }
       if (initialBuyAmount) {
         if (

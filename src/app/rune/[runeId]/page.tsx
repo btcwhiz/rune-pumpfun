@@ -759,14 +759,14 @@ export default function CreateRune() {
                           }}
                         />
                         {buyFlag ? (
-                          <div className="flex flex-col items-center">
+                          <div className="flex flex-col items-center text-center">
                             <div>
                               {target === false
                                 ? `You would get ${estimatePrice.toFixed(4)} ${
                                     runeInfo.runeName
                                   }`
                                 : `You should pay ${displayBtc(
-                                    estimatePrice / 10 ** 8
+                                    estimatePrice
                                   )} btc`}
                             </div>
                             <Button
@@ -848,7 +848,7 @@ export default function CreateRune() {
                           }}
                         />
                         {sellFlag ? (
-                          <div className="flex flex-col items-center gap-3">
+                          <div className="flex flex-col items-center gap-3  text-center">
                             <div>{`You would get ${displayBtc(
                               estimatePrice / SATS_MULTIPLE
                             )} btc`}</div>
@@ -1035,14 +1035,14 @@ export default function CreateRune() {
                             }}
                           />
                           {buyFlag ? (
-                            <div className="flex flex-col items-center gap-3">
+                            <div className="flex flex-col items-center gap-3 text-center">
                               <div>
                                 {target === false
                                   ? `You would get ${estimatePrice.toFixed(
                                       4
                                     )} ${runeInfo.runeName}`
                                   : `You should pay ${displayBtc(
-                                      estimatePrice / 10 ** 8
+                                      estimatePrice
                                     )} btc`}
                               </div>
                               <Button
@@ -1116,7 +1116,7 @@ export default function CreateRune() {
                             }}
                           />
                           {sellFlag ? (
-                            <div className="flex flex-col items-center gap-3">
+                            <div className="flex flex-col items-center gap-3 text-center">
                               <div>{`You would get ${displayBtc(
                                 estimatePrice / SATS_MULTIPLE
                               )} btc`}</div>

@@ -190,7 +190,7 @@ export default function Home() {
       <Card className="relative box-border flex flex-col p-3 gap-4 bg-[rgba(234,234,234,0.1)] rounded-md border border-bgColor-stroke text-primary-50">
         <CardBody className="flex flex-col justify-between p-2">
           {selected === "pending" && (
-            <div className="flex justify-between items-center gap-2 text-small">
+            <div className="flex justify-between items-center gap-2 text-small overflow-hidden">
               <span className="pl-2 flex gap-1">
                 <span>{leftBlocks}</span>
                 <span>blocks</span>
@@ -200,7 +200,7 @@ export default function Home() {
                 size="md"
                 aria-label="Loading..."
                 value={runeProcess}
-                className="max-w-md bg-pink color-pink text-pink rounded-lg"
+                className="bg-pink color-pink text-pink rounded-lg min-w-full"
                 color="secondary"
               />
             </div>
@@ -228,7 +228,7 @@ export default function Home() {
                 <div>
                   <span className="text-white text-xs">ID: {item.runeId}</span>
                 </div>
-                <div className="flex items-center rounded p-2.5 pl-0 h-[25px] gap-[5px] bg-transparent">
+                <div className="flex items-center rounded p-2.5 pl-0 h-[25px] gap-[5px] bg-transparent overflow-hidden">
                   <span className="text-white text-xs w-auto">{`${
                     progress?.toFixed(2) || 0
                   }%`}</span>
@@ -236,7 +236,7 @@ export default function Home() {
                     size="sm"
                     aria-label="Loading..."
                     value={progress}
-                    className="max-w-[162px]"
+                    className="min-w-full"
                     classNames={{
                       base: "bg-[rgba(255,255,255,0.2)]",
                       indicator: "bg-pink",
@@ -253,11 +253,11 @@ export default function Home() {
             <div className="flex justify-between mt-0 gap-2">
               <button className="bg-[#99E591] text-[#000000] leading-[1.1] text-[13px] rounded w-[96px] h-[35px] font-bold flex flex-col gap-1 justify-center items-center">
                 <div>Remaining:</div>
-                <div>{item.remainAmount}</div>
+                <div>{item.remainAmount.toFixed(3)}</div>
               </button>
               <button className="bg-[#91DEE5] text-[#000000] leading-[1.1] text-[13px] rounded w-[96px] h-[35px] font-bold flex flex-col gap-1 justify-center items-center">
                 <div>Price:</div>
-                <div>{(item.pool / item.remainAmount).toFixed(5)}</div>
+                <div>{(item.pool / item.remainAmount).toFixed(3)}</div>
               </button>
               <button className="bg-[#E591DD] text-[#000000] leading-[1.1] text-[13px] rounded w-[96px] h-[35px] font-bold flex flex-col gap-1 justify-center items-center">
                 <div>Cap:</div>
@@ -265,7 +265,7 @@ export default function Home() {
                   {(
                     (item.runeAmount * (item.pool / item.remainAmount)) /
                     SATS_MULTIPLE
-                  ).toFixed(5)}
+                  ).toFixed(3)}
                 </div>
               </button>
             </div>
@@ -284,20 +284,21 @@ export default function Home() {
   const changeSortType = (sortType: string) => {
     let tempRunes = [...filteredRunes];
     if (sortType === "creation") {
-      tempRunes = tempRunes.sort(
-        (a: any, b: any) =>
-          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-      );
+      tempRunes = tempRunes.sort((a: any, b: any) => {
+        const createA = new Date(a.created_at).getTime();
+        const createB = new Date(b.created_at).getTime();
+        return createB - createA;
+      });
     } else if (sortType === "marketcap") {
-      tempRunes = tempRunes.sort(
-        (a: any, b: any) =>
-          b.runeAmount * (b.pool / b.remainAmount) -
-          a.runeAmount * (a.pool / a.remainAmount)
-      );
+      tempRunes = tempRunes.sort((a: any, b: any) => {
+        const valueA = a.runeAmount * (a.pool / a.remainAmount);
+        const valueB = b.runeAmount * (b.pool / b.remainAmount);
+        return valueB - valueA;
+      });
     } else if (sortType === "currentlylive") {
       tempRunes = tempRunes.filter((item: any) => item.stage < 2);
     }
-    setRunes(tempRunes);
+    setFilteredRunes(tempRunes);
   };
 
   return (

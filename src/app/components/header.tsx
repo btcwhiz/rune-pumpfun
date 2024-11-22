@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useContext, useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import {
   Button,
   Chip,
@@ -25,12 +26,12 @@ import {
 import { RiLogoutCircleRLine, RiRefreshLine } from "react-icons/ri";
 import { MainContext } from "../contexts/MainContext";
 import { authUser, getUserInfoByProfileId } from "../api/requests";
-import Image from "next/image";
 import { CheckIcon } from "./icons/CheckIcon";
 import { SIGN_MESSAGE, TEST_MODE } from "../config";
 import { displayBtc } from "../utils/util";
 import { storeStorage } from "../utils/stoage";
 import useSocket from "../hooks/useSocket";
+import NetworkSwitch from "./NetworkSwitch";
 
 const links = [
   {
@@ -48,10 +49,8 @@ const links = [
 export default function Header() {
   const path = usePathname();
   const { socket, isConnected } = useSocket();
-  const loadingRef = useRef(false);
   const [isLoading, setIsLoading] = useState(false);
   const {
-    paymentAddress,
     setPaymentAddress,
     setPaymentPubkey,
     setOrdinalAddress,
@@ -98,7 +97,6 @@ export default function Header() {
           await unisat.signMessage(SIGN_MESSAGE);
           setIsLoading(true);
           const uInfo: any = await authUser(address, pubKey, address, pubKey);
-          console.log("uInfo :>> ", uInfo);
           storeStorage("wallet", {
             type: "Unisat",
             paymentAddress: address,
@@ -307,6 +305,9 @@ export default function Header() {
             className="mr-4" // Add margin to the right of the image
             draggable={false}
           />
+          <div className="flex items-center">
+            <NetworkSwitch />
+          </div>
         </div>
         <div className="flex justify-end gap-2">
           <div className="flex flex-wrap justify-center items-center gap-3">
@@ -371,61 +372,63 @@ export default function Header() {
                     </div>
                   </div>
                 </div>
-                <Button
-                  onClick={refreshBalance}
-                  className="rounded-full bg-pink color-pink"
-                  isIconOnly
-                  variant="flat"
-                >
-                  <RiRefreshLine className="text-white" size={24} />
-                </Button>
-                <Button
-                  href={`/payment`}
-                  as={Link}
-                  className="hidden sm:flex items-center gap-2 text-white bg-pink color-pink"
-                  variant="flat"
-                >
-                  <div>Payment</div>
-                  <GiMoneyStack size={26} />
-                </Button>
-                <Button
-                  href={`/payment`}
-                  as={Link}
-                  className="flex sm:hidden items-center gap-2 text-white rounded-full bg-pink color-pink"
-                  variant="flat"
-                  isIconOnly
-                >
-                  <GiMoneyStack size={26} />
-                </Button>
-                <Button
-                  as={Link}
-                  href={`/profile/${encodeURIComponent(userInfo?.profileId)}`}
-                  className="hidden sm:flex items-center gap-2 text-white bg-pink color-pink"
-                  variant="flat"
-                >
-                  <div>Profile</div>
-                  <FaUser size={20} />
-                </Button>
-                <Button
-                  as={Link}
-                  href={`/profile/${encodeURIComponent(userInfo?.profileId)}`}
-                  className="flex sm:hidden items-center gap-2 text-white rounded-full bg-pink color-pink"
-                  variant="flat"
-                  isIconOnly
-                >
-                  <FaUser size={20} />
-                </Button>
-                <Button
-                  onClick={handleDisConnectWallet}
-                  className="rounded-full bg-pink color-pink"
-                  isIconOnly
-                  variant="flat"
-                >
-                  <RiLogoutCircleRLine
-                    className="text-white text-xl"
-                    size={22}
-                  />
-                </Button>
+                <div className="flex items-center gap-3">
+                  <Button
+                    onClick={refreshBalance}
+                    className="rounded-full bg-pink color-pink"
+                    isIconOnly
+                    variant="flat"
+                  >
+                    <RiRefreshLine className="text-white" size={24} />
+                  </Button>
+                  <Button
+                    href={`/payment`}
+                    as={Link}
+                    className="hidden sm:flex items-center gap-2 text-white bg-pink color-pink"
+                    variant="flat"
+                  >
+                    <div>Payment</div>
+                    <GiMoneyStack size={26} />
+                  </Button>
+                  <Button
+                    href={`/payment`}
+                    as={Link}
+                    className="flex sm:hidden items-center gap-2 text-white rounded-full bg-pink color-pink"
+                    variant="flat"
+                    isIconOnly
+                  >
+                    <GiMoneyStack size={26} />
+                  </Button>
+                  <Button
+                    as={Link}
+                    href={`/profile/${encodeURIComponent(userInfo?.profileId)}`}
+                    className="hidden sm:flex items-center gap-2 text-white bg-pink color-pink"
+                    variant="flat"
+                  >
+                    <div>Profile</div>
+                    <FaUser size={20} />
+                  </Button>
+                  <Button
+                    as={Link}
+                    href={`/profile/${encodeURIComponent(userInfo?.profileId)}`}
+                    className="flex sm:hidden items-center gap-2 text-white rounded-full bg-pink color-pink"
+                    variant="flat"
+                    isIconOnly
+                  >
+                    <FaUser size={20} />
+                  </Button>
+                  <Button
+                    onClick={handleDisConnectWallet}
+                    className="rounded-full bg-pink color-pink"
+                    isIconOnly
+                    variant="flat"
+                  >
+                    <RiLogoutCircleRLine
+                      className="text-white text-xl"
+                      size={22}
+                    />
+                  </Button>
+                </div>
               </div>
             ) : (
               <Button
