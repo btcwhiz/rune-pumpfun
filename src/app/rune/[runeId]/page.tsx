@@ -400,6 +400,7 @@ export default function CreateRune() {
           });
         } catch (error) {}
       }
+      uList = uList.sort((a: any, b: any) => b.balance - a.balance);
       setUserList(uList);
     } catch (error) {
       console.log("error :>> ", error);
