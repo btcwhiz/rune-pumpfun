@@ -18,9 +18,37 @@ import Trend from "./components/trend";
 export const metadata: Metadata = {
   title: "Runed.com - Rune Launchpad on Bitcoin",
   description:
-    "Launch your Runes on Bitcoin with Runed.com – the ultimate launchpad for digital inscriptions and assets.",
-  keywords:
+    "Launch your Runes on Bitcoin with Runed.com - the ultimate launchpad for digital inscriptions and assets.",
+  keywords: [
     "Pump Fun Bitcoin, Pump Fun BTC, Bitcoin, Runes, Rune Launchpad, Digital Inscriptions, BTC Launchpad, Bitcoin Assets, Token Launch, Bitcoin Collectibles, Bitcoin Tokens.",
+  ],
+  authors: [{ name: "Nut Market", url: "https://nut.market" }],
+  robots: "index, follow", // Ensures the page is indexed and links are followed
+  viewport: "width=device-width, initial-scale=1", // Mobile-friendly metadata
+  openGraph: {
+    title: "Runed.com - Rune Launchpad on Bitcoin", // Open Graph title for social sharing
+    description:
+      "Discover Runed.com, the premier launchpad for creating and managing Runes on Bitcoin. Join the revolution in digital inscriptions and assets.",
+    type: "website", // Type of content
+    url: "https://runed.com", // URL of the page
+    images: [
+      {
+        url: "https://image.runed.com/images/runed.png", // Replace with the correct URL of your image
+        width: 614, // Recommended width for OG images
+        height: 614, // Recommended height for OG images
+        alt: "Bill Tovitt Backend Portfolio", // Describes the image
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image", // Optimized card type for Twitter
+    title: "Runed.com - Rune Launchpad on Bitcoin",
+    description:
+      "Launch your Runes on Bitcoin with Runed.com - the ultimate launchpad for digital inscriptions and assets.",
+    images: ["https://image.runed.com/images/runes_logo.png"],
+    site: "@nutdotmarket", // Replace with your Twitter handle
+  },
+  themeColor: "#000000", // Theme color for browsers that support it
 };
 
 export default function RootLayout({
