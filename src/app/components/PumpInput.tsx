@@ -3,12 +3,12 @@ import { ReactNode } from "react";
 
 export const InputStyles = {
   input: [
-    "bg-bgColor-dark",
+    "bg-bgColor-white",
     "hover:border-pink",
     "!placeholder:text-placeHolder",
   ],
   inputWrapper: [
-    "!bg-bgColor-dark",
+    "!bg-bgColor-white",
     "!hover:bg-bgColor-stroke",
     "border-2",
     "border-bgColor-stroke",
@@ -26,10 +26,10 @@ const PumpInput = ({
   classNames = InputStyles,
   onChange,
   disabled = false,
-  endContent,
+  endContent = <></>,
 }: {
   type?: string;
-  label?: string;
+  label?: string | ReactNode;
   value: string;
   color?:
     | "default"
@@ -65,6 +65,7 @@ const PumpInput = ({
       }}
       disabled={disabled}
       placeholder={placeholder}
+      endContent={endContent}
     />
   );
 };

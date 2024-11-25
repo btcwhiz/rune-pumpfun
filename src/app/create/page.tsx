@@ -2,21 +2,32 @@
 
 import { useContext, useRef, useState } from "react";
 import Image from "next/image";
-import { Accordion, AccordionItem, Button, Input } from "@nextui-org/react";
+import {
+  Accordion,
+  AccordionItem,
+  Button,
+  Input,
+  Tooltip,
+} from "@nextui-org/react";
 import toast from "react-hot-toast";
 import { LuUpload } from "react-icons/lu";
+import { useRouter } from "next/navigation";
 import { etchingRuneFunc, preEtchingRuneFunc } from "../api/requests";
 import { MainContext } from "../contexts/MainContext";
 import { unisatSignPsbt } from "../utils/pump";
 import PumpInput from "../components/PumpInput";
 import { displayBtc, getWallet } from "../utils/util";
 import { XverseSignPsbt } from "../utils/transaction";
+import { WalletTypes } from "../utils/types";
+import { GrCircleQuestion } from "react-icons/gr";
+
+const itemClasses = {
+  base: "py-0 w-full",
+  title: "text-white",
+};
 
 export default function CreateRune() {
-  const itemClasses = {
-    base: "py-0 w-full",
-    title: "text-white",
-  };
+  const { push } = useRouter();
 
   const { userInfo } = useContext(MainContext);
 
@@ -27,8 +38,8 @@ export default function CreateRune() {
   // Etching
   const [imageData, setImageData] = useState(null);
   const [imageContent, setImageContent] = useState<string>("");
+  const [symbol, setSymbol] = useState<string>("");
   const [ticker, setTicker] = useState<string>("");
-  const [name, setName] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [dexPercentage, setDexPercentage] = useState<number>(20);
   const [initialBuyAmount, setInitialBuyAmount] = useState<string>("");
@@ -36,6 +47,8 @@ export default function CreateRune() {
   const [telegram, setTelegram] = useState<string>("");
   const [website, setWebsite] = useState<string>("");
   const [etchingFeeRate, setEtchingFeeRate] = useState<string>("");
+  const [preFlag, setPreFlag] = useState<boolean>(false);
+  const [preEtchingResp, setPreEtchingResp] = useState<any>(null);
 
   const handleUploadImage = () => {
     if (fileInputRef.current) {
@@ -85,12 +98,27 @@ export default function CreateRune() {
     }
   };
 
-  const handleEtchingRune = async () => {
+  const handlePreEtchingRune = async () => {
     try {
-      let rTicker: any = ticker;
-      if (!rTicker) rTicker = "$";
-      if (!imageContent || !name) {
-        return toast.error("Invalid parameters");
+      if (!userInfo.userId) {
+        return toast.error("Please connect wallet first.");
+      }
+      let rSymbol: any = symbol;
+      if (!rSymbol) rSymbol = "$";
+      if (!imageContent) {
+        return toast.error("Please upload image.");
+      }
+      if (!ticker) {
+        return toast.error("Please input ticker.");
+      }
+      const rTicker = ticker
+        .replace(/[^a-zA-Z.• ]/g, "")
+        .toUpperCase()
+        .replace(/[.\s]/g, "•");
+      if (rTicker.length < 12 || rTicker.length > 30) {
+        return toast.error(
+          "Ticker Error. The text must be between 15 and 30 characters long."
+        );
       }
       if (initialBuyAmount) {
         if (
@@ -108,8 +136,8 @@ export default function CreateRune() {
       setLoading(true);
 
       const saveData = {
-        name,
         ticker: rTicker,
+        symbol: rSymbol,
         description,
         dexPercentage,
         initialBuyAmount,
@@ -118,15 +146,33 @@ export default function CreateRune() {
         website,
       };
 
-      const { status, etchingPsbt, etchingFee, waitEtchingData }: any =
-        await preEtchingRuneFunc(userInfo.userId, imageContent, saveData);
+      const resp: any = await preEtchingRuneFunc(
+        userInfo.userId,
+        imageContent,
+        saveData
+      );
+      if (resp.status) setEtchingFeeRate(resp.etchingFee);
+      setPreEtchingResp(resp);
+      setLoading(false);
+      setPreFlag(true);
+    } catch (error) {
+      setLoading(false);
+    }
+  };
+
+  const handleEtchingRune = async () => {
+    try {
+      const { status, etchingPsbt, etchingFee, waitEtchingData }: any = {
+        ...preEtchingResp,
+      };
+      setLoading(true);
       if (status) {
         setEtchingFeeRate(etchingFee);
         const storedWallet = getWallet();
         let signedPsbt = "";
-        if (storedWallet.type === "Unisat") {
+        if (storedWallet.type === WalletTypes.UNISAT) {
           signedPsbt = await unisatSignPsbt(etchingPsbt.psbt);
-        } else if (storedWallet.type === "Xverse") {
+        } else if (storedWallet.type === WalletTypes.XVERSE) {
           const { signedPSBT } = await XverseSignPsbt(
             etchingPsbt.psbt,
             etchingPsbt.inputsToSign
@@ -144,29 +190,32 @@ export default function CreateRune() {
           );
 
           if (status) {
-            toast.success(msg);
+            toast.success(msg, { duration: 5000 });
           }
         }
+        setImageData(null);
+        setImageContent("");
+        setSymbol("");
+        setTicker("");
+        setDescription("");
+        setInitialBuyAmount("");
+        setTwitter("");
+        setTelegram("");
+        setWebsite("");
+        setEtchingFeeRate("");
+        setPreFlag(false);
+        push("/");
       }
-      setImageData(null);
-      setImageContent("");
-      setTicker("");
-      setName("");
-      setDescription("");
-      setInitialBuyAmount("");
-      setTwitter("");
-      setTelegram("");
-      setWebsite("");
       setLoading(false);
-      setEtchingFeeRate("");
     } catch (error) {
+      console.log("error :>> ", error);
       setLoading(false);
     }
   };
 
   return (
     <div className="flex justify-center p-3 md:pt-20">
-      <div className="flex flex-col gap-3 border-2 bg-bgColor-ghost p-6 border-bgColor-stroke rounded-2xl w-[420px]">
+      <div className="flex flex-col gap-3 border-2 bg-bgColor-ghost p-6 border-bgColor-stroke rounded-2xl w-[92vw] md:w-[420px]">
         <div className="py-3 font-bold text-2xl text-center">Etching</div>
         <div className="flex items-center">
           <div className="flex justify-center w-full">
@@ -202,28 +251,103 @@ export default function CreateRune() {
           />
         </div>
         <PumpInput
-         className="!text-white"
-          label="Rune Symbol (optional)"
+          className="!text-white"
+          placeholder="Ticker"
+          label={
+            <div className="flex items-center gap-1">
+              <span>Rune Ticker</span>
+              <Tooltip
+                color="secondary"
+                content={
+                  <div className="px-1 py-2 text-tiny">
+                    The identifier for this rune. Use . for • spacers
+                  </div>
+                }
+                className=" bg-pink"
+              >
+                <Button
+                  isIconOnly
+                  className="rounded-full p-0 w-[14px] h-[14px] min-w-[14px] min-h-[14px] bg-transparent text-pink mt-[2px] cursor-pointer"
+                >
+                  <GrCircleQuestion />
+                </Button>
+              </Tooltip>
+            </div>
+          }
           value={ticker}
-          onChange={setTicker}
+          onChange={(value) => {
+            if (value.length <= 30) {
+              const filteredValue = value
+                .replace(/[^a-zA-Z.• ]/g, "")
+                .toUpperCase()
+                .replace(/[.\s]/g, "•");
+              setTicker(filteredValue);
+            }
+          }}
+          endContent={<div className="text-xs w-24">12~30 chars</div>}
         ></PumpInput>
         <PumpInput
-        className="!text-white"
-          label="Rune Name"
-          value={name}
-          onChange={setName}
+          className="!text-white"
+          label={
+            <div className="flex items-center gap-1">
+              <span>Symbol</span>
+              <Tooltip
+                color="secondary"
+                content={
+                  <div className="px-1 py-2 text-tiny">
+                    Single character symbol for your token, e.g. $
+                  </div>
+                }
+                className=" bg-pink"
+              >
+                <Button
+                  isIconOnly
+                  className="rounded-full p-0 w-[14px] h-[14px] min-w-[14px] min-h-[14px] bg-transparent text-pink mt-[2px] cursor-pointer"
+                >
+                  <GrCircleQuestion />
+                </Button>
+              </Tooltip>
+            </div>
+          }
+          placeholder="One charactor"
+          value={symbol}
+          onChange={(value) => {
+            if (value.length <= 1) {
+              setSymbol(value);
+            }
+          }}
         ></PumpInput>
         <PumpInput
-        className="!text-white"
+          className="!text-white"
           type="textarea"
           label="Rune Description"
           value={description}
           onChange={setDescription}
         ></PumpInput>
         <PumpInput
-        className="!text-white"
+          className="!text-white"
           type="number"
-          label="Dex Percentage(min: 20, max: 50)"
+          label={
+            <div className="flex items-center gap-1">
+              <span>Dex Percentage</span>
+              <Tooltip
+                color="secondary"
+                content={
+                  <div className="px-1 py-2">
+                    <div className="text-tiny">Min: 20, Max: 50</div>
+                  </div>
+                }
+                className=" bg-pink"
+              >
+                <Button
+                  isIconOnly
+                  className="rounded-full p-0 w-[14px] h-[14px] min-w-[14px] min-h-[14px] bg-transparent text-pink mt-[2px] cursor-pointer"
+                >
+                  <GrCircleQuestion />
+                </Button>
+              </Tooltip>
+            </div>
+          }
           value={`${dexPercentage}`}
           onChange={setDexPercentage}
         ></PumpInput>
@@ -262,14 +386,25 @@ export default function CreateRune() {
             Number(etchingFeeRate)
           )} for etching`}</div>
         )}
-        <Button
-          // color="warning"
-          onClick={() => handleEtchingRune()}
-          isLoading={loading}
-          className="text-white bg-pink"
-        >
-          Etching
-        </Button>
+        {preFlag === true ? (
+          <Button
+            // color="warning"
+            onClick={() => handleEtchingRune()}
+            isLoading={loading}
+            className="text-white bg-pink"
+          >
+            Confirm
+          </Button>
+        ) : (
+          <Button
+            // color="warning"
+            onClick={() => handlePreEtchingRune()}
+            isLoading={loading}
+            className="text-white bg-pink"
+          >
+            Etching
+          </Button>
+        )}
       </div>
     </div>
   );

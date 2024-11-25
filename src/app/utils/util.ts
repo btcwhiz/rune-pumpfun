@@ -1,5 +1,6 @@
 import moment from "moment-timezone";
 import { NEXT_POOL_AMOUNT, SATS_MULTIPLE } from "../config/config";
+import { getStorage } from "./stoage";
 
 export const getTimeDifference = (date: any) => {
   // Set the timezone to PT (Pacific Time)
@@ -60,5 +61,30 @@ export const displayBtc = (btcAmount: number) => {
 };
 
 export const getWallet = () => {
-  return JSON.parse(localStorage.getItem("wallet") as string);
+  return getStorage("wallet");
+};
+
+export const displayRune = (runeName: string) => {
+  try {
+    let displayTxt = runeName?.split(".")[0];
+    if (displayTxt.length > 5) {
+      displayTxt = runeName?.split("•")[0];
+    }
+    if (displayTxt.length > 5) {
+      displayTxt = displayTxt.slice(0, 4);
+    }
+    return displayTxt;
+  } catch (error) {
+    return "";
+  }
+};
+
+
+
+export const displayDate = (date: string) => {
+  // Convert the date string to a moment object in the local timezone
+  const localDate = moment.tz(date, moment.tz.guess());
+
+  // Format the date as MM/DD/YY
+  return localDate.format("MM/DD/YY");
 };

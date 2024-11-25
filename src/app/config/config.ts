@@ -8,3 +8,7 @@ export const testVersion =
 export const MEMPOOL_URL = testVersion
   ? "https://mempool.space/testnet/api"
   : "https://mempool.space/api";
+
+export const BETA_LINK = "https://beta.runed.com";
+
+export const TEST_LINK = "https://test.runed.com";

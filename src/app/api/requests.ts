@@ -42,7 +42,7 @@ export const authUser = async (
 export const preDepositFunc = async (
   walletType: string,
   userId: string,
-  depositAmount: string
+  depositAmount: number
 ) => {
   try {
     const urlEndpoint = `${process.env.NEXT_PUBLIC_API_URL}/api/payment/pre-deposit`;
@@ -222,7 +222,7 @@ export const getAllTransactions = async (userId: string) => {
 export const preWithdrawFunc = async (
   userId: string,
   runeId: string,
-  amount: string
+  amount: number
 ) => {
   try {
     const urlEndpoint = `${process.env.NEXT_PUBLIC_API_URL}/api/payment/pre-withdraw`;
@@ -244,7 +244,7 @@ export const preWithdrawFunc = async (
 export const withdrawFunc = async (
   userId: string,
   runeId: string,
-  amount: string,
+  amount: number,
   requestId: any,
   signedPsbt: any
 ) => {
@@ -564,6 +564,18 @@ export const burnFunc = async (
     const msg: any = error.response.data.msg || "Something went wrong";
     console.log("error :>> ", error);
     toast.error(msg);
+    return { success: false };
+  }
+};
+
+export const getBtcBalance = async (address: string) => {
+  try {
+    const urlEndpoint = `/api/mempool/get-balance?address=${address}`;
+    const res = await fetch(urlEndpoint, { method: "POST" });
+    const detailsData: any = await res.json();
+    return detailsData;
+  } catch (error) {
+    console.log("error :>> ", error);
     return { success: false };
   }
 };

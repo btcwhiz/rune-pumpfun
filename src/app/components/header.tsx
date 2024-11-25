@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useContext, useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import {
   Button,
   Chip,
@@ -12,52 +13,51 @@ import {
 } from "@nextui-org/react";
 import toast from "react-hot-toast";
 import { FaHome, FaPlus, FaUser } from "react-icons/fa";
-import { IoIosLink, IoIosLogOut } from "react-icons/io";
-import { TfiReload } from "react-icons/tfi";
 import Link from "next/link";
 import moment from "moment-timezone";
 import { usePathname } from "next/navigation";
 import { GiMoneyStack } from "react-icons/gi";
-import { AiOutlineSwap } from "react-icons/ai";
-import { GrMoney } from "react-icons/gr";
 import {
   AddressPurpose,
   BitcoinNetworkType,
   getAddress,
   signMessage,
 } from "sats-connect";
+import { RiLogoutCircleRLine, RiRefreshLine } from "react-icons/ri";
 import { MainContext } from "../contexts/MainContext";
-import { authUser } from "../api/requests";
-import Image from "next/image";
+import { authUser, getUserInfoByProfileId } from "../api/requests";
 import { CheckIcon } from "./icons/CheckIcon";
-import { BETA_URL, SIGN_MESSAGE, TEST_MODE, TEST_URL } from "../config";
-import { displayBtc, getWallet } from "../utils/util";
+import { SIGN_MESSAGE, TEST_MODE } from "../config";
+import { displayBtc } from "../utils/util";
+import { storeStorage } from "../utils/stoage";
+import useSocket from "../hooks/useSocket";
+import NetworkSwitch from "./NetworkSwitch";
 
 const links = [
   {
     label: "Home",
     link: "/",
-    icon: <FaHome />,
+    icon: <FaHome size={20} />,
   },
   {
     label: "Etching",
     link: "/create",
-    icon: <FaPlus />,
+    icon: <FaPlus size={20} />,
   },
 ];
 
 export default function Header() {
   const path = usePathname();
-  const loadingRef = useRef(false);
+  const { socket, isConnected } = useSocket();
   const [isLoading, setIsLoading] = useState(false);
   const {
-    paymentAddress,
     setPaymentAddress,
     setPaymentPubkey,
     setOrdinalAddress,
     setOrdinalPubkey,
     userInfo,
     setUserInfo,
+    setUserRunes,
   } = useContext(MainContext);
 
   const walletModal = useDisclosure();
@@ -68,26 +68,6 @@ export default function Header() {
     setPaymentPubkey("");
     setOrdinalAddress("");
     setOrdinalPubkey("");
-  };
-
-  const storeLocalStorage = (
-    type: string,
-    paymentAddress: string,
-    paymentPubkey: string,
-    ordinalAddress: string,
-    ordinalPubkey: string
-  ) => {
-    localStorage.setItem(
-      "wallet",
-      JSON.stringify({
-        type,
-        paymentAddress,
-        paymentPubkey,
-        ordinalAddress,
-        ordinalPubkey,
-        session: moment.now() + 60 * 60 * 1000,
-      })
-    );
   };
 
   const refreshBalance = async () => {
@@ -117,8 +97,14 @@ export default function Header() {
           await unisat.signMessage(SIGN_MESSAGE);
           setIsLoading(true);
           const uInfo: any = await authUser(address, pubKey, address, pubKey);
-          console.log("uInfo :>> ", uInfo);
-          storeLocalStorage("Unisat", address, pubKey, address, pubKey);
+          storeStorage("wallet", {
+            type: "Unisat",
+            paymentAddress: address,
+            paymentPubkey: pubKey,
+            ordinalAddress: address,
+            ordinalPubkey: pubKey,
+            session: moment.now() + 60 * 60 * 1000,
+          });
           setUserInfo(uInfo);
           setPaymentAddress(address);
           setPaymentPubkey(pubKey);
@@ -139,7 +125,7 @@ export default function Header() {
   // Xverse Connect
   const xverseConnectWallet = async () => {
     try {
-      const response: any = await getAddress({
+      await getAddress({
         payload: {
           purposes: [
             AddressPurpose.Ordinals,
@@ -153,68 +139,69 @@ export default function Header() {
               : BitcoinNetworkType.Mainnet,
           },
         },
-        onFinish: () => {},
-        onCancel: () => {},
-      });
+        onFinish: async (response) => {
+          const paymentAddressItem = response.addresses.find(
+            (address: any) => address.purpose === AddressPurpose.Payment
+          );
+          const ordinalsAddressItem = response.addresses.find(
+            (address: any) => address.purpose === AddressPurpose.Ordinals
+          );
 
-      const paymentAddressItem = response.addresses.find(
-        (address: any) => address.purpose === AddressPurpose.Payment
-      );
-      const ordinalsAddressItem = response.addresses.find(
-        (address: any) => address.purpose === AddressPurpose.Ordinals
-      );
+          let res = "";
+          await signMessage({
+            payload: {
+              network: {
+                type: TEST_MODE
+                  ? BitcoinNetworkType.Testnet
+                  : BitcoinNetworkType.Mainnet,
+              },
+              address: paymentAddressItem?.address as string,
+              message: SIGN_MESSAGE,
+            },
+            onFinish: (response: any) => {
+              res = response;
+              return response;
+            },
+            onCancel: () => {
+              walletModal.onClose();
+              setIsLoading(false);
+            },
+          });
 
-      let res = "";
-      await signMessage({
-        payload: {
-          network: {
-            type: TEST_MODE
-              ? BitcoinNetworkType.Testnet
-              : BitcoinNetworkType.Mainnet,
-          },
-          address: paymentAddressItem?.address as string,
-          message: SIGN_MESSAGE,
-        },
-        onFinish: (response: any) => {
-          res = response;
-          return response;
-        },
-        onCancel: () => {
+          const paymentAddress = paymentAddressItem?.address as string;
+          const paymentPubkey = paymentAddressItem?.publicKey as string;
+          const ordinalAddress = ordinalsAddressItem?.address as string;
+          const ordinalPubkey = ordinalsAddressItem?.publicKey as string;
+
+          if (paymentAddress) {
+            setIsLoading(true);
+            const uInfo: any = await authUser(
+              paymentAddress,
+              paymentPubkey,
+              ordinalAddress,
+              ordinalPubkey
+            );
+            if (uInfo !== null) {
+              storeStorage("wallet", {
+                type: "Xverse",
+                paymentAddress,
+                paymentPubkey,
+                ordinalAddress,
+                ordinalPubkey,
+                session: moment.now() + 60 * 60 * 1000,
+              });
+              setUserInfo(uInfo);
+              setPaymentAddress(paymentAddress);
+              setPaymentPubkey(paymentPubkey);
+              setOrdinalAddress(ordinalAddress);
+              setOrdinalPubkey(ordinalPubkey);
+            }
+          }
           walletModal.onClose();
           setIsLoading(false);
         },
+        onCancel: () => {},
       });
-
-      const paymentAddress = paymentAddressItem?.address as string;
-      const paymentPubkey = paymentAddressItem?.publicKey as string;
-      const ordinalAddress = ordinalsAddressItem?.address as string;
-      const ordinalPubkey = ordinalsAddressItem?.publicKey as string;
-
-      if (paymentAddress) {
-        setIsLoading(true);
-        const uInfo: any = await authUser(
-          paymentAddress,
-          paymentPubkey,
-          ordinalAddress,
-          ordinalPubkey
-        );
-        if (uInfo !== null) {
-          storeLocalStorage(
-            "Xverse",
-            paymentAddress,
-            paymentPubkey,
-            ordinalAddress,
-            ordinalPubkey
-          );
-          setUserInfo(uInfo);
-          setPaymentAddress(paymentAddress);
-          setPaymentPubkey(paymentPubkey);
-          setOrdinalAddress(ordinalAddress);
-          setOrdinalPubkey(ordinalPubkey);
-        }
-      }
-      walletModal.onClose();
-      setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
       console.log("xverseConnectWallet error ==> ", error);
@@ -272,8 +259,42 @@ export default function Header() {
     },
   ];
 
+  useEffect(() => {
+    if (socket && isConnected) {
+      socket.on(
+        "deposited",
+        ({
+          paymentAddress,
+          amount,
+        }: {
+          paymentAddress: string;
+          amount: number;
+        }) => {
+          if (paymentAddress === userInfo.paymentAddress) {
+            toast.success(`${amount} BTC deposited`);
+            refreshBalance();
+          }
+        }
+      );
+      return () => {
+        socket.off("deposited");
+      };
+    }
+  }, [socket, isConnected, userInfo, refreshBalance]);
+
+  const getInitialData = async () => {
+    const pfp: any = await getUserInfoByProfileId(userInfo.profileId as string);
+    setUserRunes(pfp.runes);
+  };
+
+  useEffect(() => {
+    if (userInfo) {
+      if (userInfo?.profileId) getInitialData();
+    }
+  }, [userInfo]);
+
   return (
-    <div className="z-10 p-4 sm:px-12 border-b-0 border-bgColor-stroke w-full font-mono text-sm">
+    <div className="z-10 p-4 sm:px-12 border-b-0 border-bgColor-stroke w-full font-mono text-sm max-w-[1258px]">
       <div className="flex flex-wrap justify-center md:justify-between items-center bg-gradient-to-t dark:from-black dark:via-black lg:bg-none w-full lg:size-auto mt-6">
         <div className="flex items-center">
           <Image
@@ -282,41 +303,45 @@ export default function Header() {
             width={150} // Adjust the width as needed
             height={150} // Adjust the height as needed
             className="mr-4" // Add margin to the right of the image
+            draggable={false}
           />
+          <div className="flex items-center">
+            <NetworkSwitch />
+          </div>
         </div>
-        <div className="flex flex-wrap justify-center items-center gap-3">
-          {links.map((item, index) => (
-            <div key={index}>
-              <Button
-                href={item.link}
-                as={Link}
-                className={`${
-                  item.link === path
-                    ? "border-pink border-b-3 text-white"
-                    : "text-white"
-                } rounded-none items-center sm:gap-2 sm:h-16 hidden sm:flex`}
-                variant="light"
-              >
-                {item.icon}
-                <span>{item.label}</span>
-              </Button>
-              <Button
-                href={item.link}
-                as={Link}
-                className={`${
-                  item.link === path
-                    ? "border-pink border-b-3 text-pink"
-                    : "text-white"
-                } rounded-none flex sm:hidden items-center sm:gap-2 sm:h-16`}
-                variant="light"
-                isIconOnly
-              >
-                {item.icon}
-              </Button>
-            </div>
-          ))}
-        </div>
-        <div className="flex items-center gap-2">
+        <div className="flex justify-end gap-2">
+          <div className="flex flex-wrap justify-center items-center gap-3">
+            {links.map((item, index) => (
+              <div key={index}>
+                <Button
+                  href={item.link}
+                  as={Link}
+                  className={`${
+                    item.link === path
+                      ? "border-pink border-t-3 border-b-3 text-white"
+                      : "text-white"
+                  } rounded-none items-center sm:gap-2 sm:h-16 hidden sm:flex`}
+                  variant="light"
+                >
+                  {item.icon}
+                  <span>{item.label}</span>
+                </Button>
+                <Button
+                  href={item.link}
+                  as={Link}
+                  className={`${
+                    item.link === path
+                      ? "border-pink border-b-3 text-pink"
+                      : "text-white"
+                  } rounded-none flex sm:hidden items-center sm:gap-2 sm:h-16`}
+                  variant="light"
+                  isIconOnly
+                >
+                  {item.icon}
+                </Button>
+              </div>
+            ))}
+          </div>
           <div className="py-3 flex justify-center items-center">
             {userInfo?.userId ? (
               <div className="flex flex-wrap justify-center items-center gap-3">
@@ -330,62 +355,80 @@ export default function Header() {
                     <div>Admin</div>
                   </Button>
                 )}
-                <div className="flex gap-1 items-center bg-bgColor-dark border-2 border-bgColor-stroke rounded-lg p-2">
-                  {`${displayBtc(userInfo.btcBalance)}`}
-                  <span className="text-orange font-bold">BTC</span>
+                <div className="flex items-center bg-bgColor-dark border-2 border-bgColor-stroke rounded-lg">
+                  <div className="flex flex-col justify-center">
+                    <div className="text-bgColor-lime text-center">
+                      Deposited
+                    </div>
+                    <div className="flex gap-1 items-center px-2">
+                      {`${displayBtc(userInfo.btcBalance)}`}
+                    </div>
+                  </div>
+                  <div className="flex flex-col justify-center">
+                    <div className="text-bgColor-lime text-center">Account</div>
+                    <div className="flex gap-1 items-center px-2">
+                      {`${displayBtc(userInfo.paymentBalance).toFixed(2)}`}
+                      <span className="text-orange font-bold">BTC</span>
+                    </div>
+                  </div>
                 </div>
-                <Button
-                  onClick={refreshBalance}
-                  className="rounded-full bg-pink color-pink"
-                  isIconOnly
-                  variant="flat"
-                >
-                  <TfiReload className="text-white" />
-                </Button>
-                <Button
-                  href={`/payment`}
-                  as={Link}
-                  className="hidden sm:flex items-center gap-2 text-white bg-pink color-pink"
-                  variant="flat"
-                >
-                  <div>Payment</div>
-                  <GiMoneyStack />
-                </Button>
-                <Button
-                  href={`/payment`}
-                  as={Link}
-                  className="flex sm:hidden items-center gap-2 text-white rounded-full bg-pink color-pink"
-                  variant="flat"
-                  isIconOnly
-                >
-                  <GiMoneyStack />
-                </Button>
-                <Button
-                  as={Link}
-                  href={`/profile/${encodeURIComponent(userInfo?.profileId)}`}
-                  className="hidden sm:flex items-center gap-2 text-white bg-pink color-pink"
-                  variant="flat"
-                >
-                  <div>Profile</div>
-                  <FaUser />
-                </Button>
-                <Button
-                  as={Link}
-                  href={`/profile/${encodeURIComponent(userInfo?.profileId)}`}
-                  className="flex sm:hidden items-center gap-2 text-white rounded-full bg-pink color-pink"
-                  variant="flat"
-                  isIconOnly
-                >
-                  <FaUser />
-                </Button>
-                <Button
-                  onClick={handleDisConnectWallet}
-                  className="rounded-full"
-                  isIconOnly
-                  variant="flat"
-                >
-                  <IoIosLogOut className="text-white text-xl bg-pink color-pink" />
-                </Button>
+                <div className="flex items-center gap-3">
+                  <Button
+                    onClick={refreshBalance}
+                    className="rounded-full bg-pink color-pink"
+                    isIconOnly
+                    variant="flat"
+                  >
+                    <RiRefreshLine className="text-white" size={24} />
+                  </Button>
+                  <Button
+                    href={`/payment`}
+                    as={Link}
+                    className="hidden sm:flex items-center gap-2 text-white bg-pink color-pink"
+                    variant="flat"
+                  >
+                    <div>Payment</div>
+                    <GiMoneyStack size={26} />
+                  </Button>
+                  <Button
+                    href={`/payment`}
+                    as={Link}
+                    className="flex sm:hidden items-center gap-2 text-white rounded-full bg-pink color-pink"
+                    variant="flat"
+                    isIconOnly
+                  >
+                    <GiMoneyStack size={26} />
+                  </Button>
+                  <Button
+                    as={Link}
+                    href={`/profile/${encodeURIComponent(userInfo?.profileId)}`}
+                    className="hidden sm:flex items-center gap-2 text-white bg-pink color-pink"
+                    variant="flat"
+                  >
+                    <div>Profile</div>
+                    <FaUser size={20} />
+                  </Button>
+                  <Button
+                    as={Link}
+                    href={`/profile/${encodeURIComponent(userInfo?.profileId)}`}
+                    className="flex sm:hidden items-center gap-2 text-white rounded-full bg-pink color-pink"
+                    variant="flat"
+                    isIconOnly
+                  >
+                    <FaUser size={20} />
+                  </Button>
+                  <Button
+                    onClick={handleDisConnectWallet}
+                    className="rounded-full bg-pink color-pink"
+                    isIconOnly
+                    variant="flat"
+                  >
+                    <RiLogoutCircleRLine
+                      className="text-white text-xl"
+                      size={22}
+                    />
+                  </Button>
+                </div>
               </div>
             ) : (
               <Button
@@ -399,14 +442,14 @@ export default function Header() {
               </Button>
             )}
           </div>
-          <Button
+          {/* <Button
             href={TEST_MODE ? BETA_URL : TEST_URL}
             as={Link}
             className="rounded-md text-white border-1 border-white bg-transparent hover:text-black color-pink"
             endContent={<IoIosLink />}
           >
             {TEST_MODE ? "Mainnet" : "Testnet"}
-          </Button>
+          </Button> */}
         </div>
       </div>
 
@@ -437,19 +480,19 @@ export default function Header() {
           },
         }}
       >
-        <ModalContent className="w-[90%] sm:w-full bg-bgColor-dark border-2 border-bgColor-stroke p-3">
+        <ModalContent className="w-[90%] sm:w-full bg-bgColor-dark border-2 border-bgColor-stroke px-0 sm:px-3 py-3">
           {(onClose) => (
             <>
               <ModalBody>
                 <div className="w-full h-full flex flex-col gap-3 items-center rounded-xl">
-                  <div className="flex flex-col text-black text-[26px]">
+                  <div className="flex flex-col text-[26px]">
                     <p className="text-center font-bold">Connect Wallet</p>
                   </div>
                   <Divider className="bg-pink" />
                   {walletProviders.map((walletProvider, index) => (
                     <Button
                       key={index}
-                      className={`flex-row justify-between rounded-2xl w-full p-3 py-7 bg-bgColor-dark hover:brightness-125 duration-300 border-2 border-bgColor-stroke items-center ${
+                      className={`flex-row justify-between rounded-2xl w-full px-3 py-7 bg-bgColor-dark hover:brightness-125 duration-300 border-2 border-bgColor-stroke items-center ${
                         walletProvider.label === "Xverse"
                           ? "flex"
                           : "hidden sm:flex"

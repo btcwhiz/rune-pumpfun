@@ -14,6 +14,7 @@ const defaultValue = {
     userId: "",
     btcBalance: 0,
     paymentAddress: "",
+    paymentBalance: 0,
     paymentPublicKey: "",
     ordinalAddress: "",
     ordinalPublicKey: "",
@@ -21,6 +22,8 @@ const defaultValue = {
     multiBalance: "",
     role: 0,
   },
+  userRunes: [],
+  setUserRunes: (param: any) => {},
   setPaymentAddress: (param: any) => {},
   setPaymentPubkey: (param: any) => {},
   setOrdinalAddress: (param: any) => {},
@@ -39,8 +42,10 @@ export function MainProvider({ children }: { children: any }) {
   const [ordinalPubkey, setOrdinalPubkey] = useState<string>("");
   const [multisigWallet, setMultisigWallet] = useState<string>("");
   const [multiBalance, setMultiBalance] = useState<string>("");
+  const [userRunes, setUserRunes] = useState<any>([]);
   const [userInfo, setUserInfo] = useState<any>({
     userId: "",
+    paymentBalance: 0,
     btcBalance: 0,
   });
 
@@ -54,6 +59,8 @@ export function MainProvider({ children }: { children: any }) {
         multisigWallet,
         multiBalance,
         userInfo,
+        userRunes,
+        setUserRunes,
         setPaymentAddress,
         setPaymentPubkey,
         setOrdinalAddress,

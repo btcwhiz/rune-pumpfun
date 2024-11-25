@@ -1,6 +1,12 @@
 "use client";
 
-import { Button } from "@nextui-org/react";
+import {
+  Avatar,
+  Button,
+  Select,
+  SelectItem,
+  SelectSection,
+} from "@nextui-org/react";
 import Link from "next/link";
 import { useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -8,6 +14,8 @@ import toast from "react-hot-toast";
 import {
   depositFunc,
   getAllTransactions,
+  getBtcBalance,
+  getUserInfoByProfileId,
   preDepositFunc,
   preWithdrawFunc,
   withdrawFunc,
@@ -17,14 +25,17 @@ import { unisatSignPsbt } from "../utils/pump";
 import { SATS_MULTIPLE, testVersion } from "../config/config";
 import useSocket from "../hooks/useSocket";
 import PumpInput from "../components/PumpInput";
-import { getWallet } from "../utils/util";
+import { displayBtc, getWallet } from "../utils/util";
 import { XverseSignPsbt } from "../utils/transaction";
+import ImageDisplay from "../components/ImageDIsplay";
+import Image from "next/image";
 
 export default function CreateRune() {
   const { socket, isConnected } = useSocket();
-  const { userInfo } = useContext(MainContext);
+  const { userInfo, userRunes, setUserRunes } = useContext(MainContext);
 
-  const [loading, setLoading] = useState<boolean>(false);
+  const [dLoading, setDLoading] = useState<boolean>(false);
+  const [wLoading, setWLoading] = useState<boolean>(false);
   const [allTransactions, setAllTransactions] = useState<any[]>([]);
 
   const [runeId, setRuneId] = useState<string>("");
@@ -37,18 +48,31 @@ export default function CreateRune() {
     setAllTransactions(alltxs.txs || []);
   };
 
+  const getInitialData = async () => {
+    const pfp: any = await getUserInfoByProfileId(userInfo.profileId as string);
+    setUserRunes(pfp.runes);
+  };
+
   const handleDeposit = async () => {
+    const dAmount = Number(depositAmount);
     const currentWindow: any = window;
+    setDLoading(true);
     try {
-      if (userInfo.userId && depositAmount) {
-        setLoading(true);
+      if (userInfo.userId) {
+        if (!dAmount) {
+          toast.error("Please input deposit amount");
+          setDLoading(false);
+          return;
+        }
+        const btcBalance = await getBtcBalance(userInfo.paymentAddress);
+        if (btcBalance.balance < dAmount * SATS_MULTIPLE) {
+          toast.error("You don't have enough balance.");
+          setDLoading(false);
+          return;
+        }
         const storedWallet = getWallet();
         const walletType = storedWallet.type;
-        const res = await preDepositFunc(
-          walletType,
-          userInfo.userId,
-          depositAmount
-        );
+        const res = await preDepositFunc(walletType, userInfo.userId, dAmount);
         let signedPsbt = "";
         if (walletType === "Unisat") {
           if (currentWindow?.unisat) {
@@ -80,13 +104,13 @@ export default function CreateRune() {
             socket.emit("update-user", { userId: userInfo.userId });
           }
         }
-        setLoading(false);
+        setDLoading(false);
       } else {
-        setLoading(false);
+        setDLoading(false);
         return toast.error("Please connect wallet");
       }
     } catch (error) {
-      setLoading(false);
+      setDLoading(false);
       console.log("error :>> ", error);
       toast.error("Something went wrong");
     }
@@ -94,13 +118,33 @@ export default function CreateRune() {
 
   const handleWithdraw = async () => {
     try {
+      const wAmount = Number(withdrawAmount);
       const storedWallet = getWallet();
-      if (userInfo.userId && runeId && withdrawAmount) {
-        setLoading(true);
+      setWLoading(true);
+      if (!runeId) {
+        toast.error("Please input runeID");
+        setWLoading(false);
+        return;
+      }
+      if (!wAmount) {
+        toast.error("Please input withdraw amount");
+        setWLoading(false);
+        return;
+      }
+      if (runeId.toLocaleLowerCase() === "btc") {
+        const btcBalance = await getBtcBalance(userInfo.multisigWallet);
+        if (btcBalance.balance < wAmount * SATS_MULTIPLE) {
+          toast.error("You don't have enough balance to withdraw.");
+          setWLoading(false);
+          return;
+        }
+      }
+
+      if (userInfo.userId) {
         const preWithdrawRes = await preWithdrawFunc(
           userInfo.userId,
           runeId,
-          withdrawAmount
+          wAmount
         );
         if (preWithdrawRes !== null) {
           if (runeId === "btc") {
@@ -120,7 +164,7 @@ export default function CreateRune() {
               const withdrawRes = await withdrawFunc(
                 userInfo.userId,
                 runeId,
-                withdrawAmount,
+                wAmount,
                 preWithdrawRes.requestId,
                 signedPsbt
               );
@@ -130,7 +174,7 @@ export default function CreateRune() {
             const withdrawRes = await withdrawFunc(
               userInfo.userId,
               runeId,
-              withdrawAmount,
+              wAmount,
               preWithdrawRes.requestId,
               ""
             );
@@ -138,14 +182,17 @@ export default function CreateRune() {
           }
           getTxs();
         }
-        setLoading(false);
+        setWLoading(false);
+        getInitialData();
       } else {
-        setLoading(false);
+        setWLoading(false);
+        getInitialData();
         return toast.error("Please connect wallet");
       }
     } catch (error) {
       console.log("error :>> ", error);
-      setLoading(false);
+      setWLoading(false);
+      getInitialData();
     }
   };
 
@@ -168,12 +215,15 @@ export default function CreateRune() {
                 onChange={setDepositAmount}
               ></PumpInput>
               <Button
-                color="warning"
                 variant="flat"
                 onClick={() => handleDeposit()}
-                isLoading={loading}
+                isLoading={dLoading}
+                className={`${
+                  depositAmount ? "bg-bgColor-pink" : "bg-bgColor-pink/[.5]"
+                } text-white`}
+                disabled={depositAmount ? false : true}
               >
-                {loading ? "Loading" : "Deposit"}
+                {dLoading ? "Loading" : "Deposit"}
               </Button>
             </div>
           </div>
@@ -182,11 +232,72 @@ export default function CreateRune() {
           <div className="flex flex-col gap-3 border-2 bg-bgColor-ghost p-2 border-bgColor-stroke rounded-xl">
             <div className="py-3 font-bold text-center text-lg">Withdraw</div>
             <div className="flex flex-col gap-3">
-              <PumpInput
+              <Select
+                items={[
+                  {
+                    runeId: "btc",
+                    runeName: "BTC",
+                    balance: displayBtc(userInfo.btcBalance),
+                  },
+                  ...userRunes,
+                ]}
+                placeholder="Select TOKEN"
+                labelPlacement="outside"
+                className="max-w-xs border-2 border-bgColor-stroke rounded-xl text-bgColor-ghost"
+                classNames={{
+                  label:
+                    "group-data-[filled=true]:-translate-y-5 text-bgColor-pink text-bgColor-pink",
+                  trigger: "min-h-10 h-14 text-bgColor-pink text-bgColor-pink",
+                  listboxWrapper:
+                    "max-h-[400px] text-bgColor-pink text-bgColor-pink",
+                }}
+                onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                  setRuneId(e.target.value);
+                }}
+              >
+                {(userRune: any) => (
+                  <SelectItem
+                    key={userRune.runeId}
+                    textValue={`${userRune.runeName} - ${userRune.balance}`}
+                  >
+                    <div className="flex gap-2 items-center">
+                      <div className="rounded-lg flex items-center justify-center">
+                        {userRune.runeId.toLocaleLowerCase() === "btc" ? (
+                          <Image
+                            width={48}
+                            height={48}
+                            src={"/img/bitcoin.png"}
+                            alt="great"
+                            draggable={false}
+                          />
+                        ) : (
+                          <ImageDisplay
+                            src={userRune.runeImage}
+                            className="w-14 h-14 min-w-10 min-h-10"
+                          ></ImageDisplay>
+                        )}
+                      </div>
+                      {/* <Avatar
+                        alt={user.name}
+                        className="flex-shrink-0"
+                        size="sm"
+                        src={user.avatar}
+                      /> */}
+                      <div className="flex flex-col">
+                        <span className="text-small">{userRune.runeName}</span>
+                        <span className="text-tiny text-default-400">
+                          {userRune.balance}
+                        </span>
+                      </div>
+                    </div>
+                  </SelectItem>
+                )}
+              </Select>
+              {/* <PumpInput
                 label="Rune ID ('btc' or rune id)"
                 value={runeId}
                 onChange={setRuneId}
-              ></PumpInput>
+              ></PumpInput> */}
               <PumpInput
                 label="Withdraw Amount"
                 value={withdrawAmount}
@@ -204,12 +315,17 @@ export default function CreateRune() {
                 // }
               ></PumpInput>
               <Button
-                color="warning"
                 variant="flat"
                 onClick={() => handleWithdraw()}
-                isLoading={loading}
+                isLoading={wLoading}
+                className={`${
+                  runeId && withdrawAmount
+                    ? "bg-bgColor-pink"
+                    : "bg-bgColor-pink/[.5]"
+                } text-white`}
+                disabled={runeId && withdrawAmount ? false : true}
               >
-                {loading ? "Loading" : "Withdraw"}
+                {wLoading ? "Loading" : "Withdraw"}
               </Button>
             </div>
           </div>
@@ -233,12 +349,7 @@ export default function CreateRune() {
             <div key={index} className="gap-3 grid grid-cols-4 sm:grid-cols-6">
               <div className="hidden sm:flex">{index + 1}</div>
               <div className="uppercase">
-                <span className="hidden sm:flex">
-                  {item.type === 0 ? "deposit" : "withdraw"}
-                </span>
-                <span className="flex sm:hidden">
-                  {item.type === 0 ? "d" : "w"}
-                </span>
+                <span>{item.type === 0 ? "deposit" : "withdraw"}</span>
               </div>
               <div className="uppercase hidden sm:flex">
                 {item.withdrawType === 0 ? "btc" : "rune"}
