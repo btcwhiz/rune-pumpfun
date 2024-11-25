@@ -483,13 +483,13 @@ export default function CreateRune() {
               </CardBody>
             </Card>
           </Tab>
-          <Tab key="thread" title="Thread">
+          {/* <Tab key="thread" title="Thread">
             <Card className="border-2 bg-bgColor-ghost border-bgColor-stroke text-white">
               <CardBody>
                 <div className="py-3 font-bold text-center text-lg">Thread</div>
               </CardBody>
             </Card>
-          </Tab>
+          </Tab> */}
         </Tabs>
       </div>
     );
@@ -498,7 +498,7 @@ export default function CreateRune() {
   // Rune Info Stage
   const RuneTokenInfo = () => {
     return (
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-3 mb-20">
         <div>
           {runeInfo?.image && (
             <ImageDisplay
@@ -925,7 +925,7 @@ export default function CreateRune() {
           )}
           {stage === "chart" && <TradingChart param={coin}></TradingChart>}
           {stage === "buysell" && (
-            <div>
+            <div className="mb-20">
               {/* Mobile Buy Sell */}
               <Tabs aria-label="Options" color="warning" variant="underlined">
                 <Tab key="buy" title="Buy">
