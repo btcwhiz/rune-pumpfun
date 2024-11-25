@@ -46,6 +46,7 @@ import { InputStyles } from "../../components/PumpInput";
 import { XverseSignPsbt } from "../../utils/transaction";
 import { TEST_MODE } from "../../config";
 import { BitcoinNetworkType, signMessage } from "sats-connect";
+import { TabStyles } from "../../components/PumpTabs";
 
 export default function CreateRune() {
   let { runeId }: any = useParams();
@@ -445,7 +446,7 @@ export default function CreateRune() {
     return (
       <div>
         {/* Transaction History */}
-        <Tabs aria-label="Options" color="warning" variant="underlined">
+        <Tabs aria-label="Options" variant="underlined" classNames={TabStyles}>
           <Tab key="trades" title="Trades">
             <Card className="border-2 bg-bgColor-ghost border-bgColor-stroke text-white">
               <CardBody>
@@ -483,13 +484,13 @@ export default function CreateRune() {
               </CardBody>
             </Card>
           </Tab>
-          <Tab key="thread" title="Thread">
+          {/* <Tab key="thread" title="Thread">
             <Card className="border-2 bg-bgColor-ghost border-bgColor-stroke text-white">
               <CardBody>
                 <div className="py-3 font-bold text-center text-lg">Thread</div>
               </CardBody>
             </Card>
-          </Tab>
+          </Tab> */}
         </Tabs>
       </div>
     );
@@ -498,7 +499,7 @@ export default function CreateRune() {
   // Rune Info Stage
   const RuneTokenInfo = () => {
     return (
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-3 mb-20">
         <div>
           {runeInfo?.image && (
             <ImageDisplay
@@ -661,13 +662,19 @@ export default function CreateRune() {
           </div>
           <div className="flex flex-col gap-3">
             {/* Buy Sell */}
-            <Tabs aria-label="Options" color="warning" variant="underlined">
+            <Tabs
+              aria-label="Options"
+              variant="underlined"
+              // color="warning"
+              // classNames={{ tabContent: "text-pink" }}
+              classNames={TabStyles}
+            >
               <Tab key="buy" title="Buy">
                 <Card className="border-2 bg-bgColor-ghost border-bgColor-stroke text-white">
                   <CardBody className="flex flex-col gap-3">
                     {/* Buy */}
                     {/* Your Balance */}
-                    <div className="flex flex-row justify-between text-pink">
+                    <div className="flex justify-around">
                       <div>Your balance</div>
                       <div>{runeBalance}</div>
                     </div>
@@ -814,17 +821,7 @@ export default function CreateRune() {
                     </div>
                     {/* Sell */}
                     <div className="flex flex-col gap-3">
-                      <div className="text-center">Sell</div>
                       <div className="flex flex-col gap-3">
-                        {/* <Input
-                        type="text"
-                        label="Rune ID"
-                        value={runeId}
-                        onChange={(e) => {
-                          setSellFlag(false);
-                          setRuneId(e.target.value);
-                        }}
-                      /> */}
                         <Input
                           type="text"
                           label="Sell Rune Amount"
@@ -890,7 +887,6 @@ export default function CreateRune() {
                       <div>{availableBurn}</div>
                     </div>
                     <div className="flex flex-col gap-3">
-                      <div className="text-center">Burn</div>
                       <div className="flex flex-col gap-3">
                         <Input
                           type="text"
@@ -936,13 +932,18 @@ export default function CreateRune() {
           )}
           {stage === "chart" && <TradingChart param={coin}></TradingChart>}
           {stage === "buysell" && (
-            <div>
+            <div className="mb-20">
               {/* Mobile Buy Sell */}
-              <Tabs aria-label="Options" color="warning" variant="underlined">
+              <Tabs
+                aria-label="Options"
+                variant="underlined"
+                classNames={TabStyles}
+              >
                 <Tab key="buy" title="Buy">
                   <Card className="border-2 bg-bgColor-ghost border-bgColor-stroke text-white">
                     <CardBody className="flex flex-col gap-3">
                       {/* Buy */}
+                      {/* Your Balance */}
                       <div className="flex justify-around">
                         <div>Your balance</div>
                         <div>{runeBalance}</div>
@@ -965,12 +966,12 @@ export default function CreateRune() {
                             <Input
                               type="text"
                               label="Rune Amount"
-                              // color="warning"
+                              className="text-pink"
                               classNames={{
                                 input: [
                                   "bg-bgColor-white",
-                                  "hover:border-warning",
-                                  "!placeholder:text-placeHolder",
+                                  "hover:border-pink",
+                                  "!placeholder:text-pink",
                                 ],
                                 inputWrapper: [
                                   "!bg-bgColor-white",
@@ -988,9 +989,9 @@ export default function CreateRune() {
                                 setBuyRuneAmount(e.target.value);
                               }}
                               endContent={
-                                <div className="flex justify-center items-center">
+                                <div className="flex justify-center items-center !bg-bgColor-dark rounded-xl">
                                   <Button
-                                    className="text-pink"
+                                    className="bg-pink text-white" // Change to your desired background color"
                                     variant="flat"
                                     onClick={() => handleMaxAmount(target)}
                                   >
@@ -1003,7 +1004,7 @@ export default function CreateRune() {
                             <Input
                               type="text"
                               label="BTC Amount"
-                              color="warning"
+                              className="text-black"
                               classNames={InputStyles}
                               value={btcAmount}
                               disabled={loading}
@@ -1027,7 +1028,7 @@ export default function CreateRune() {
                             label="Slippage (%)"
                             value={`${slippage}`}
                             disabled={loading}
-                            color="warning"
+                            className="text-white"
                             classNames={InputStyles}
                             min={0}
                             onChange={(e) => {
@@ -1036,7 +1037,7 @@ export default function CreateRune() {
                             }}
                           />
                           {buyFlag ? (
-                            <div className="flex flex-col items-center gap-3 text-center">
+                            <div className="flex flex-col items-center text-center">
                               <div>
                                 {target === false
                                   ? `You would get ${estimatePrice.toFixed(
@@ -1047,7 +1048,7 @@ export default function CreateRune() {
                                     )} btc`}
                               </div>
                               <Button
-                                color="warning"
+                                className="bg-bgColor-pink text-bgColor-lime"
                                 variant="flat"
                                 onClick={() => handleBuy()}
                                 isLoading={loading}
@@ -1057,11 +1058,21 @@ export default function CreateRune() {
                             </div>
                           ) : (
                             <Button
-                              color="warning"
+                              className={`${
+                                (target === true ? buyRuneAmount : btcAmount) &&
+                                slippage
+                                  ? "bg-bgColor-pink"
+                                  : "bg-bgColor-pink/[.5]"
+                              } text-white`}
                               variant="flat"
                               onClick={() => handlePreBuy()}
                               isLoading={loading}
-                              // disabled={runeInfo.poolstate === 1}
+                              disabled={
+                                (target === true ? buyRuneAmount : btcAmount) &&
+                                slippage
+                                  ? false
+                                  : true
+                              }
                             >
                               Buy
                             </Button>
@@ -1080,21 +1091,10 @@ export default function CreateRune() {
                       </div>
                       {/* Sell */}
                       <div className="flex flex-col gap-3">
-                        <div className="text-center">Sell</div>
                         <div className="flex flex-col gap-3">
-                          {/* <Input
-                type="text"
-                label="Rune ID"
-                value={runeId}
-                onChange={(e) => {
-                  setSellFlag(false);
-                  setRuneId(e.target.value);
-                }}
-              /> */}
                           <Input
                             type="text"
                             label="Sell Rune Amount"
-                            className="text-white"
                             classNames={InputStyles}
                             value={sellRuneAmount}
                             disabled={loading}
@@ -1106,7 +1106,6 @@ export default function CreateRune() {
                           <Input
                             type="number"
                             label="Slippage (%)"
-                            color="warning"
                             classNames={InputStyles}
                             value={`${slippage}`}
                             disabled={loading}
@@ -1117,12 +1116,12 @@ export default function CreateRune() {
                             }}
                           />
                           {sellFlag ? (
-                            <div className="flex flex-col items-center gap-3 text-center">
+                            <div className="flex flex-col items-center gap-3  text-center">
                               <div>{`You would get ${displayBtc(
                                 estimatePrice / SATS_MULTIPLE
                               )} btc`}</div>
                               <Button
-                                color="warning"
+                                className="bg-bgColor-pink text-white"
                                 variant="flat"
                                 onClick={() => handleSell()}
                                 isLoading={loading}
@@ -1133,10 +1132,16 @@ export default function CreateRune() {
                           ) : (
                             <Button
                               color="warning"
-                              variant="flat"
+                              className={`${
+                                sellRuneAmount && slippage
+                                  ? "bg-bgColor-pink"
+                                  : "bg-bgColor-pink/[.5] cursor-not-allowed"
+                              } text-white`}
                               onClick={() => handlePreSell()}
                               isLoading={loading}
-                              // disabled={runeInfo.poolstate === 1}
+                              disabled={
+                                sellRuneAmount && slippage ? true : false
+                              }
                             >
                               Sell
                             </Button>
@@ -1153,14 +1158,11 @@ export default function CreateRune() {
                         <div>Available Burn Balance</div>
                         <div>{availableBurn}</div>
                       </div>
-                      {/* Sell */}
                       <div className="flex flex-col gap-3">
-                        <div className="text-center">Burn</div>
                         <div className="flex flex-col gap-3">
                           <Input
                             type="text"
                             label="Burn Rune Amount"
-                            color="warning"
                             classNames={InputStyles}
                             value={burnRuneAmount}
                             disabled={loading}
@@ -1173,10 +1175,15 @@ export default function CreateRune() {
                             </div>
                           )}
                           <Button
-                            color="warning"
+                            className={`${
+                              burnRuneAmount
+                                ? "bg-bgColor-pink"
+                                : "bg-bgColor-pink/[.5] cursor-not-allowed"
+                            } text-white`}
                             variant="flat"
                             onClick={() => handleBurn()}
                             isLoading={loading}
+                            disabled={burnRuneAmount ? false : true}
                           >
                             Burn
                           </Button>
@@ -1192,9 +1199,9 @@ export default function CreateRune() {
           <div className="fixed bottom-0 left-0 bg-bgColor-dark border-2 border-bgColor-stroke w-full rounded-t-md flex justify-center">
             <Tabs
               aria-label="Options"
-              color="warning"
               variant="underlined"
               onSelectionChange={(key) => setStage(key as string)}
+              classNames={TabStyles}
             >
               <Tab key="info" title="Info"></Tab>
               <Tab key="chart" title="Chart"></Tab>

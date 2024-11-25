@@ -52,7 +52,7 @@ export default function Trend() {
           className="w-full xl:w-1/2"
         >
           <div className="w-full flex justify-center bg-[#ffffff] bg-[rgba(234,234,234,0.2)] rounded-xl">
-            <div>
+            <div className="overflow-auto">
               <div className="flex items-center gap-4 sm:gap-8 h-20 p-3 w-full border-0 border-pink overflow-y-hidden overflow-x-auto">
                 <Link
                   href={`/profile/${encodeURIComponent(newTrade?.profileId)}`}
@@ -105,7 +105,7 @@ export default function Trend() {
                   <div className="rounded-lg flex items-center justify-center min-w-12 min-h-12 gap-4">
                     <ImageDisplay
                       src={newTrade.runeImage}
-                      className="w-12 h-12"
+                      className="w-12 h-12 min-w-12 min-h-12"
                     ></ImageDisplay>
                     {displayRune(newTrade?.runeName)}
                   </div>
@@ -123,7 +123,7 @@ export default function Trend() {
           className="w-full xl:w-1/2"
         >
           <div className="w-full flex justify-center bg-[rgba(234,234,234,0.1)] rounded-xl">
-            <div>
+            <div className="overflow-auto">
               <div className="flex items-center h-20 p-3 rounded-xl w-full gap-2 sm:gap-8  overflow-y-hidden overflow-x-auto">
                 <Link
                   href={`/profile/${encodeURIComponent(newRune?.profileId)}`}
@@ -149,7 +149,7 @@ export default function Trend() {
                   <div className="rounded-lg flex items-center justify-center min-w-12 min-h-12 gap-4">
                     <ImageDisplay
                       src={newRune.runeImage}
-                      className="w-12 h-12"
+                      className="w-12 h-12 min-w-12 min-h-12"
                     ></ImageDisplay>
                     {displayRune(newRune.runeName)}
                   </div>
