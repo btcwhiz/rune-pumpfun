@@ -1,6 +1,4 @@
-"use client";
-
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 // import { Inter } from "next/font/google";
 // import { QueryClient, QueryClientProvider } from "react-query";
 import { NextUIProvider } from "@nextui-org/system";
@@ -24,7 +22,6 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "Nut Market", url: "https://nut.market" }],
   robots: "index, follow", // Ensures the page is indexed and links are followed
-  viewport: "width=device-width, initial-scale=1", // Mobile-friendly metadata
   openGraph: {
     title: "Runed.com - Rune Launchpad on Bitcoin", // Open Graph title for social sharing
     description:
@@ -48,7 +45,12 @@ export const metadata: Metadata = {
     images: ["https://image.runed.com/images/runes_logo.png"],
     site: "@nutdotmarket", // Replace with your Twitter handle
   },
-  themeColor: "#000000", // Theme color for browsers that support it
+};
+
+export const viewport: Viewport = {
+  themeColor: "#FE0BEE",
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default function RootLayout({
