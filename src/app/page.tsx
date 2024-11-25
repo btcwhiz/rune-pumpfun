@@ -20,6 +20,7 @@ import { calcProgress } from "./utils/util";
 import { SearchIcon } from "./components/icons/SearchIcon";
 import News from "./components/News";
 import { RiRefreshLine } from "react-icons/ri";
+import { TabStyles } from "./components/PumpTabs";
 
 const searchEngine = [
   { key: "trade", label: "Trade" },
@@ -342,13 +343,7 @@ export default function Home() {
                 variant="underlined"
                 selectedKey={selected}
                 onSelectionChange={(tab) => handleTabChange(tab as string)}
-                classNames={{
-                  tabList:
-                    "gap-6 w-full relative rounded-none p-0 border-b border-bgColor-stroke w-full",
-                  cursor: "w-full bg-pink",
-                  tab: "max-w-fit px-0 h-12",
-                  tabContent: "group-data-[selected=true]:text-white",
-                }}
+                classNames={TabStyles}
               >
                 <Tab
                   key="all"

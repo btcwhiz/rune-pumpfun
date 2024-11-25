@@ -46,6 +46,7 @@ import { InputStyles } from "../../components/PumpInput";
 import { XverseSignPsbt } from "../../utils/transaction";
 import { TEST_MODE } from "../../config";
 import { BitcoinNetworkType, signMessage } from "sats-connect";
+import { TabStyles } from "../../components/PumpTabs";
 
 export default function CreateRune() {
   let { runeId }: any = useParams();
@@ -445,7 +446,7 @@ export default function CreateRune() {
     return (
       <div>
         {/* Transaction History */}
-        <Tabs aria-label="Options" color="warning" variant="underlined">
+        <Tabs aria-label="Options" variant="underlined" classNames={TabStyles}>
           <Tab key="trades" title="Trades">
             <Card className="border-2 bg-bgColor-ghost border-bgColor-stroke text-white">
               <CardBody>
@@ -661,7 +662,13 @@ export default function CreateRune() {
           </div>
           <div className="flex flex-col gap-3">
             {/* Buy Sell */}
-            <Tabs aria-label="Options" color="warning" variant="underlined">
+            <Tabs
+              aria-label="Options"
+              variant="underlined"
+              // color="warning"
+              // classNames={{ tabContent: "text-pink" }}
+              classNames={TabStyles}
+            >
               <Tab key="buy" title="Buy">
                 <Card className="border-2 bg-bgColor-ghost border-bgColor-stroke text-white">
                   <CardBody className="flex flex-col gap-3">
@@ -927,7 +934,11 @@ export default function CreateRune() {
           {stage === "buysell" && (
             <div className="mb-20">
               {/* Mobile Buy Sell */}
-              <Tabs aria-label="Options" color="warning" variant="underlined">
+              <Tabs
+                aria-label="Options"
+                variant="underlined"
+                classNames={TabStyles}
+              >
                 <Tab key="buy" title="Buy">
                   <Card className="border-2 bg-bgColor-ghost border-bgColor-stroke text-white">
                     <CardBody className="flex flex-col gap-3">
@@ -1188,9 +1199,9 @@ export default function CreateRune() {
           <div className="fixed bottom-0 left-0 bg-bgColor-dark border-2 border-bgColor-stroke w-full rounded-t-md flex justify-center">
             <Tabs
               aria-label="Options"
-              color="warning"
               variant="underlined"
               onSelectionChange={(key) => setStage(key as string)}
+              classNames={TabStyles}
             >
               <Tab key="info" title="Info"></Tab>
               <Tab key="chart" title="Chart"></Tab>
