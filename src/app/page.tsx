@@ -254,19 +254,19 @@ export default function Home() {
             <div className="flex justify-between mt-0 gap-2">
               <button className="bg-[#99E591] text-[#000000] leading-[1.1] text-[13px] rounded w-[96px] h-[35px] font-bold flex flex-col gap-1 justify-center items-center">
                 <div>Remaining:</div>
-                <div>{item.remainAmount.toFixed(3)}</div>
+                <div>{item?.remainAmount?.toFixed(3)}</div>
               </button>
               <button className="bg-[#91DEE5] text-[#000000] leading-[1.1] text-[13px] rounded w-[96px] h-[35px] font-bold flex flex-col gap-1 justify-center items-center">
                 <div>Price:</div>
-                <div>{(item.pool / item.remainAmount).toFixed(3)}</div>
+                <div>{(item?.pool / item?.remainAmount).toFixed(3)}</div>
               </button>
               <button className="bg-[#E591DD] text-[#000000] leading-[1.1] text-[13px] rounded w-[96px] h-[35px] font-bold flex flex-col gap-1 justify-center items-center">
                 <div>Cap:</div>
                 <div>
                   {(
-                    (item.runeAmount * (item.pool / item.remainAmount)) /
+                    (item?.runeAmount * (item?.pool / item?.remainAmount)) /
                     SATS_MULTIPLE
-                  ).toFixed(3)}
+                  )?.toFixed(3)}
                 </div>
               </button>
             </div>
