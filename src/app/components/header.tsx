@@ -12,11 +12,9 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import toast from "react-hot-toast";
-import { FaHome, FaPlus, FaUser } from "react-icons/fa";
 import Link from "next/link";
 import moment from "moment-timezone";
 import { usePathname } from "next/navigation";
-import { GiMoneyStack } from "react-icons/gi";
 import {
   AddressPurpose,
   BitcoinNetworkType,
@@ -24,6 +22,13 @@ import {
   signMessage,
 } from "sats-connect";
 import { RiLogoutCircleRLine, RiRefreshLine } from "react-icons/ri";
+
+// Icons
+import { FaHome, FaPlus, FaUser } from "react-icons/fa";
+import { GiMoneyStack } from "react-icons/gi";
+import { AiOutlineSwap } from "react-icons/ai";
+import { GrMoney } from "react-icons/gr";
+
 import { MainContext } from "../contexts/MainContext";
 import { authUser, getUserInfoByProfileId } from "../api/requests";
 import { CheckIcon } from "./icons/CheckIcon";
@@ -43,6 +48,16 @@ const links = [
     label: "Etching",
     link: "/create",
     icon: <FaPlus size={20} />,
+  },
+  {
+    label: "Swap",
+    link: "/swap",
+    icon: <AiOutlineSwap />,
+  },
+  {
+    label: "Pools",
+    link: "/pools",
+    icon: <GrMoney />,
   },
 ];
 
