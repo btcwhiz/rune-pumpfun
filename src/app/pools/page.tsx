@@ -164,7 +164,7 @@ export default function Page() {
   return (
     <div className="flex flex-col gap-2 p-3 md:pt-20">
       <div className="flex justify-center">
-        <div className="flex flex-col gap-3 border-2 bg-bgColor-ghost py-10 p-3 border-bgColor-stroke rounded-xl w-full sm:w-4/5 md:w-1/2">
+        <div className="flex flex-col gap-3 border-2 bg-bgColor-ghost py-10 p-3 border-bgColor-stroke rounded-xl w-full">
           <div className="py-3 font-bold text-2xl text-center">
             Add Liquidity
           </div>
