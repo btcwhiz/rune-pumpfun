@@ -61,7 +61,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <NextTopLoader color="#FD9800" />
+        <NextTopLoader color="#FE0BEE" />
         <Toaster />
         {/* <QueryClientProvider client={queryClient}> */}
         <NextUIProvider>

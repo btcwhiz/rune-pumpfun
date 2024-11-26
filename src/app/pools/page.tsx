@@ -169,7 +169,7 @@ export default function Page() {
             Add Liquidity
           </div>
           <div className="flex flex-col gap-3">
-            <div className="flex flex-col gap-2 bg-bgColor-dark p-2 rounded-xl">
+            <div className="flex flex-col gap-2 bg-[rgba(234,234,234,0.1)] p-2 rounded-xl">
               <div className="pl-3">From</div>
               <div className="flex items-center gap-3 p-2">
                 <PumpInput
@@ -178,9 +178,8 @@ export default function Page() {
                   onChange={handleInputBaseAmount}
                 ></PumpInput>
                 <Button
-                  className="flex justify-between gap-1 p-2 rounded-xl w-44"
+                  className="flex justify-between gap-1 p-2 rounded-xl w-44 bg-bgColor-pink text-white"
                   variant="flat"
-                  color="warning"
                   onPress={() => {
                     direction !== true && onOpen();
                   }}
@@ -206,14 +205,13 @@ export default function Page() {
               <Button
                 isIconOnly
                 variant="flat"
-                color="warning"
-                className="text-white"
+                className="bg-bgColor-pink text-white"
                 onPress={() => handleChangeToken()}
               >
                 <IoSwapVerticalSharp />
               </Button>
             </div>
-            <div className="flex flex-col gap-2 bg-bgColor-dark p-2 rounded-xl">
+            <div className="flex flex-col gap-2 bg-[rgba(234,234,234,0.1)] p-2 rounded-xl">
               <div className="pl-3">To</div>
               <div className="flex items-center gap-3 p-2 rounded-xl">
                 <PumpInput
@@ -222,9 +220,8 @@ export default function Page() {
                   disabled={true}
                 ></PumpInput>
                 <Button
-                  className="flex items-center gap-1 p-2 rounded-xl w-44"
+                  className="flex items-center gap-1 p-2 rounded-xl w-44 bg-bgColor-pink text-white"
                   variant="flat"
-                  color="warning"
                   onPress={() => {
                     direction === true && onOpen();
                   }}
@@ -249,8 +246,11 @@ export default function Page() {
             <div className="flex justify-center">
               <Button
                 variant="flat"
-                color="warning"
-                className="w-44 text-white"
+                className={`w-44 ${
+                  baseAmount && targetAmount
+                    ? "bg-bgColor-pink"
+                    : "bg-bgColor-pink/[.5] cursor-not-allowed"
+                } text-white`}
                 onClick={() => handleAddLiquidity()}
                 isLoading={isLoading}
               >
@@ -398,7 +398,11 @@ export default function Page() {
                 </ListboxWrapper>
               </ModalBody>
               <ModalFooter>
-                <Button color="warning" variant="ghost" onPress={onClose}>
+                <Button
+                  className="text-white bg-bgColor-pink"
+                  variant="ghost"
+                  onPress={onClose}
+                >
                   Close
                 </Button>
               </ModalFooter>

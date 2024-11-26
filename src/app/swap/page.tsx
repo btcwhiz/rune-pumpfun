@@ -186,7 +186,7 @@ export default function Page() {
       <div className="flex flex-col gap-3 border-2 bg-bgColor-ghost py-10 p-3 border-bgColor-stroke rounded-xl w-full">
         <div className="py-3 font-bold text-2xl text-center">Swap</div>
         <div className="flex flex-col gap-3">
-          <div className="flex flex-col gap-2 bg-bgColor-dark p-2 rounded-xl">
+          <div className="flex flex-col gap-2 bg-[rgba(234,234,234,0.1)] p-2 rounded-xl">
             <div className="flex justify-between items-center px-3">
               <div>From</div>
               <div>
@@ -202,9 +202,8 @@ export default function Page() {
                 onChange={handleInputBaseAmount}
               ></PumpInput>
               <Button
-                className="flex justify-between gap-1 p-2 rounded-xl w-44"
+                className="flex justify-between gap-1 p-2 rounded-xl w-44 bg-bgColor-pink text-white"
                 variant="flat"
-                color="warning"
                 onPress={() => {
                   direction !== true && onOpen();
                 }}
@@ -230,14 +229,13 @@ export default function Page() {
             <Button
               isIconOnly
               variant="flat"
-              color="warning"
               onPress={() => handleChangeToken()}
-              className="text-white"
+              className="bg-bgColor-pink text-white"
             >
               <IoSwapVerticalSharp />
             </Button>
           </div>
-          <div className="flex flex-col gap-2 bg-bgColor-dark p-2 rounded-xl">
+          <div className="flex flex-col gap-2 bg-[rgba(234,234,234,0.1)] p-2 rounded-xl">
             <div className="flex justify-between items-center px-3">
               <div>To</div>
               <div>
@@ -253,9 +251,8 @@ export default function Page() {
                 onChange={handleInputTargeAmount}
               ></PumpInput>
               <Button
-                className="flex justify-between items-center gap-1 p-2 rounded-xl w-44"
+                className="flex justify-between items-center gap-1 p-2 rounded-xl w-44 bg-bgColor-pink text-white"
                 variant="flat"
-                color="warning"
                 onPress={() => {
                   direction === true && onOpen();
                 }}
@@ -277,7 +274,7 @@ export default function Page() {
               </Button>
             </div>
           </div>
-          <div className="bg-bgColor-dark rounded-xl">
+          <div className="bg-[rgba(234,234,234,0.1)] rounded-xl">
             <Accordion variant="bordered" itemClasses={itemClasses}>
               <AccordionItem
                 key="1"
@@ -301,8 +298,11 @@ export default function Page() {
           <div className="flex justify-center">
             <Button
               variant="flat"
-              color="warning"
-              className="w-44 text-white"
+              className={`w-44 ${
+                baseAmount && targetAmount
+                  ? "bg-bgColor-pink"
+                  : "bg-bgColor-pink/[.5] cursor-not-allowed"
+              } text-white`}
               onClick={() => handleSwapToken()}
               isLoading={isLoading}
             >
@@ -368,7 +368,7 @@ export default function Page() {
                 </ListboxWrapper>
               </ModalBody>
               <ModalFooter>
-                <Button color="warning" variant="ghost" onPress={onClose}>
+                <Button className="text-white bg-bgColor-pink" variant="ghost" onPress={onClose}>
                   Close
                 </Button>
               </ModalFooter>
