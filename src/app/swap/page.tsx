@@ -182,8 +182,8 @@ export default function Page() {
   }, [poolId, socket, direction]);
 
   return (
-    <div className="flex justify-center gap-3 p-3 md:pt-20">
-      <div className="flex flex-col gap-3 border-2 bg-bgColor-ghost py-10 p-3 border-bgColor-stroke rounded-xl w-full">
+    <div className="flex justify-center gap-3 p-3 md:pt-20 w-full max-w-[1258px]  px-5 md:px-10">
+      <div className="flex flex-col gap-3 border-2 bg-bgColor-ghost py-10 p-3 border-bgColor-stroke rounded-xl w-full sm:w-4/5 md:w-1/2">
         <div className="py-3 font-bold text-2xl text-center">Swap</div>
         <div className="flex flex-col gap-3">
           <div className="flex flex-col gap-2 bg-[rgba(234,234,234,0.1)] p-2 rounded-xl">
@@ -368,7 +368,11 @@ export default function Page() {
                 </ListboxWrapper>
               </ModalBody>
               <ModalFooter>
-                <Button className="text-white bg-bgColor-pink" variant="ghost" onPress={onClose}>
+                <Button
+                  className="text-white bg-bgColor-pink"
+                  variant="ghost"
+                  onPress={onClose}
+                >
                   Close
                 </Button>
               </ModalFooter>
