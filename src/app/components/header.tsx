@@ -39,11 +39,11 @@ const links = [
     link: "/",
     icon: <FaHome size={20} />,
   },
-  {
-    label: "Etching",
-    link: "/create",
-    icon: <FaPlus size={20} />,
-  },
+  // {
+  //   label: "Etching",
+  //   link: "/create",
+  //   icon: <FaPlus size={20} />,
+  // },
 ];
 
 export default function Header() {
