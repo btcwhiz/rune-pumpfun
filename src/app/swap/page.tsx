@@ -70,7 +70,7 @@ export default function Page() {
 
   const handleSwapToken = async () => {
     try {
-      if (!userInfo.userId) {
+      if (!userInfo?.userId) {
         return toast.error("Please connect your wallet");
       }
       if (!poolId) {
@@ -80,7 +80,7 @@ export default function Page() {
       const storedWallet = getWallet();
       const { success, pendingSwapId, feeId, psbtHex, inputsToSign } =
         await preSwapToken(
-          userInfo.userId,
+          userInfo?.userId,
           poolId,
           baseToken.runeId,
           baseAmount,

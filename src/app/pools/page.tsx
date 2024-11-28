@@ -59,7 +59,7 @@ export default function Page() {
 
   const handleAddLiquidity = async () => {
     try {
-      if (!userInfo.userId) {
+      if (!userInfo?.userId) {
         return toast.error("Please connect your wallet");
       }
       if (!poolId) {
@@ -69,7 +69,7 @@ export default function Page() {
       setIsLoading(true);
       const { success, pendingLiquidityId, feeId, psbtHex, inputsToSign } =
         await preAddLiquidity(
-          userInfo.userId,
+          userInfo?.userId,
           poolId,
           baseToken.runeId,
           baseAmount,
@@ -146,7 +146,7 @@ export default function Page() {
   };
 
   useEffect(() => {
-    userInfo.userId && getLiquidityData();
+    userInfo?.userId && getLiquidityData();
     // eslint-disable-next-line
   }, [userInfo]);
 
