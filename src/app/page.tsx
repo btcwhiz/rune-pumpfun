@@ -407,7 +407,7 @@ export default function Home() {
             {selected === "waiting" &&
               "Waiting Runes To Transfer BTC For Etching Runes"}
           </div>
-          <div className="gap-3 grid grid-cols-1 md:grid-cols-3">
+          <div className="gap-4 grid grid-cols-1 md:grid-cols-3">
             {filteredRunes.map((item, index) => {
               return (
                 <RuneCard
