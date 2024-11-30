@@ -52,12 +52,12 @@ const links = [
   {
     label: "Swap",
     link: "/swap",
-    icon: <AiOutlineSwap />,
+    icon: <AiOutlineSwap size={30} />,
   },
   {
     label: "Pools",
     link: "/pools",
-    icon: <GrMoney />,
+    icon: <GrMoney size={20} />,
   },
 ];
 
@@ -310,7 +310,7 @@ export default function Header() {
 
   return (
     <div className="z-10 p-4 sm:px-12 border-b-0 border-bgColor-stroke w-full font-mono text-sm max-w-[1258px]">
-      <div className="flex flex-wrap justify-center md:justify-between items-center bg-gradient-to-t dark:from-black dark:via-black lg:bg-none w-full lg:size-auto mt-6">
+      <div className="flex flex-wrap justify-center md:justify-between items-center bg-gradient-to-t dark:from-black dark:via-black lg:bg-none w-full lg:size-auto mt-6 gap-4">
         <div className="flex items-center">
           <Image
             src="/img/runes_logo.png" // Replace with the actual path to your image
@@ -325,7 +325,7 @@ export default function Header() {
           </div>
         </div>
         <div className="flex justify-end gap-2">
-          <div className="flex flex-wrap justify-center items-center gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-4 items-center gap-3">
             {links.map((item, index) => (
               <div key={index}>
                 <Button
