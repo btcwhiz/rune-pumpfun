@@ -142,7 +142,7 @@ export default function CreateRune() {
         return toast.error("Please connect wallet");
       }
     } catch (error) {
-      setLoading(false);
+      initialize();
       console.log("error :>> ", error);
       toast.error("Something went wrong");
     }
@@ -206,8 +206,7 @@ export default function CreateRune() {
         return toast.error("Please connect wallet");
       }
     } catch (error) {
-      setBuyFlag(false);
-      setLoading(false);
+      initialize();
       console.log("error :>> ", error);
       toast.error("Something went wrong");
     }
@@ -235,7 +234,7 @@ export default function CreateRune() {
         return toast.error("Please connect wallet");
       }
     } catch (error) {
-      setLoading(false);
+      initialize();
       console.log("error :>> ", error);
       toast.error("Something went wrong");
     }
@@ -307,8 +306,7 @@ export default function CreateRune() {
         return toast.error("Please connect wallet");
       }
     } catch (error) {
-      setSellFlag(false);
-      setLoading(false);
+      initialize();
       console.log("error :>> ", error);
       toast.error("Something went wrong");
     }
@@ -359,8 +357,7 @@ export default function CreateRune() {
         return toast.error("Please connect wallet");
       }
     } catch (error) {
-      setSellFlag(false);
-      setLoading(false);
+      initialize();
       console.log("error :>> ", error);
       toast.error("Something went wrong");
     }
@@ -369,6 +366,8 @@ export default function CreateRune() {
   const initialize = async () => {
     try {
       setLoading(false);
+      setBuyFlag(false);
+      setSellFlag(false);
 
       const pActions: any = await getPumpActionFunc(runeId);
       setPumpActions(pActions.pumpAction);
@@ -656,7 +655,7 @@ export default function CreateRune() {
                   </div>
                 </div>
               </div>
-              <TradingChart param={coin}></TradingChart>
+              {coin && <TradingChart param={coin}></TradingChart>}
             </div>
             <TransactionHistory />
           </div>
@@ -930,7 +929,9 @@ export default function CreateRune() {
               <RuneTokenInfo />
             </div>
           )}
-          {stage === "chart" && <TradingChart param={coin}></TradingChart>}
+          {stage === "chart" && coin && (
+            <TradingChart param={coin}></TradingChart>
+          )}
           {stage === "buysell" && (
             <div className="mb-20">
               {/* Mobile Buy Sell */}
