@@ -1,6 +1,6 @@
 "use client";
 
-import { useContext, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import {
   Accordion,
@@ -47,7 +47,7 @@ export default function CreateRune() {
   const [telegram, setTelegram] = useState<string>("");
   const [website, setWebsite] = useState<string>("");
   const [etchingFeeRate, setEtchingFeeRate] = useState<string>("");
-  const [preFlag, setPreFlag] = useState<boolean>(false);
+  const [preFlag, setPreFlag] = useState<boolean>(true);
   const [preEtchingResp, setPreEtchingResp] = useState<any>(null);
 
   const handleUploadImage = () => {
@@ -209,9 +209,24 @@ export default function CreateRune() {
       setLoading(false);
     } catch (error) {
       console.log("error :>> ", error);
+      setPreFlag(false);
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    setPreFlag(false);
+  }, [
+    imageData,
+    ticker,
+    symbol,
+    description,
+    dexPercentage,
+    initialBuyAmount,
+    twitter,
+    telegram,
+    website,
+  ]);
 
   return (
     <div className="flex justify-center p-3 md:pt-20">
