@@ -120,6 +120,9 @@ export default function CreateRune() {
           "Ticker Error. The text must be between 15 and 30 characters long."
         );
       }
+      if (rTicker[rTicker.length - 1] === "•") {
+        return toast.error("Final text can't be •");
+      }
       if (initialBuyAmount) {
         if (
           !Number(initialBuyAmount) ||
@@ -295,7 +298,8 @@ export default function CreateRune() {
               const filteredValue = value
                 .replace(/[^a-zA-Z.• ]/g, "")
                 .toUpperCase()
-                .replace(/[.\s]/g, "•");
+                .replace(/[.\s]/g, "•")
+                .replace(/•+/g, "•");
               setTicker(filteredValue);
             }
           }}
