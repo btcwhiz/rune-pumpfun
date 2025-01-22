@@ -4,10 +4,16 @@ Welcome to **Rune Pumpfun**, the ultimate decentralized exchange (DEX) built dir
 
 ---
 
-## 📞 Contact Us
+## 📞 Contact Me
 
 For inquiries or support, feel free to reach out:
 ### **Telegram**: [Abracadabra (@hunter0409)](https://t.me/hunter0409)
+
+---
+
+## 🎨 Video
+
+https://github.com/user-attachments/assets/220ab280-623c-438e-9e09-a18693ce0e04
 
 
 ---
@@ -86,12 +92,6 @@ For inquiries or support, feel free to reach out:
 - **Bitcoin Testnet**: For testing and development.
 - **Multisig Wallets**: Maximum security for transactions.
 - **DEX Framework**: Built-in mechanisms for liquidity management and trading.
-
----
-
-## 🎨 Video
-
-https://github.com/user-attachments/assets/220ab280-623c-438e-9e09-a18693ce0e04
 
 ---
 
